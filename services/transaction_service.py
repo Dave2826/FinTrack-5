@@ -4,6 +4,7 @@ from decimal import Decimal
 from sqlalchemy.orm import Session
 
 from models.transaction import Transaction, TransactionType
+from models.company_user import CompanyUser
 from repositories.account_concept_repository import get_relation
 from repositories.account_repository import get_account
 from repositories.concept_repository import get_concept
@@ -59,6 +60,21 @@ def create_transaction_service(
     if account.company_id != concept.company_id:
         raise ValueError(
             "La cuenta y el concepto deben pertenecer a la misma empresa"
+        )
+
+    company_user = (
+        db.query(CompanyUser)
+        .filter(
+            CompanyUser.company_id == account.company_id,
+            CompanyUser.user_id == user.id,
+            CompanyUser.is_active.is_(True),
+        )
+        .first()
+    )
+
+    if company_user is None:
+        raise ValueError(
+            "El usuario no pertenece a la empresa de la cuenta"
         )
 
     relation = get_relation(
