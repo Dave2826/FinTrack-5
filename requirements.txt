@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+psycopg[binary]
+alembic
+strawberry-graphql[fastapi]
+pwdlib[argon2]
+PyJWT
+email-validator
