@@ -33,6 +33,23 @@ from services.transaction_service import (
 
 from services.auth_service import authenticate_user
 
+from services.role_service import (
+    create_role_service,
+    deactivate_role_service,
+    list_roles_service,
+)
+
+from services.permission_service import (
+    create_permission_service,
+    list_permissions_service,
+)
+
+from services.role_permission_service import (
+    assign_permission_to_role_service,
+    remove_permission_from_role_service,
+    list_role_permissions_service,
+)
+
 from repositories.company_user_repository import (
     get_active_company_user,
 )
@@ -535,6 +552,71 @@ class Query:
             for transaction in transactions
         ]
 
+    @strawberry.field
+    def list_roles(
+        self,
+        info: Info,
+        actor_company_user_id: int,
+    ) -> list[Role]:
+
+        _validar_actor(info, actor_company_user_id)
+
+        db = info.context["db"]
+
+        roles = list_roles_service(
+            db,
+            actor_company_user_id,
+        )
+
+        return [
+            Role.from_model(role)
+            for role in roles
+        ]
+
+    @strawberry.field
+    def list_permissions(
+        self,
+        info: Info,
+        actor_company_user_id: int,
+    ) -> list[Permission]:
+
+        _validar_actor(info, actor_company_user_id)
+
+        db = info.context["db"]
+
+        permissions = list_permissions_service(
+            db,
+            actor_company_user_id,
+        )
+
+        return [
+            Permission.from_model(permission)
+            for permission in permissions
+        ]
+
+    @strawberry.field
+    def list_role_permissions(
+        self,
+        info: Info,
+        actor_company_user_id: int,
+        role_id: int,
+    ) -> list[RolePermission]:
+
+        _validar_actor(info, actor_company_user_id)
+
+        db = info.context["db"]
+
+        relations = list_role_permissions_service(
+            db,
+            actor_company_user_id,
+            role_id,
+        )
+
+        return [
+            RolePermission.from_model(relation)
+            for relation in relations
+        ]
+
 
 @strawberry.type
 class Mutation:
@@ -689,6 +771,110 @@ class Mutation:
         )
 
         return Transaction.from_model(transaction)
+
+    @strawberry.mutation
+    def create_role(
+        self,
+        info: Info,
+        input: CreateRoleInput,
+    ) -> Role:
+
+        _validar_actor(info, input.actor_company_user_id)
+
+        db = info.context["db"]
+
+        role = create_role_service(
+            db,
+            input.actor_company_user_id,
+            code=input.code,
+            name=input.name,
+            description=input.description,
+        )
+
+        return Role.from_model(role)
+
+    @strawberry.mutation
+    def deactivate_role(
+        self,
+        info: Info,
+        actor_company_user_id: int,
+        role_id: int,
+    ) -> Role:
+
+        _validar_actor(info, actor_company_user_id)
+
+        db = info.context["db"]
+
+        role = deactivate_role_service(
+            db,
+            actor_company_user_id,
+            role_id,
+        )
+
+        return Role.from_model(role)
+
+    @strawberry.mutation
+    def create_permission(
+        self,
+        info: Info,
+        input: CreatePermissionInput,
+    ) -> Permission:
+
+        _validar_actor(info, input.actor_company_user_id)
+
+        db = info.context["db"]
+
+        permission = create_permission_service(
+            db,
+            input.actor_company_user_id,
+            code=input.code,
+            name=input.name,
+            description=input.description,
+        )
+
+        return Permission.from_model(permission)
+
+    @strawberry.mutation
+    def assign_permission_to_role(
+        self,
+        info: Info,
+        input: AssignPermissionToRoleInput,
+    ) -> RolePermission:
+
+        _validar_actor(info, input.actor_company_user_id)
+
+        db = info.context["db"]
+
+        relation = assign_permission_to_role_service(
+            db,
+            input.actor_company_user_id,
+            role_id=input.role_id,
+            permission_id=input.permission_id,
+        )
+
+        return RolePermission.from_model(relation)
+
+    @strawberry.mutation
+    def remove_permission_from_role(
+        self,
+        info: Info,
+        actor_company_user_id: int,
+        role_id: int,
+        permission_id: int,
+    ) -> RolePermission:
+
+        _validar_actor(info, actor_company_user_id)
+
+        db = info.context["db"]
+
+        relation = remove_permission_from_role_service(
+            db,
+            actor_company_user_id,
+            role_id,
+            permission_id,
+        )
+
+        return RolePermission.from_model(relation)
 
 
 schema = strawberry.Schema(
