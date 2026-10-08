@@ -328,12 +328,14 @@ class CreateConceptInput:
 
 @strawberry.input
 class AssignConceptToAccountInput:
+    actor_company_user_id: int
     account_id: int
     concept_id: int
 
 
 @strawberry.input
 class CreateTransactionInput:
+    actor_company_user_id: int
     account_id: int
     concept_id: int
     transaction_type: TransactionType
@@ -551,16 +553,20 @@ class Query:
     def transactions(
         self,
         info: Info,
+        actor_company_user_id: int,
         account_id: int,
         transaction_type: TransactionType | None = None,
         limit: int = 50,
         offset: int = 0,
     ) -> list[Transaction]:
 
+        _validar_actor(info, actor_company_user_id)
+
         db = info.context["db"]
 
         transactions = list_transactions_service(
             db,
+            actor_company_user_id,
             account_id=account_id,
             transaction_type=(
                 TransactionTypeModel(transaction_type.value)
@@ -726,10 +732,13 @@ class Mutation:
         input: AssignConceptToAccountInput,
     ) -> AccountConcept:
 
+        _validar_actor(info, input.actor_company_user_id)
+
         db = info.context["db"]
 
         relation = assign_concept_to_account(
             db,
+            input.actor_company_user_id,
             account_id=input.account_id,
             concept_id=input.concept_id,
         )
@@ -761,6 +770,8 @@ class Mutation:
         input: CreateTransactionInput,
     ) -> Transaction:
 
+        _validar_actor(info, input.actor_company_user_id)
+
         db = info.context["db"]
 
         user = info.context.get("user")
@@ -772,6 +783,7 @@ class Mutation:
 
         transaction = create_transaction_service(
             db,
+            input.actor_company_user_id,
             account_id=input.account_id,
             concept_id=input.concept_id,
             transaction_type=TransactionTypeModel(

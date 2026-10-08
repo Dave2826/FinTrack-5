@@ -8,10 +8,12 @@ from repositories.account_concept_repository import (
 )
 from repositories.account_repository import get_account
 from repositories.concept_repository import get_concept
+from services.authorization_service import exigir_permiso
 
 
 def assign_concept_to_account(
     db: Session,
+    actor_company_user_id: int,
     account_id: int,
     concept_id: int
 ) -> AccountConcept:
@@ -20,6 +22,13 @@ def assign_concept_to_account(
 
     if account is None:
         raise ValueError("La cuenta no existe")
+
+    exigir_permiso(
+        db,
+        actor_company_user_id,
+        "concepts.write",
+        company_id=account.company_id,
+    )
 
     if not account.is_active:
         raise ValueError("La cuenta no está activa")

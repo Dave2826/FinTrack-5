@@ -14,10 +14,12 @@ from repositories.transaction_repository import (
     list_transactions,
 )
 from repositories.user_repository import get_user
+from services.authorization_service import exigir_permiso
 
 
 def create_transaction_service(
     db: Session,
+    actor_company_user_id: int,
     account_id: int,
     concept_id: int,
     transaction_type: TransactionType,
@@ -37,6 +39,13 @@ def create_transaction_service(
 
     if account is None:
         raise ValueError("La cuenta no existe")
+
+    exigir_permiso(
+        db,
+        actor_company_user_id,
+        "transactions.write",
+        company_id=account.company_id,
+    )
 
     if not account.is_active:
         raise ValueError("La cuenta no está activa")
@@ -127,6 +136,7 @@ def get_transaction_service(
 
 def list_transactions_service(
     db: Session,
+    actor_company_user_id: int,
     account_id: int,
     transaction_type: TransactionType | None = None,
     limit: int = 50,
@@ -137,6 +147,13 @@ def list_transactions_service(
 
     if account is None:
         raise ValueError("La cuenta no existe")
+
+    exigir_permiso(
+        db,
+        actor_company_user_id,
+        "transactions.read",
+        company_id=account.company_id,
+    )
 
     return list_transactions(
         db,
