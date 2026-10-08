@@ -50,6 +50,12 @@ from services.role_permission_service import (
     list_role_permissions_service,
 )
 
+from services.company_user_service import (
+    create_company_user_service,
+    deactivate_company_user_service,
+    assign_role_service,
+)
+
 from repositories.company_user_repository import (
     get_active_company_user,
 )
@@ -875,6 +881,67 @@ class Mutation:
         )
 
         return RolePermission.from_model(relation)
+
+    @strawberry.mutation
+    def create_company_user(
+        self,
+        info: Info,
+        input: CreateCompanyUserInput,
+    ) -> CompanyUser:
+
+        _validar_actor(info, input.actor_company_user_id)
+
+        db = info.context["db"]
+
+        company_user = create_company_user_service(
+            db,
+            input.actor_company_user_id,
+            company_id=input.company_id,
+            user_id=input.user_id,
+            is_admin=input.is_admin,
+        )
+
+        return CompanyUser.from_model(company_user)
+
+    @strawberry.mutation
+    def deactivate_company_user(
+        self,
+        info: Info,
+        actor_company_user_id: int,
+        company_user_id: int,
+    ) -> CompanyUser:
+
+        _validar_actor(info, actor_company_user_id)
+
+        db = info.context["db"]
+
+        company_user = deactivate_company_user_service(
+            db,
+            actor_company_user_id,
+            company_user_id,
+        )
+
+        return CompanyUser.from_model(company_user)
+
+    @strawberry.mutation
+    def assign_role(
+        self,
+        info: Info,
+        input: AssignRoleInput,
+    ) -> CompanyUserRole:
+
+        _validar_actor(info, input.actor_company_user_id)
+
+        db = info.context["db"]
+
+        relation = assign_role_service(
+            db,
+            input.actor_company_user_id,
+            company_user_id=input.company_user_id,
+            role_id=input.role_id,
+        )
+
+        return CompanyUserRole.from_model(relation)
 
 
 schema = strawberry.Schema(
