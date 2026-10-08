@@ -11,7 +11,8 @@ from repositories.company_user_role_repository import (
 def exigir_permiso(
     db: Session,
     company_user_id: int,
-    codigo: str
+    codigo: str,
+    company_id: int | None = None
 ) -> CompanyUser:
 
     company_user = get_active_company_user(db, company_user_id)
@@ -45,5 +46,11 @@ def exigir_permiso(
         raise PermissionError(
             f"El rol no tiene el permiso {codigo}"
         )
+
+    if company_id is not None:
+        if company_user.company_id != company_id:
+            raise PermissionError(
+                "El actor no pertenece a la empresa del recurso"
+            )
 
     return company_user
