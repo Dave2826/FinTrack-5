@@ -56,3 +56,9 @@ class CompanyUser(Base):
         "User",
         back_populates="companies"
     )
+
+    company_user_roles = relationship(
+        "CompanyUserRole",
+        back_populates="company_user",
+        cascade="all, delete-orphan"
+    )
