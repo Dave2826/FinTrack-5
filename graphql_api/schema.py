@@ -33,6 +33,10 @@ from services.transaction_service import (
 
 from services.auth_service import authenticate_user
 
+from repositories.company_user_repository import (
+    get_active_company_user,
+)
+
 from models.account import Account as AccountModel
 from models.account import AccountType as AccountTypeModel
 
@@ -43,6 +47,16 @@ from models.account_concept import AccountConcept as AccountConceptModel
 
 from models.transaction import Transaction as TransactionModel
 from models.transaction import TransactionType as TransactionTypeModel
+
+from models.role import Role as RoleModel
+
+from models.permission import Permission as PermissionModel
+
+from models.role_permission import RolePermission as RolePermissionModel
+
+from models.company_user_role import CompanyUserRole as CompanyUserRoleModel
+
+from models.company_user import CompanyUser as CompanyUserModel
 
 
 @strawberry.enum
@@ -172,6 +186,99 @@ class Transaction:
         )
 
 
+@strawberry.type
+class Role:
+    id: int
+    code: str
+    name: str
+    description: str | None
+    is_active: bool
+
+    @staticmethod
+    def from_model(role: RoleModel):
+        return Role(
+            id=role.id,
+            code=role.code,
+            name=role.name,
+            description=role.description,
+            is_active=role.is_active,
+        )
+
+
+@strawberry.type
+class Permission:
+    id: int
+    code: str
+    name: str
+    description: str | None
+    is_active: bool
+
+    @staticmethod
+    def from_model(permission: PermissionModel):
+        return Permission(
+            id=permission.id,
+            code=permission.code,
+            name=permission.name,
+            description=permission.description,
+            is_active=permission.is_active,
+        )
+
+
+@strawberry.type
+class RolePermission:
+    id: int
+    role_id: int
+    permission_id: int
+    is_active: bool
+
+    @staticmethod
+    def from_model(relation: RolePermissionModel):
+        return RolePermission(
+            id=relation.id,
+            role_id=relation.role_id,
+            permission_id=relation.permission_id,
+            is_active=relation.is_active,
+        )
+
+
+@strawberry.type
+class CompanyUserRole:
+    id: int
+    company_user_id: int
+    role_id: int
+    is_active: bool
+
+    @staticmethod
+    def from_model(relation: CompanyUserRoleModel):
+        return CompanyUserRole(
+            id=relation.id,
+            company_user_id=relation.company_user_id,
+            role_id=relation.role_id,
+            is_active=relation.is_active,
+        )
+
+
+@strawberry.type
+class CompanyUser:
+    id: int
+    company_id: int
+    user_id: int
+    is_admin: bool
+    is_active: bool
+    joined_at: datetime
+
+    @staticmethod
+    def from_model(company_user: CompanyUserModel):
+        return CompanyUser(
+            id=company_user.id,
+            company_id=company_user.company_id,
+            user_id=company_user.user_id,
+            is_admin=company_user.is_admin,
+            is_active=company_user.is_active,
+            joined_at=company_user.joined_at,
+        )
+
+
 @strawberry.input
 class CreateAccountInput:
     company_id: int
@@ -221,6 +328,74 @@ class LoginInput:
 class LoginPayload:
     access_token: str
     token_type: str
+
+
+@strawberry.input
+class CreateRoleInput:
+    actor_company_user_id: int
+    code: str
+    name: str
+    description: str | None = None
+
+
+@strawberry.input
+class CreatePermissionInput:
+    actor_company_user_id: int
+    code: str
+    name: str
+    description: str | None = None
+
+
+@strawberry.input
+class AssignPermissionToRoleInput:
+    actor_company_user_id: int
+    role_id: int
+    permission_id: int
+
+
+@strawberry.input
+class CreateCompanyUserInput:
+    actor_company_user_id: int
+    company_id: int
+    user_id: int
+    is_admin: bool = False
+
+
+@strawberry.input
+class AssignRoleInput:
+    actor_company_user_id: int
+    company_user_id: int
+    role_id: int
+
+
+def _validar_actor(
+    info: Info,
+    actor_company_user_id: int,
+) -> CompanyUserModel:
+
+    user = info.context.get("user")
+
+    if user is None:
+        raise ValueError("Usuario no autenticado")
+
+    db = info.context["db"]
+
+    company_user = get_active_company_user(
+        db,
+        actor_company_user_id,
+    )
+
+    if company_user is None:
+        raise ValueError(
+            "La membresía no existe o está inactiva"
+        )
+
+    if company_user.user_id != user.id:
+        raise PermissionError(
+            "El actor no corresponde al usuario autenticado"
+        )
+
+    return company_user
 
 
 @strawberry.type
