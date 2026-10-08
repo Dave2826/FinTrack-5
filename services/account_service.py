@@ -7,10 +7,12 @@ from repositories.account_repository import (
     list_accounts,
 )
 from repositories.company_repository import get_company
+from services.authorization_service import exigir_permiso
 
 
 def create_account_service(
     db: Session,
+    actor_company_user_id: int,
     company_id: int,
     account_type: AccountType,
     name: str,
@@ -21,6 +23,13 @@ def create_account_service(
     short_description: str | None = None,
     long_description: str | None = None,
 ) -> Account:
+
+    exigir_permiso(
+        db,
+        actor_company_user_id,
+        "accounts.write",
+        company_id=company_id,
+    )
 
     company = get_company(db, company_id)
 
@@ -68,6 +77,7 @@ def create_account_service(
 
 def get_account_service(
     db: Session,
+    actor_company_user_id: int,
     account_id: int
 ) -> Account:
 
@@ -76,15 +86,30 @@ def get_account_service(
     if account is None:
         raise ValueError("La cuenta no existe")
 
+    exigir_permiso(
+        db,
+        actor_company_user_id,
+        "accounts.read",
+        company_id=account.company_id,
+    )
+
     return account
 
 
 def list_accounts_service(
     db: Session,
+    actor_company_user_id: int,
     company_id: int,
     account_type: AccountType | None = None,
     active_only: bool = True
 ) -> list[Account]:
+
+    exigir_permiso(
+        db,
+        actor_company_user_id,
+        "accounts.read",
+        company_id=company_id,
+    )
 
     return list_accounts(
         db,

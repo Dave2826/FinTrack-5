@@ -7,16 +7,25 @@ from repositories.concept_repository import (
     get_concept,
     list_concepts,
 )
+from services.authorization_service import exigir_permiso
 
 
 def create_concept_service(
     db: Session,
+    actor_company_user_id: int,
     company_id: int,
     concept_type: ConceptType,
     name: str,
     short_description: str | None = None,
     long_description: str | None = None,
 ) -> Concept:
+
+    exigir_permiso(
+        db,
+        actor_company_user_id,
+        "concepts.write",
+        company_id=company_id,
+    )
 
     company = get_company(db, company_id)
 
@@ -60,6 +69,7 @@ def create_concept_service(
 
 def get_concept_service(
     db: Session,
+    actor_company_user_id: int,
     concept_id: int
 ) -> Concept:
 
@@ -68,15 +78,30 @@ def get_concept_service(
     if concept is None:
         raise ValueError("El concepto no existe")
 
+    exigir_permiso(
+        db,
+        actor_company_user_id,
+        "concepts.read",
+        company_id=concept.company_id,
+    )
+
     return concept
 
 
 def list_concepts_service(
     db: Session,
+    actor_company_user_id: int,
     company_id: int,
     concept_type: ConceptType | None = None,
     active_only: bool = True
 ) -> list[Concept]:
+
+    exigir_permiso(
+        db,
+        actor_company_user_id,
+        "concepts.read",
+        company_id=company_id,
+    )
 
     return list_concepts(
         db,

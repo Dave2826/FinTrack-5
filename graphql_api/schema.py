@@ -304,6 +304,7 @@ class CompanyUser:
 
 @strawberry.input
 class CreateAccountInput:
+    actor_company_user_id: int
     company_id: int
     account_type: AccountType
     name: str
@@ -317,6 +318,7 @@ class CreateAccountInput:
 
 @strawberry.input
 class CreateConceptInput:
+    actor_company_user_id: int
     company_id: int
     concept_type: ConceptType
     name: str
@@ -428,15 +430,19 @@ class Query:
     def accounts(
         self,
         info: Info,
+        actor_company_user_id: int,
         company_id: int,
         account_type: AccountType | None = None,
         active_only: bool = True,
     ) -> list[Account]:
 
+        _validar_actor(info, actor_company_user_id)
+
         db = info.context["db"]
 
         accounts = list_accounts_service(
             db,
+            actor_company_user_id,
             company_id=company_id,
             account_type=(
                 AccountTypeModel(account_type.value)
@@ -455,13 +461,17 @@ class Query:
     def account(
         self,
         info: Info,
+        actor_company_user_id: int,
         account_id: int,
     ) -> Account:
+
+        _validar_actor(info, actor_company_user_id)
 
         db = info.context["db"]
 
         account = get_account_service(
             db,
+            actor_company_user_id,
             account_id,
         )
 
@@ -471,15 +481,19 @@ class Query:
     def concepts(
         self,
         info: Info,
+        actor_company_user_id: int,
         company_id: int,
         concept_type: ConceptType | None = None,
         active_only: bool = True,
     ) -> list[Concept]:
 
+        _validar_actor(info, actor_company_user_id)
+
         db = info.context["db"]
 
         concepts = list_concepts_service(
             db,
+            actor_company_user_id,
             company_id=company_id,
             concept_type=(
                 ConceptTypeModel(concept_type.value)
@@ -498,13 +512,17 @@ class Query:
     def concept(
         self,
         info: Info,
+        actor_company_user_id: int,
         concept_id: int,
     ) -> Concept:
+
+        _validar_actor(info, actor_company_user_id)
 
         db = info.context["db"]
 
         concept = get_concept_service(
             db,
+            actor_company_user_id,
             concept_id,
         )
 
@@ -654,10 +672,13 @@ class Mutation:
         input: CreateAccountInput,
     ) -> Account:
 
+        _validar_actor(info, input.actor_company_user_id)
+
         db = info.context["db"]
 
         account = create_account_service(
             db,
+            input.actor_company_user_id,
             company_id=input.company_id,
             account_type=AccountTypeModel(
                 input.account_type.value
@@ -680,10 +701,13 @@ class Mutation:
         input: CreateConceptInput,
     ) -> Concept:
 
+        _validar_actor(info, input.actor_company_user_id)
+
         db = info.context["db"]
 
         concept = create_concept_service(
             db,
+            input.actor_company_user_id,
             company_id=input.company_id,
             concept_type=ConceptTypeModel(
                 input.concept_type.value
