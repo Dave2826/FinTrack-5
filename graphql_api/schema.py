@@ -534,13 +534,17 @@ class Query:
     def account_concepts(
         self,
         info: Info,
+        actor_company_user_id: int,
         account_id: int,
     ) -> list[AccountConcept]:
+
+        _validar_actor(info, actor_company_user_id)
 
         db = info.context["db"]
 
         relations = get_account_concepts_service(
             db,
+            actor_company_user_id,
             account_id,
         )
 
@@ -749,14 +753,18 @@ class Mutation:
     def remove_concept_from_account(
         self,
         info: Info,
+        actor_company_user_id: int,
         account_id: int,
         concept_id: int,
     ) -> AccountConcept:
+
+        _validar_actor(info, actor_company_user_id)
 
         db = info.context["db"]
 
         relation = remove_concept_from_account(
             db,
+            actor_company_user_id,
             account_id=account_id,
             concept_id=concept_id,
         )
@@ -802,13 +810,17 @@ class Mutation:
     def delete_transaction(
         self,
         info: Info,
+        actor_company_user_id: int,
         transaction_id: int,
     ) -> Transaction:
+
+        _validar_actor(info, actor_company_user_id)
 
         db = info.context["db"]
 
         transaction = delete_transaction_service(
             db,
+            actor_company_user_id,
             transaction_id,
         )
 

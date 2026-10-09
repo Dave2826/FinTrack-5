@@ -74,6 +74,7 @@ def assign_concept_to_account(
 
 def get_account_concepts_service(
     db: Session,
+    actor_company_user_id: int,
     account_id: int
 ) -> list[AccountConcept]:
 
@@ -81,6 +82,13 @@ def get_account_concepts_service(
 
     if account is None:
         raise ValueError("La cuenta no existe")
+
+    exigir_permiso(
+        db,
+        actor_company_user_id,
+        "accounts.read",
+        company_id=account.company_id,
+    )
 
     return list_account_concepts(
         db,
@@ -90,6 +98,7 @@ def get_account_concepts_service(
 
 def remove_concept_from_account(
     db: Session,
+    actor_company_user_id: int,
     account_id: int,
     concept_id: int
 ) -> AccountConcept:
@@ -104,6 +113,18 @@ def remove_concept_from_account(
         raise ValueError(
             "La relación entre cuenta y concepto no existe"
         )
+
+    account = get_account(db, relation.account_id)
+
+    if account is None:
+        raise ValueError("La cuenta no existe")
+
+    exigir_permiso(
+        db,
+        actor_company_user_id,
+        "concepts.write",
+        company_id=account.company_id,
+    )
 
     if not relation.is_active:
         raise ValueError(
