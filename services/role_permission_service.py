@@ -91,6 +91,19 @@ def remove_permission_from_role_service(
             "El permiso ya está removido del rol"
         )
 
+    role = get_role(db, role_id)
+    permission = get_permission(db, permission_id)
+
+    if (
+        role is not None
+        and permission is not None
+        and role.code == "ADMINISTRADOR"
+        and permission.code == "roles.write"
+    ):
+        raise ValueError(
+            "No se puede retirar el permiso roles.write del rol ADMINISTRADOR"
+        )
+
     relation.is_active = False
 
     db.commit()

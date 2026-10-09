@@ -32,6 +32,7 @@ def create_company_user_service(
         db,
         actor_company_user_id,
         "company.users.write",
+        company_id=company_id,
     )
 
     company = get_company(db, company_id)
@@ -69,12 +70,35 @@ def create_company_user_service(
                 "La empresa ya tiene un administrador principal"
             )
 
+        admin_role = get_role_by_code(db, "ADMINISTRADOR")
+
+        if admin_role is None or not admin_role.is_active:
+            raise ValueError(
+                "El rol ADMINISTRADOR no existe o no está activo"
+            )
+
     company_user = CompanyUser(
         company_id=company_id,
         user_id=user_id,
         is_admin=is_admin,
         is_active=True,
     )
+
+    if is_admin:
+        db.add(company_user)
+        db.flush()
+
+        relation = CompanyUserRole(
+            company_user_id=company_user.id,
+            role_id=admin_role.id,
+            is_active=True,
+        )
+
+        db.add(relation)
+        db.commit()
+        db.refresh(company_user)
+
+        return company_user
 
     return create_company_user(db, company_user)
 
@@ -85,16 +109,17 @@ def deactivate_company_user_service(
     company_user_id: int
 ) -> CompanyUser:
 
-    exigir_permiso(
-        db,
-        actor_company_user_id,
-        "company.users.write",
-    )
-
     company_user = get_company_user(db, company_user_id)
 
     if company_user is None:
         raise ValueError("La membresía no existe")
+
+    exigir_permiso(
+        db,
+        actor_company_user_id,
+        "company.users.write",
+        company_id=company_user.company_id,
+    )
 
     if not company_user.is_active:
         raise ValueError("La membresía ya está inactiva")
@@ -114,18 +139,19 @@ def assign_role_service(
     role_id: int
 ) -> CompanyUserRole:
 
-    exigir_permiso(
-        db,
-        actor_company_user_id,
-        "roles.write",
-    )
-
     company_user = get_active_company_user(db, company_user_id)
 
     if company_user is None:
         raise ValueError(
             "La membresía no existe o está inactiva"
         )
+
+    exigir_permiso(
+        db,
+        actor_company_user_id,
+        "roles.write",
+        company_id=company_user.company_id,
+    )
 
     role = get_role(db, role_id)
 

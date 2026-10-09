@@ -61,6 +61,11 @@ def deactivate_role_service(
     if not role.is_active:
         raise ValueError("El rol ya está desactivado")
 
+    if role.code == "ADMINISTRADOR":
+        raise ValueError(
+            "El rol ADMINISTRADOR no se puede desactivar"
+        )
+
     role.is_active = False
 
     db.commit()

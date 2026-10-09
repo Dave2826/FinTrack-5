@@ -78,6 +78,7 @@ MATRIZ_OFICIAL = {
 def cargar_catalogo_inicial(db: Session) -> dict:
     roles_creados = 0
     roles_reutilizados = 0
+    roles_reactivados = 0
     permisos_creados = 0
     permisos_reutilizados = 0
     relaciones_creadas = 0
@@ -100,8 +101,15 @@ def cargar_catalogo_inicial(db: Session) -> dict:
                 ),
             )
             roles_creados += 1
-        else:
+        elif role.is_active:
             roles_reutilizados += 1
+        else:
+            role.is_active = True
+
+            db.commit()
+            db.refresh(role)
+
+            roles_reactivados += 1
 
         roles[code] = role
 
@@ -161,6 +169,7 @@ def cargar_catalogo_inicial(db: Session) -> dict:
     return {
         "roles_creados": roles_creados,
         "roles_reutilizados": roles_reutilizados,
+        "roles_reactivados": roles_reactivados,
         "permisos_creados": permisos_creados,
         "permisos_reutilizados": permisos_reutilizados,
         "relaciones_creadas": relaciones_creadas,
