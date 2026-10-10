@@ -1,0 +1,64 @@
+﻿{"caso": "N5", "estado": "APROBADO", "esperado": "10 queries / 15 mutations; companyUsers=True", "observado": "10 queries / 15 mutations; companyUsers=True"}
+{"caso": "N8-A02", "estado": "APROBADO", "esperado": "Credenciales inv├ílidas", "observado": "Credenciales inv├ílidas"}
+{"caso": "N8-A03", "estado": "APROBADO", "esperado": "El usuario est├í inactivo", "observado": "El usuario est├í inactivo"}
+{"caso": "N8-A04", "estado": "APROBADO", "esperado": "Usuario no autenticado", "observado": "Usuario no autenticado"}
+{"caso": "N8-A05", "estado": "APROBADO", "esperado": "Usuario no autenticado", "observado": "Usuario no autenticado"}
+{"caso": "R0-B01", "estado": "APROBADO", "esperado": "El actor no corresponde al usuario autenticado", "observado": "El actor no corresponde al usuario autenticado"}
+{"caso": "R0-B02", "estado": "APROBADO", "esperado": "La membres├¡a no existe o est├í inactiva", "observado": "La membres├¡a no existe o est├í inactiva"}
+{"caso": "R0-B03", "estado": "APROBADO", "esperado": "El actor no corresponde al usuario autenticado", "observado": "El actor no corresponde al usuario autenticado"}
+{"caso": "R0-B05", "estado": "APROBADO", "esperado": "La membres├¡a no existe o est├í inactiva", "observado": "La membres├¡a no existe o est├í inactiva"}
+{"caso": "R0-C01", "estado": "APROBADO", "esperado": "1 cuenta(s)", "observado": "1 cuenta(s)"}
+{"caso": "R0-C07", "estado": "APROBADO", "esperado": "El rol no tiene el permiso roles.read", "observado": "El rol no tiene el permiso roles.read"}
+{"caso": "R0-C08", "estado": "APROBADO", "esperado": "El rol no tiene el permiso roles.read", "observado": "El rol no tiene el permiso roles.read"}
+{"caso": "R0-C10", "estado": "APROBADO", "esperado": "El rol no tiene el permiso accounts.write", "observado": "El rol no tiene el permiso accounts.write"}
+{"caso": "R0-C11", "estado": "APROBADO", "esperado": "El rol no tiene el permiso concepts.write", "observado": "El rol no tiene el permiso concepts.write"}
+{"caso": "R0-C18", "estado": "APROBADO", "esperado": "2 transaccion(es)", "observado": "2 transaccion(es)"}
+{"caso": "R0-C20", "estado": "APROBADO", "esperado": "El rol no tiene el permiso accounts.write", "observado": "El rol no tiene el permiso accounts.write"}
+{"caso": "R0-C32", "estado": "APROBADO", "esperado": "4 roles", "observado": "4 roles"}
+{"caso": "R0-C30", "estado": "APROBADO", "esperado": "El rol no tiene el permiso roles.write", "observado": "El rol no tiene el permiso roles.write"}
+{"caso": "R0-C33", "estado": "APROBADO", "esperado": "El rol no tiene el permiso company.users.write", "observado": "El rol no tiene el permiso company.users.write"}
+{"caso": "R0-C39", "estado": "APROBADO", "esperado": "El rol ADMINISTRADOR no se puede desactivar", "observado": "El rol ADMINISTRADOR no se puede desactivar"}
+{"caso": "R0-C40", "estado": "APROBADO", "esperado": "No se puede retirar el permiso roles.write del rol ADMINISTRADOR", "observado": "No se puede retirar el permiso roles.write del rol ADMINISTRADOR"}
+{"caso": "R0-C41", "estado": "APROBADO", "esperado": "Ya existe un rol con ese c├│digo", "observado": "Ya existe un rol con ese c├│digo"}
+{"caso": "R0-C42", "estado": "APROBADO", "esperado": "Ya existe un permiso con ese c├│digo", "observado": "Ya existe un permiso con ese c├│digo"}
+{"caso": "R0-C38", "estado": "APROBADO", "esperado": "La membres├¡a ya tiene asignado este rol", "observado": "La membres├¡a ya tiene asignado este rol"}
+{"caso": "R0-C47", "estado": "APROBADO", "esperado": "La empresa ya tiene un administrador principal", "observado": "La empresa ya tiene un administrador principal"}
+{"caso": "N7-D01", "estado": "APROBADO", "esperado": "El actor no pertenece a la empresa del recurso", "observado": "El actor no pertenece a la empresa del recurso"}
+{"caso": "N7-D03", "estado": "APROBADO", "esperado": "El actor no pertenece a la empresa del recurso", "observado": "El actor no pertenece a la empresa del recurso"}
+{"caso": "N7-D06", "estado": "APROBADO", "esperado": "El actor no pertenece a la empresa del recurso", "observado": "El actor no pertenece a la empresa del recurso"}
+{"caso": "N7-D07", "estado": "APROBADO", "esperado": "El actor no pertenece a la empresa del recurso", "observado": "El actor no pertenece a la empresa del recurso"}
+{"caso": "N7-D09", "estado": "APROBADO", "esperado": "El actor no pertenece a la empresa del recurso", "observado": "El actor no pertenece a la empresa del recurso"}
+{"caso": "N7-D12", "estado": "APROBADO", "esperado": "El actor no pertenece a la empresa del recurso", "observado": "El actor no pertenece a la empresa del recurso"}
+{"caso": "N7-D13", "estado": "APROBADO", "esperado": "El actor no pertenece a la empresa del recurso", "observado": "El actor no pertenece a la empresa del recurso"}
+{"caso": "N7-D14", "estado": "APROBADO", "esperado": "El actor no pertenece a la empresa del recurso", "observado": "El actor no pertenece a la empresa del recurso"}
+{"caso": "N7-D15", "estado": "APROBADO", "esperado": "El actor no pertenece a la empresa del recurso", "observado": "El actor no pertenece a la empresa del recurso"}
+{"caso": "N7-D17", "estado": "APROBADO", "esperado": "El actor no pertenece a la empresa del recurso", "observado": "El actor no pertenece a la empresa del recurso"}
+{"caso": "N7-D18", "estado": "APROBADO", "esperado": "El actor no pertenece a la empresa del recurso", "observado": "El actor no pertenece a la empresa del recurso"}
+{"caso": "N6-1", "estado": "APROBADO", "esperado": "[6, 8, 9, 10]", "observado": "[6, 8, 9, 10]"}
+{"caso": "N6-2", "estado": "APROBADO", "esperado": "4 membresias", "observado": "4 membresias"}
+{"caso": "N6-3", "estado": "APROBADO", "esperado": "4 membresias", "observado": "4 membresias"}
+{"caso": "N6-4", "estado": "APROBADO", "esperado": "El rol no tiene el permiso company.users.read", "observado": "El rol no tiene el permiso company.users.read"}
+{"caso": "N6-5", "estado": "APROBADO", "esperado": "El actor no pertenece a la empresa del recurso", "observado": "El actor no pertenece a la empresa del recurso"}
+{"caso": "N6-6", "estado": "APROBADO", "esperado": "Usuario no autenticado", "observado": "Usuario no autenticado"}
+{"caso": "N6-7", "estado": "APROBADO", "esperado": "La membres├¡a no existe o est├í inactiva", "observado": "La membres├¡a no existe o est├í inactiva"}
+{"caso": "N1a", "estado": "APROBADO", "esperado": "No se puede desactivar al ├║ltimo administrador de la empresa", "observado": "No se puede desactivar al ├║ltimo administrador de la empresa"}
+{"caso": "N1b", "estado": "APROBADO", "esperado": "No se puede desactivar al ├║ltimo administrador de la empresa", "observado": "No se puede desactivar al ├║ltimo administrador de la empresa"}
+{"caso": "N2-1", "estado": "APROBADO", "esperado": "OK roleId=3", "observado": "OK roleId=3"}
+{"caso": "N2-2", "estado": "APROBADO", "esperado": "OK roleId=4", "observado": "OK roleId=4"}
+{"caso": "N1c-1", "estado": "APROBADO", "esperado": "OK", "observado": "OK"}
+{"caso": "N1c-2", "estado": "APROBADO", "esperado": "OK", "observado": "OK"}
+{"caso": "N1c-3", "estado": "APROBADO", "esperado": "OK", "observado": "OK"}
+{"caso": "N1c-4", "estado": "APROBADO", "esperado": "membresia_active=False roles_activos=[]", "observado": "membresia_active=False roles_activos=[]"}
+{"caso": "N1d-1", "estado": "APROBADO", "esperado": "OK", "observado": "OK"}
+{"caso": "N1d-2", "estado": "APROBADO", "esperado": "OK", "observado": "OK"}
+{"caso": "N1d-3", "estado": "APROBADO", "esperado": "OK", "observado": "OK"}
+{"caso": "N1d-4", "estado": "APROBADO", "esperado": "membresia_active=False roles_activos=[]", "observado": "membresia_active=False roles_activos=[]"}
+{"caso": "N9-1", "estado": "APROBADO", "esperado": "OK", "observado": "OK"}
+{"caso": "N9-2", "estado": "APROBADO", "esperado": "OK", "observado": "OK"}
+{"caso": "N9-3", "estado": "APROBADO", "esperado": "OK", "observado": "OK"}
+{"caso": "N9-4", "estado": "APROBADO", "esperado": "OK", "observado": "OK"}
+{"caso": "N9-5", "estado": "APROBADO", "esperado": "1 cuenta(s)", "observado": "1 cuenta(s)"}
+{"caso": "N9-6", "estado": "APROBADO", "esperado": "OK", "observado": "OK"}
+{"caso": "N9-7", "estado": "APROBADO", "esperado": "La membres├¡a no tiene un rol activo", "observado": "La membres├¡a no tiene un rol activo"}
+{"caso": "N9-8", "estado": "APROBADO", "esperado": "OK", "observado": "OK"}
+{"TOTAL": 63, "APROBADOS": 63, "FALLIDOS": 0}

@@ -1,0 +1,60 @@
+========================================================================
+EVIDENCIA COR-01 - RESULTADOS DE LA SUITE DE CORRECCION
+Actividad 5 - FinTrack-5
+========================================================================
+
+ORIGEN DE LOS RESULTADOS
+------------------------
+Archivo bruto: 01_resultados_suite.jsonl (mismo directorio).
+Generado por el runner temporal de correccion (fuera del repo, en
+Temp\opencode) ejecutado contra la base de pruebas fintrack5_test
+contenedor fintrack5-test-api, con PYTHONPATH=/app.
+
+NOTA DE TRAZABILIDAD: el desglose por bloque y el total se
+VERIFICARON leyendo directamente 01_resultados_suite.jsonl en esta
+sesion (64 lineas = 63 casos + 1 linea de resumen). Los casos
+individuales fueron emitidos por la ejecucion; en esta sesion se
+verificaron directamente la linea de resumen, la linea de N5 y
+la ausencia de estados FALLIDO en los casos.
+
+TOTAL (verificado en 01_resultados_suite.jsonl)
+-----------------------------------------------
+{"TOTAL": 63, "APROBADOS": 63, "FALLIDOS": 0}
+
+DESGLOSE POR BLOQUE (verificado agrupando 01_resultados_suite.jsonl)
+--------------------------------------------------------------------
+N5     1/1   introspeccion GraphQL
+N8     4/4   autenticacion/login
+R0    20/20  regresion lectura y denegacion
+N7    11/11  aislamiento entre empresas (D01-D18)
+N6     7/7   companyUsers (escenarios de autorizacion)
+N1a    1/1   guard ultimo admin - denegado
+N1b    1/1   guard ultimo admin - denegado (variante)
+N1c    4/4   guard ultimo admin - permitido (membresia desechable)
+N1d    4/4   guard ultimo admin - permitido (membresia desechable)
+N2     2/2   rotacion de rol atomica
+N9     8/8   H02 con rol desechable REGR-TEST
+TOTAL  63/63
+
+INTROSPECCION (N5, leido directamente del JSONL)
+-----------------------------------------------
+10 queries / 15 mutations; companyUsers=True
+=> el esquema quedo con 25 operaciones (antes 24: 9 queries + 15
+mutations; la query companyUsers de B7 es la numero 10).
+
+CAMBIO DE COMPORTAMIENTO VERIFICADO EN EJECUCION
+-------------------------------------------------
+- El primer intento de N2 fallo con UniqueViolation
+  (uq_company_user_role_active): causo por activar la fila nueva
+  antes de persistir la desactivacion de la anterior. Se corregio
+  con db.flush() en B5 y la suite re-ejecutada dio N2 2/2.
+- cu10 fue restaurado a CONSULTA durante la depuracion del runner;
+  estado final verificado por SQL de solo lectura (ver COR-02).
+
+PRUEBAS NO EJECUTADAS (no forman parte del 63/63)
+--------------------------------------------------
+- N10 (idempotencia de setup_pruebas.py + dry-run de
+  limpiar_pruebas.py): NO EJECUTADA.
+- Verificacion de rollback por inyeccion de fallo de commit:
+  NO EJECUTADA.
+Ver COR-03.

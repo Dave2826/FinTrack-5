@@ -1,0 +1,94 @@
+========================================================================
+EVIDENCIA COR-00 - PLAN DE CORRECCION Y DECISIONES APROBADAS
+Actividad 5 - FinTrack-5: endurecimiento de autorizacion
+========================================================================
+
+Alcance BUILD autorizado: correcciones B1-B8, suite R0/N1-N10,
+evidencias en evidencias/actividad3/correcciones/, README e
+04_incidencias.txt, commit final sin push.
+
+------------------------------------------------------------------------
+B1 - Servicio de lectura de transaccion sin autorizacion
+------------------------------------------------------------------------
+Archivo: services/transaction_service.py
+Cambio: get_transaction_service endurecida; ahora recibe
+(actor_company_user_id, transaction_id), localiza la cuenta de la
+transaccion y exige exigir_permiso("transactions.read",
+company_id=account.company_id). Se elimino el import muerto
+get_transaction_service de graphql_api/schema.py.
+
+------------------------------------------------------------------------
+B2 - create_company_admin_service (bootstrap)
+------------------------------------------------------------------------
+Archivo: services/company_user_service.py
+Cambio: SOLO docstring que declara uso exclusivo de bootstrap del
+sistema (primer administrador). SIN cambio de logica
+(decision del usuario Q2: solo documentar).
+
+------------------------------------------------------------------------
+B3 - Desactivacion atomica de membresia y roles
+------------------------------------------------------------------------
+Archivo: services/company_user_service.py
+Cambio: deactivate_company_user_service desactiva la membresia y
+TODAS sus CompanyUserRole activas en un solo commit, con
+try/except: db.rollback(); raise.
+
+------------------------------------------------------------------------
+B4 - Guard del ultimo administrador
+------------------------------------------------------------------------
+Archivo: services/company_user_service.py
+Cambio: antes de desactivar, verifica si el objetivo es la ultima
+membresia activa con rol ADMINISTRADOR activo en la empresa
+(conteo via joins CompanyUser/Role con Role.code=="ADMINISTRADOR",
+Role.is_active). Mensaje exacto aprobado:
+"No se puede desactivar al ultimo administrador de la empresa"
+Alcance acordado (Q5): "sin ninguna membresia activa con rol
+ADMINISTRADOR activo". Import de Role anadido.
+
+------------------------------------------------------------------------
+B5 - Asignacion de rol atomica
+------------------------------------------------------------------------
+Archivo: services/company_user_service.py
+Cambio: assign_role_service resuelve desactivar+activar en una sola
+transaccion con UN commit. Se anadio db.flush() tras desactivar la
+fila anterior: el indice unico parcial
+uq_company_user_role_active(company_user_id) WHERE is_active lo
+exige (bug real detectado en ejecucion: UniqueViolation al
+activar antes de persistir la desactivacion). Corregido y
+re-verificado (N2 2/2 APROBADO).
+
+------------------------------------------------------------------------
+B6 - Documentacion (README + incidencias)
+------------------------------------------------------------------------
+README.md y evidencias/actividad3/funcionales/04_incidencias.txt
+actualizados con el estado de F1-F7, decisiones y pendientes.
+
+------------------------------------------------------------------------
+B7 - Query companyUsers
+------------------------------------------------------------------------
+Archivos: services/company_user_service.py (list_company_users_service)
++ graphql_api/schema.py (resolver company_users en Query)
+Cambio: nueva query companyUsers que exige company.users.read con
+scope por empresa; argumentos actorCompanyUserId, companyId,
+activeOnly (default True); orden por id. Resuelve F6.
+
+------------------------------------------------------------------------
+B8 - Evidencias
+------------------------------------------------------------------------
+Carpeta creada: evidencias/actividad3/correcciones/
+(COR-00 plan, COR-01 resultados, COR-02 conteos/residuos,
+ COR-03 pendientes/validaciones).
+
+------------------------------------------------------------------------
+DECISIONES DEL USUARIO (todas "Recommended")
+------------------------------------------------------------------------
+Q1  Catalogo global de roles/permisos: mantener y documentar
+    (INC-04). Documentado en README e incidencias.
+Q2  create_company_admin_service: solo documentar, no tocar logica.
+Q3  Anadir query companyUsers con company.users.read (B7).
+Q4  F7 login: documentar el riesgo de enumeracion sin cambiar
+    mensajes (F4 bootstrap aceptado; F7 aceptado).
+Q5  Guard F2 con el mensaje exacto y alcance descritos en B4.
+Q6  H02 desbloqueado con rol desechable REGR-TEST (N9).
+Q7  BUILD completo: B1-B8 + R0/N1-N10 + evidencias + README +
+    commit.

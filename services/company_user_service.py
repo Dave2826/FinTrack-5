@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 
 from models.company_user import CompanyUser
 from models.company_user_role import CompanyUserRole
+from models.role import Role
 from repositories.company_repository import get_company
 from repositories.company_user_repository import (
     create_company_user,
@@ -124,9 +125,65 @@ def deactivate_company_user_service(
     if not company_user.is_active:
         raise ValueError("La membresía ya está inactiva")
 
-    company_user.is_active = False
+    active_role = get_active_company_user_role(
+        db,
+        company_user_id,
+    )
 
-    db.commit()
+    if active_role is not None:
+        role = get_role(db, active_role.role_id)
+
+        if (
+            role is not None
+            and role.code == "ADMINISTRADOR"
+            and role.is_active
+        ):
+            other_admins = (
+                db.query(CompanyUserRole)
+                .join(
+                    CompanyUser,
+                    CompanyUser.id == CompanyUserRole.company_user_id,
+                )
+                .join(
+                    Role,
+                    Role.id == CompanyUserRole.role_id,
+                )
+                .filter(
+                    CompanyUser.company_id == company_user.company_id,
+                    CompanyUser.is_active.is_(True),
+                    CompanyUserRole.is_active.is_(True),
+                    Role.code == "ADMINISTRADOR",
+                    Role.is_active.is_(True),
+                    CompanyUserRole.company_user_id != company_user_id,
+                )
+                .count()
+            )
+
+            if other_admins == 0:
+                raise ValueError(
+                    "No se puede desactivar al último administrador de la empresa"
+                )
+
+    try:
+        company_user.is_active = False
+
+        active_roles = (
+            db.query(CompanyUserRole)
+            .filter(
+                CompanyUserRole.company_user_id == company_user_id,
+                CompanyUserRole.is_active.is_(True),
+            )
+            .all()
+        )
+
+        for relation in active_roles:
+            relation.is_active = False
+
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
+
     db.refresh(company_user)
 
     return company_user
@@ -172,32 +229,66 @@ def assign_role_service(
                 "La membresía ya tiene asignado este rol"
             )
 
-        active_role.is_active = False
-
-        db.commit()
-        db.refresh(active_role)
-
     existing_relation = get_company_user_role_by_company_user_and_role(
         db,
         company_user_id,
         role_id,
     )
 
-    if existing_relation is not None:
-        existing_relation.is_active = True
+    try:
+        if active_role is not None:
+            active_role.is_active = False
+            # uq_company_user_role_active exige un solo rol activo por
+            # membresia; flush persiste la desactivacion antes de activar
+            # la nueva fila, manteniendo una unica transaccion (atomicidad).
+            db.flush()
 
+        if existing_relation is not None:
+            existing_relation.is_active = True
+
+            db.commit()
+            db.refresh(existing_relation)
+
+            return existing_relation
+
+        relation = CompanyUserRole(
+            company_user_id=company_user_id,
+            role_id=role_id,
+            is_active=True,
+        )
+
+        db.add(relation)
         db.commit()
-        db.refresh(existing_relation)
+        db.refresh(relation)
 
-        return existing_relation
+        return relation
+    except Exception:
+        db.rollback()
+        raise
 
-    relation = CompanyUserRole(
-        company_user_id=company_user_id,
-        role_id=role_id,
-        is_active=True,
+
+def list_company_users_service(
+    db: Session,
+    actor_company_user_id: int,
+    company_id: int,
+    active_only: bool = True
+) -> list[CompanyUser]:
+
+    exigir_permiso(
+        db,
+        actor_company_user_id,
+        "company.users.read",
+        company_id=company_id,
     )
 
-    return create_company_user_role(db, relation)
+    query = db.query(CompanyUser).filter(
+        CompanyUser.company_id == company_id,
+    )
+
+    if active_only:
+        query = query.filter(CompanyUser.is_active.is_(True))
+
+    return query.order_by(CompanyUser.id).all()
 
 
 def create_company_admin_service(
@@ -206,6 +297,14 @@ def create_company_admin_service(
     company_id: int,
     user_id: int
 ) -> CompanyUser:
+    """Servicio reservado para bootstrap del entorno de pruebas.
+
+    No exige `exigir_permiso` porque lo invoca únicamente
+    `scripts/setup_pruebas.py` antes de existir membresías que puedan
+    autorizar. No está expuesto en el esquema GraphQL; cualquier nuevo
+    resolver debe exigir `company.users.write` antes de delegar aquí o
+    preferir `create_company_user_service(is_admin=True)`.
+    """
 
     company = get_company(db, company_id)
 

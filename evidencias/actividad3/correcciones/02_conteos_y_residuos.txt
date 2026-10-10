@@ -1,0 +1,77 @@
+========================================================================
+EVIDENCIA COR-02 - CONTEOS, RESIDUOS Y ESTADO DE LAS BASES
+Actividad 5 - FinTrack-5
+========================================================================
+
+Todos los valores de esta evidencia fueron verificados DIRECTAMENTE
+en esta sesion mediante SQL de SOLO LECTURA (docker exec psql) tras
+la ejecucion de la suite. No se ejecuto ninguna escritura para
+obtenerlos.
+
+------------------------------------------------------------------------
+1. BASE DE PRUEBAS fintrack5_test (contenedor fintrack5-test-postgres)
+------------------------------------------------------------------------
+users                 7
+company_users         9   (activas: 6,7,8,9,10 | inactivas: 11,21,22,23)
+company_user_roles    9
+role_permissions     27   (activas: 27)
+transactions          5   (activas: 3)
+accounts              2
+concepts              3
+roles                 5   (inactivos: 1)
+alembic_version       3b9f41c7d2ae
+
+Estado de cu10 (verificado por SQL de solo lectura):
+  cu10 | is_active=t | role_id=4 | CONSULTA | activo
+=> cu10 esta ACTIVO con el rol CONSULTA. Es correcto: durante la
+depuracion del runner su membresia fue restaurada; la verificacion
+anterior en la que constaba "detenido" no se confirmo: la ultima
+ejecucion del runner termino y el estado final es el descrito.
+
+Estado del contenedor/API (solo lectura):
+  fintrack5-test-api     Up 10 hours  (HTTP 200 en /)
+  fintrack5-test-postgres Up 18 hours
+  Sin procesos runner/python pendientes (ps aux vacio).
+
+------------------------------------------------------------------------
+2. RESIDUOS INTENCIONALES DE LA BASE DE PRUEBAS
+------------------------------------------------------------------------
+Se conservan como evidencia de la ejecucion 63/63. No se limpian
+(limpieza no autorizada en esta fase).
+
+- company_users 21: Empresa Beta, user 10, INACTIVA
+  (membresia desechable de N1c, permitida por el guard).
+- company_users 22: Empresa Alpha, user 13, INACTIVA
+  (membresia desechable de N1d, permitida por el guard).
+- company_users 23: Empresa Beta, user 12, INACTIVA
+  (membresia desechable de N9).
+- company_users 11: Empresa Beta, user 13, INACTIVA
+  (membresia inactiva preexistente del baseline).
+- roles 8 REGR-TEST: INACTIVO (rol desechable de N9; no es rol
+  oficial, no afecta a los roles oficiales 1-4).
+- role_permissions 27: 26 oficiales + 1 de REGR-TEST
+  (REGR-TEST -> accounts.read, creado en N9).
+- company_user_roles 9: 6 baseline + 3 de las membresias
+  desechables.
+
+Integridad verificada:
+  - roles oficiales 1 (ADMINISTRADOR), 2 (CONTADOR), 3 (CAPTURISTA),
+    4 (CONSULTA) siguen ACTIVOS.
+  - memberships baseline 6,7,8,9,10 siguen ACTIVAS (incluye
+    cu10 = CONSULTA activo).
+  - transactions sin cambios respecto al baseline (5 totales /
+    3 activas): ninguna prueba escribio transacciones.
+
+------------------------------------------------------------------------
+3. BASE DE DESARROLLO actividad5 (contenedor postgres-actividad5)
+------------------------------------------------------------------------
+users                 1
+transactions         21
+company_users         1
+company_user_roles    0
+
+=> Intacta: coincide con los conteos documentados del estado
+inicial de la base de desarrollo. Ninguna operacion de esta fase
+escribio en actividad5 (los scripts con guardas DB_NAME=fintrack5_test
+NO fueron ejecutados; los contenedores de desarrollo no se
+reconstruyeron).

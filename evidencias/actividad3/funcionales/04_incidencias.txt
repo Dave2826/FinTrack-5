@@ -74,3 +74,56 @@ Verificaciones tras la reparacion:
 No hubo: errores de conexion, timeouts, ni resultados inesperados que
 obligaran a detener un bloque. Los abortos programados del runner
 (bloques C2/C3) no se activaron.
+
+=======================================================================
+FASE DE CORRECCION (Actividad 5, BUILD) - ESTADO DE HALLAZGOS
+=======================================================================
+Evidencia completa: evidencias/actividad3/correcciones/ (COR-00 a
+COR-03). El desglose y los conteos de esta seccion se verificaron
+por lectura directa de los archivos de evidencia y por SQL de solo
+lectura en esta sesion; las pruebas NO ejecutadas se declaran como
+tales y NO se dan por aprobadas.
+
+HALLAZGOS CORREGIDOS (codigo modificado)
+----------------------------------------
+F1 - get_transaction_service sin autorizacion: CORREGIDA (B1).
+     Exige transactions.read con scope de la cuenta; import muerto
+     eliminado de graphql_api/schema.py.
+F2 - Desactivacion podia dejar la empresa sin administrador:
+     CORREGIDO (B4) con guard y mensaje exacto
+     "No se puede desactivar al ultimo administrador de la empresa"
+     (alcance: sin ninguna membresia activa con rol ADMINISTRADOR
+     activo).
+F3 - Desactivacion no atomica (membresia + roles): CORREGIDA (B3),
+     un solo commit con rollback ante fallo.
+F5 - Asignacion de rol no atomica / violacion del indice unico
+     parcial uq_company_user_role_active: CORREGIDA (B5) con
+     db.flush() y un solo commit (bug confirmado en ejecucion y
+     corregido; N2 2/2).
+F6 - company.users.read sin consumidor: CERRADO (B7), query
+     companyUsers que exige company.users.read con scope. El esquema
+     quedo con 10 queries y 15 mutations (verificado en N5).
+
+HALLAZGOS ACEPTADOS / DOCUMENTADOS (sin cambio de codigo)
+---------------------------------------------------------
+F4 - create_company_admin_service (bootstrap): ACEPTADO (Q2).
+     Uso exclusivo de bootstrap; solo docstring, logica intacta.
+F7 - Enumeracion en login por mensaje propio de usuario inactivo:
+     ACEPTADO (Q4); NO se modifican mensajes.
+Catalogo global de roles/permisos (INC-04): ACEPTADO (Q1) y
+documentado en README.md; sin scope por empresa en esta fase.
+
+PRUEBAS DE LA FASE DE CORRECCION
+--------------------------------
+Ejecutadas: suite R0/N1/N2/N5/N6/N7/N8/N9 => 63/63 APROBADO,
+0 FALLIDO (01_resultados_suite.jsonl; desglose en 01_resultados_suite.txt).
+NO EJECUTADAS (no aprobadas):
+  - N10 (idempotencia de setup + dry-run de limpieza).
+  - Verificacion de rollback por inyeccion de fallo de commit.
+Motivo: fuera de autorizacion de la fase (no se permite escribir
+en la base de datos). Quedan como deuda explicita.
+
+INTEGRIDAD DE LA BASE DE DESARROLLO
+-------------------------------------
+actividad5 verificada intacta por SQL de solo lectura:
+users=1, transactions=21, company_users=1, company_user_roles=0.

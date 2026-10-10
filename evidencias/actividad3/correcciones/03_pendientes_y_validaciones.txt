@@ -1,0 +1,63 @@
+========================================================================
+EVIDENCIA COR-03 - PENDIENTES EXPLICITOS Y VALIDACIONES DE LECTURA
+Actividad 5 - FinTrack-5
+========================================================================
+
+------------------------------------------------------------------------
+PRUEBAS OBLIGATORIAS NO EJECUTADAS
+------------------------------------------------------------------------
+1) N10 - Idempotencia de setup y dry-run de limpieza
+   ESTADO: NO EJECUTADA.
+   Motivo: fuera de autorizacion en esta fase BUILD (prohibido
+   ejecutar setup_pruebas.py, limpiar_pruebas.py o cualquier prueba
+   que escriba en la base de datos). NO se declara aprobada.
+
+2) Verificacion de rollback ante fallo de persistencia
+   (inyeccion de fallo en Session.commit durante assign_role_service)
+   ESTADO: NO EJECUTADA.
+   Motivo: fuera de autorizacion (prohibida la inyeccion de fallo y
+   cualquier prueba adicional que escriba). NO se declara aprobada.
+   Nota: la atomicidad de B3/B5 se verifico solo de forma positiva
+   (N1c/N1d/N2 correctos en la base), NO mediante inyeccion de fallo.
+
+Consecuencia: el 63/63 reportado NO incluye N10 ni el rollback.
+Quedan como deuda explicita de esta entrega.
+
+------------------------------------------------------------------------
+VALIDACIONES DE LECTURA EJECUTADAS EN ESTA SESION
+------------------------------------------------------------------------
+- AST parse de los 3 archivos modificados: OK, sin generar archivos
+  (sin .pyc nuevos en el tracking).
+- git diff --check: OK (unico aviso: LF sera reemplazado por CRLF en
+  services/company_user_service.py; sin errores de whitespace).
+- Revision de secretos en git diff (JWT, Bearer, passwords, SECRET,
+  API_KEY, llaves PEM): 0 coincidencias.
+- Revision de secretos en archivos documentales: verificada al
+  final de la sesion antes del commit.
+- git status --short: solo los 3 archivos de codigo modificados +
+  README.md, 04_incidencias.txt y la carpeta correcciones/ (nuevos).
+- Estado de la rama: HEAD 475585d, 6 commits adelante de
+  origin/main. SIN commit nuevo hasta completar esta documentacion.
+
+------------------------------------------------------------------------
+CATALOGO GLOBAL (decision Q1) - ACEPTADO Y DOCUMENTADO
+------------------------------------------------------------------------
+roles.read / roles.write son globales (sin scope por empresa): un
+ADMINISTRADOR de Alpha puede alterar catalogo usado por Beta.
+Decision: aceptar y documentar (no cambiar en esta fase).
+Documentado en README.md e 04_incidencias.txt (INC-04 / F-ACEPTADOS).
+
+------------------------------------------------------------------------
+create_company_admin_service (B2) - BOOTSTRAP, LOGICA INTACTA
+------------------------------------------------------------------------
+Uso exclusivo de bootstrap del sistema. Solo se anadio docstring;
+la logica NO cambio (decision Q2).
+
+------------------------------------------------------------------------
+F7 - Riesgo de enumeracion en login - ACEPTADO, SIN CAMBIOS
+------------------------------------------------------------------------
+El mensaje "Credenciales invalidas" es comun a usuario inexistente y
+password incorrecto, pero el usuario "inactivo" tiene mensaje propio
+("El usuario esta inactivo"), lo que permite discernir existencia de
+cuentas inactivas. Riesgo ACEPTADO (decision Q4): NO se modifican
+mensajes en esta fase.

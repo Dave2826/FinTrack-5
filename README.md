@@ -142,6 +142,7 @@ Las principales consultas implementadas son:
 - `concept`
 - `accountConcepts`
 - `transactions`
+- `companyUsers`
 
 ### Mutations
 
@@ -331,7 +332,7 @@ Migraciones existentes (orden):
 
 ### Arquitectura de autorización
 
-Las 24 operaciones GraphQL (9 queries y 15 mutations) pasan por
+Las 25 operaciones GraphQL (10 queries y 15 mutations) pasan por
 `services/authorization_service.py`, que expone `exigir_permiso`:
 
 - Exige el permiso exacto (código) del rol activo de la membresía del
@@ -374,6 +375,44 @@ Las 24 operaciones GraphQL (9 queries y 15 mutations) pasan por
   `role_permission_repository.py`, `company_user_repository.py`,
   `company_user_role_repository.py`.
 - Migración `3b9f41c7d2ae_roles_y_permisos.py`.
+
+### Endurecimiento de autorización (corrección Actividad 5)
+
+Correcciones aplicadas sobre la base de roles (evidencia completa en
+`evidencias/actividad3/correcciones/`):
+
+- `get_transaction_service` exige ahora `transactions.read` con scope
+  de la cuenta de la transacción (antes era un servicio de lectura sin
+  autorización); se eliminó su import muerto en `graphql_api/schema.py`.
+- `deactivate_company_user_service` es atómica (membresía + roles en un
+  solo commit con rollback) y aplica el guard del último administrador
+  con mensaje fijo:
+  `No se puede desactivar al último administrador de la empresa`
+  (alcance: no queda ninguna membresía activa con rol ADMINISTRADOR
+  activo en la empresa).
+- `assign_role_service` rota el rol en una sola transacción; requiere
+  `db.flush()` tras desactivar por el índice único parcial
+  `uq_company_user_role_active(company_user_id) WHERE is_active`.
+- Nueva query `companyUsers` (con `company.users.read` y scope por
+  empresa): argumentos `actorCompanyUserId`, `companyId`, `activeOnly`
+  (por defecto `true`).
+- `create_company_admin_service` sigue siendo de uso exclusivo de
+  bootstrap: solo se documentó, la lógica no cambió.
+
+Decisiones aceptadas y documentadas (sin cambio de código):
+
+- El catálogo de roles/permisos sigue siendo **global** (sin scope por
+  empresa): un ADMINISTRADOR de una empresa puede alterar el catálogo
+  que usan las demás. Aceptado y documentado.
+- Riesgo de enumeración en login (F7): el mensaje propio de usuario
+  inactivo permite discernir existencia de cuentas inactivas. Aceptado;
+  los mensajes no se modifican.
+
+Pendientes explícitos de la fase de corrección (NO ejecutados, NO
+dados por aprobados): N10 (idempotencia de `setup_pruebas.py` +
+dry-run de `limpiar_pruebas.py`) y la verificación de rollback por
+inyección de fallo. Ambos requieren escribir en la base de datos y
+quedaron fuera de autorización.
 
 ### Entorno de pruebas aislado (compose.test.yaml)
 

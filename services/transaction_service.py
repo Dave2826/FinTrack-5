@@ -120,6 +120,7 @@ def create_transaction_service(
 
 def get_transaction_service(
     db: Session,
+    actor_company_user_id: int,
     transaction_id: int
 ) -> Transaction:
 
@@ -130,6 +131,18 @@ def get_transaction_service(
 
     if transaction is None:
         raise ValueError("El movimiento no existe")
+
+    account = get_account(db, transaction.account_id)
+
+    if account is None:
+        raise ValueError("La cuenta no existe")
+
+    exigir_permiso(
+        db,
+        actor_company_user_id,
+        "transactions.read",
+        company_id=account.company_id,
+    )
 
     return transaction
 

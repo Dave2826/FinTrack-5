@@ -26,7 +26,6 @@ from services.account_concept_service import (
 
 from services.transaction_service import (
     create_transaction_service,
-    get_transaction_service,
     list_transactions_service,
     delete_transaction_service,
 )
@@ -54,6 +53,7 @@ from services.company_user_service import (
     create_company_user_service,
     deactivate_company_user_service,
     assign_role_service,
+    list_company_users_service,
 )
 
 from repositories.company_user_repository import (
@@ -457,6 +457,31 @@ class Query:
         return [
             Account.from_model(account)
             for account in accounts
+        ]
+
+    @strawberry.field
+    def company_users(
+        self,
+        info: Info,
+        actor_company_user_id: int,
+        company_id: int,
+        active_only: bool = True,
+    ) -> list[CompanyUser]:
+
+        _validar_actor(info, actor_company_user_id)
+
+        db = info.context["db"]
+
+        memberships = list_company_users_service(
+            db,
+            actor_company_user_id,
+            company_id=company_id,
+            active_only=active_only,
+        )
+
+        return [
+            CompanyUser.from_model(membership)
+            for membership in memberships
         ]
 
     @strawberry.field
