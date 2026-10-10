@@ -10,6 +10,30 @@ La aplicación expone sus operaciones mediante GraphQL y utiliza una arquitectur
 
 El proyecto integra autenticación mediante JWT para identificar al usuario responsable de registrar cada movimiento financiero.
 
+## Contenido
+
+- [Descripción](#descripción)
+- [Arquitectura](#arquitectura)
+- [Módulos principales](#módulos-principales)
+- [Tecnologías](#tecnologías)
+- [Estructura del proyecto](#estructura-del-proyecto)
+- [GraphQL](#graphql)
+- [Autenticación](#autenticación)
+- [Gestión de movimientos](#gestión-de-movimientos)
+- [Regla financiera](#regla-financiera)
+- [Datos mínimos implementados](#datos-mínimos-implementados)
+- [Validaciones probadas](#validaciones-probadas)
+- [Evidencias](#evidencias)
+- [Configuración del entorno](#configuración-del-entorno)
+- [Ejecución con Docker](#ejecución-con-docker)
+- [Migraciones](#migraciones)
+- [Actividad 3 — Autorización con roles y control de acceso](#actividad-3--autorización-con-roles-y-control-de-acceso)
+- [Verificación de la aplicación](#verificación-de-la-aplicación)
+- [Control de versiones](#control-de-versiones)
+- [Seguridad](#seguridad)
+- [Referencias](#referencias)
+- [Estado del proyecto](#estado-del-proyecto)
+
 ## Arquitectura
 
 La aplicación utiliza una arquitectura por capas con la siguiente estructura:
@@ -84,7 +108,11 @@ Cada capa tiene una responsabilidad específica:
     │   ├── account_concept.py
     │   ├── company.py
     │   ├── company_user.py
+    │   ├── company_user_role.py
     │   ├── concept.py
+    │   ├── permission.py
+    │   ├── role.py
+    │   ├── role_permission.py
     │   ├── transaction.py
     │   └── user.py
     ├── repositories/
@@ -115,14 +143,19 @@ Cada capa tiene una responsabilidad específica:
     │   ├── role_service.py
     │   ├── seed_service.py
     │   └── transaction_service.py
+    ├── scripts/
+    │   ├── setup_pruebas.py
+    │   └── limpiar_pruebas.py
     ├── evidencias/
     ├── .dockerignore
     ├── .env.example
+    ├── .env.test.example
     ├── .gitignore
     ├── Dockerfile
     ├── README.md
     ├── alembic.ini
     ├── compose.yaml
+    ├── compose.test.yaml
     ├── main.py
     └── requirements.txt
 
@@ -249,9 +282,57 @@ Se probaron casos correctos y casos de error, incluyendo:
 
 ## Evidencias
 
-Las evidencias de ejecución se encuentran en la carpeta `evidencias/`.
+Las evidencias del proyecto se encuentran en la carpeta [`evidencias/`](evidencias/).
 
-Las capturas disponibles corresponden a las siguientes pruebas:
+### Evidencias visuales de la Actividad 5 (entorno de pruebas, autorización y control de acceso)
+
+Las siguientes siete capturas documentan el despliegue del entorno de pruebas aislado y el comportamiento del sistema con roles, autorización por empresa y control de acceso.
+
+#### 1. Contenedores de pruebas
+
+<img src="evidencias/01_contenedores_pruebas.png" alt="Salida de docker ps con los contenedores del entorno de pruebas y de desarrollo" width="850">
+
+Salida de `docker ps` en la terminal del proyecto. Se observan los contenedores del entorno de pruebas aislado (`fintrack5-test-api` y `fintrack5-test-postgres`) junto con los contenedores del entorno de desarrollo (`fastapi-api-actividad5`, `postgres-actividad5` y `pgadmin-actividad5`), todos en ejecución.
+
+#### 2. Inicio de sesión del administrador de Alpha
+
+<img src="evidencias/02_login_admin_alpha.png" alt="Mutación login ejecutada con el administrador de la empresa Alpha en el entorno de pruebas" width="850">
+
+Ejecución de la mutación `login` contra el endpoint GraphQL del entorno de pruebas con el usuario administrador de la empresa Alpha. La respuesta confirma el inicio de sesión correcto (`LOGIN OK`) sin errores. La contraseña se toma de la variable de prueba del script de seed; ni la contraseña ni el token de acceso se muestran en la captura.
+
+#### 3. Consulta autorizada de una cuenta de Alpha
+
+<img src="evidencias/03_consulta_cuenta_alpha.png" alt="Consulta accounts autenticada como administrador de Alpha que devuelve la cuenta de la empresa 3" width="850">
+
+Consulta `accounts` autenticada con el administrador de Alpha (`actorCompanyUserId: 6`, `companyId: 3`). El servidor responde con HTTP 200 y devuelve la cuenta "Cuenta Alpha Pruebas" de la empresa 3, demostrando una consulta autorizada dentro de la propia empresa del actor.
+
+#### 4. Rechazo de acceso al no pertenecer a la empresa del recurso
+
+<img src="evidencias/04_bloqueo_acceso_beta.png" alt="Consulta accounts dirigida a la empresa Beta realizada por un actor de Alpha, denegada por aislamiento entre empresas" width="850">
+
+Misma consulta `accounts` realizada por el actor de Alpha, pero solicitando los recursos de la empresa Beta (`companyId: 4`). El servidor responde con el error `El actor no pertenece a la empresa del recurso`, evidenciando el aislamiento entre empresas: un usuario autenticado no puede leer datos de una empresa a la que no pertenece.
+
+#### 5. Respuesta válida de GraphQL
+
+<img src="evidencias/05_graphql_respuesta_valida.png" alt="Consulta de introspección __typename que responde HTTP 200 con data __typename Query" width="850">
+
+Consulta de introspección mínima (`{__typename}`) enviada directamente al endpoint GraphQL del entorno de pruebas. El servidor responde con HTTP 200 y `{"data": {"__typename": "Query"}}`, confirmando que el esquema carga y responde correctamente sin necesidad de autenticación para operaciones públicas.
+
+#### 6. Estado de los contenedores en Docker Desktop
+
+<img src="evidencias/06_docker_desktop.png" alt="Vista de contenedores de Docker Desktop con los grupos actividad5_david_morales y fintrack5_test en ejecución" width="850">
+
+Vista de contenedores de Docker Desktop. Se observan los grupos de contenedores del proyecto: `actividad5_david_morales` (entorno de desarrollo) y `fintrack5_test` (entorno de pruebas aislado), ambos en ejecución.
+
+#### 7. Tablas de PostgreSQL de las pruebas en pgAdmin
+
+<img src="evidencias/07_pgadmin_tablas_pruebas.png" alt="pgAdmin conectado a la base fintrack5_test mostrando las 12 tablas del esquema" width="850">
+
+pgAdmin conectado al servidor de pruebas y a la base de datos `fintrack5_test`. En el explorador de objetos se listan las 12 tablas del esquema (`accounts`, `account_concepts`, `companies`, `company_users`, `company_user_roles`, `concepts`, `permissions`, `role_permissions`, `roles`, `transactions`, `users` y `alembic_version`), confirmando que el esquema de la Actividad 3 está desplegado en el entorno de pruebas.
+
+### Capturas de las pruebas de negocio y validaciones
+
+Las capturas anteriores corresponden a pruebas funcionales de las operaciones financieras (creación de cuentas, conceptos, relaciones y movimientos):
 
 - `01_create_account_success.png` — creación correcta de una cuenta.
 - `02_accounts_minimum_3.png` — consulta de las cuentas creadas.
@@ -524,6 +605,8 @@ Los tokens de autenticación se generan mediante JWT y utilizan la clave definid
 
 ## Estado del proyecto
 
-El backend correspondiente a la gestión de cuentas, conceptos y movimientos financieros se encuentra implementado y probado mediante GraphQL.
+Estado al cierre de la Actividad 5, distinguiendo tres niveles:
 
-La aplicación cuenta con persistencia en PostgreSQL, migraciones mediante Alembic, arquitectura por capas, autenticación JWT, validaciones de reglas de negocio y evidencias de ejecución.
+- **Funcionalidades implementadas**: gestión de empresas, usuarios, membresías empresa-usuario, cuentas, conceptos y movimientos financieros; autenticación JWT; autorización por roles con permisos y scope por empresa; y el endurecimiento de autorización de la corrección (servicio de lectura de transacciones con permiso, desactivación atómica de membresías con guard del último administrador, rotación de roles en una sola transacción y la query `companyUsers`).
+- **Pruebas documentadas**: la matriz funcional de la Actividad 3 (89 registros en [`evidencias/actividad3/funcionales/`](evidencias/actividad3/funcionales/)) y la suite de corrección de la fase de seguridad (63/63 aprobadas, 0 fallidas, en [`evidencias/actividad3/correcciones/`](evidencias/actividad3/correcciones/)). Las capturas de este README muestran el entorno de pruebas y ejemplos representativos, no la totalidad de los casos.
+- **Validaciones pendientes**: N10 (idempotencia de `setup_pruebas.py` y dry-run de `limpiar_pruebas.py`) y la verificación de rollback ante fallo de persistencia por inyección de fallo NO fueron ejecutadas ni se dan por aprobadas. Quedan registradas como deuda explícita en [`evidencias/actividad3/correcciones/03_pendientes_y_validaciones.txt`](evidencias/actividad3/correcciones/03_pendientes_y_validaciones.txt).
