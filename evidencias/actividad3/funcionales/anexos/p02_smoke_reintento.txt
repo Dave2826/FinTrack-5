@@ -1,0 +1,2 @@
+{"caso": "P02", "actor": "admin_a", "rol": "ADMINISTRADOR", "operacion": "login + accounts(company 3)", "permiso_esperado": "accounts.read", "resultado_esperado": "login OK y 1 cuenta (id 3)", "resultado_observado": "login OK tokenType=bearer; ", "http": 200, "estado": "APROBADO", "efecto_datos": "sin cambio"}
+{"caso": "P02b", "actor": "admin_a", "rol": "ADMINISTRADOR", "operacion": "accounts", "permiso_esperado": "accounts.read", "resultado_esperado": "1 cuenta id=3", "resultado_observado": "OK", "http": 200, "estado": "APROBADO", "efecto_datos": "sin cambio"}

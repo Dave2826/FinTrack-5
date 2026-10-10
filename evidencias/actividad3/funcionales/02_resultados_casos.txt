@@ -1,0 +1,808 @@
+========================================================================
+EVIDENCIA 02 - RESULTADOS POR CASO (consolidado de anexos JSON)
+Actividad 3 - FinTrack-5: Roles y control de acceso
+========================================================================
+Registros: 89 | APROBADOS: 89 | FALLIDOS: 0
+Fuente: JSONL sin tokens ni contrasenas (anexos/bloque_*.txt)
+
+--- P02 ---
+  actor: admin_a | rol: ADMINISTRADOR
+  operacion: login + accounts(company 3)
+  permiso_esperado: accounts.read
+  resultado_esperado: login OK y 1 cuenta (id 3)
+  resultado_observado: login OK tokenType=bearer; 
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- P02b ---
+  actor: admin_a | rol: ADMINISTRADOR
+  operacion: accounts
+  permiso_esperado: accounts.read
+  resultado_esperado: 1 cuenta id=3
+  resultado_observado: OK
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- A01 ---
+  actor: admin_a | rol: ADMINISTRADOR
+  operacion: login
+  permiso_esperado: -
+  resultado_esperado: token bearer
+  resultado_observado: token_type=bearer
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- A02 ---
+  actor: - | rol: -
+  operacion: login password mala
+  permiso_esperado: -
+  resultado_esperado: Credenciales invalidas
+  resultado_observado: Credenciales inválidas
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- A03 ---
+  actor: inactivo_a | rol: -
+  operacion: login usuario inactivo
+  permiso_esperado: -
+  resultado_esperado: El usuario esta inactivo
+  resultado_observado: El usuario está inactivo
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- A04 ---
+  actor: - | rol: -
+  operacion: accounts(company 3)
+  permiso_esperado: -
+  resultado_esperado: Usuario no autenticado
+  resultado_observado: Usuario no autenticado
+  http: 200 | efecto_datos: sin cambio (sin header Authorization)
+  ESTADO: APROBADO
+
+--- A05 ---
+  actor: - | rol: -
+  operacion: accounts(company 3)
+  permiso_esperado: -
+  resultado_esperado: Usuario no autenticado
+  resultado_observado: Usuario no autenticado
+  http: 200 | efecto_datos: sin cambio (Bearer corrupto)
+  ESTADO: APROBADO
+
+--- A06 ---
+  actor: - | rol: -
+  operacion: accounts(company 3)
+  permiso_esperado: -
+  resultado_esperado: Usuario no autenticado
+  resultado_observado: Usuario no autenticado
+  http: 200 | efecto_datos: sin cambio (token vencido (exp -10min))
+  ESTADO: APROBADO
+
+--- A07 ---
+  actor: - | rol: -
+  operacion: accounts(company 3)
+  permiso_esperado: -
+  resultado_esperado: Usuario no autenticado
+  resultado_observado: Usuario no autenticado
+  http: 200 | efecto_datos: sin cambio (token sub=999 inexistente)
+  ESTADO: APROBADO
+
+--- A08 ---
+  actor: - | rol: -
+  operacion: accounts(company 3)
+  permiso_esperado: -
+  resultado_esperado: Usuario no autenticado
+  resultado_observado: Usuario no autenticado
+  http: 200 | efecto_datos: sin cambio (token de usuario inactivo (user 14))
+  ESTADO: APROBADO
+
+--- B01 ---
+  actor: admin_a | rol: ADMINISTRADOR
+  operacion: accounts(actor=7)
+  permiso_esperado: -
+  resultado_esperado: El actor no corresponde al usuario autenticado
+  resultado_observado: El actor no corresponde al usuario autenticado
+  http: 200 | efecto_datos: sin cambio (membresia ajena)
+  ESTADO: APROBADO
+
+--- B02 ---
+  actor: admin_a | rol: ADMINISTRADOR
+  operacion: accounts(actor=9999)
+  permiso_esperado: -
+  resultado_esperado: La membresia no existe o esta inactiva
+  resultado_observado: La membresía no existe o está inactiva
+  http: 200 | efecto_datos: sin cambio (membresia inexistente)
+  ESTADO: APROBADO
+
+--- B03 ---
+  actor: sin_membresia_a | rol: -
+  operacion: accounts(actor=6)
+  permiso_esperado: -
+  resultado_esperado: El actor no corresponde al usuario autenticado
+  resultado_observado: El actor no corresponde al usuario autenticado
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- B04 ---
+  actor: sin_membresia_a | rol: -
+  operacion: accounts(actor=9999)
+  permiso_esperado: -
+  resultado_esperado: La membresia no existe o esta inactiva
+  resultado_observado: La membresía no existe o está inactiva
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C01 ---
+  actor: consulta_a | rol: CONSULTA
+  operacion: accounts(3)
+  permiso_esperado: accounts.read
+  resultado_esperado: 1 cuenta
+  resultado_observado: OK
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C02 ---
+  actor: consulta_a | rol: CONSULTA
+  operacion: account(3)
+  permiso_esperado: accounts.read
+  resultado_esperado: cuenta 3
+  resultado_observado: OK
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C03 ---
+  actor: consulta_a | rol: CONSULTA
+  operacion: concepts(3)
+  permiso_esperado: concepts.read
+  resultado_esperado: 2 conceptos
+  resultado_observado: OK
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C04 ---
+  actor: consulta_a | rol: CONSULTA
+  operacion: concept(4)
+  permiso_esperado: concepts.read
+  resultado_esperado: concepto 4
+  resultado_observado: OK
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C05 ---
+  actor: consulta_a | rol: CONSULTA
+  operacion: accountConcepts(3)
+  permiso_esperado: accounts.read
+  resultado_esperado: 2 relaciones
+  resultado_observado: OK
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C06 ---
+  actor: consulta_a | rol: CONSULTA
+  operacion: transactions(3)
+  permiso_esperado: transactions.read
+  resultado_esperado: 2 transacciones
+  resultado_observado: OK
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C07 ---
+  actor: consulta_a | rol: CONSULTA
+  operacion: listRoles
+  permiso_esperado: roles.read
+  resultado_esperado: denegado: El rol no tiene el permiso roles.read
+  resultado_observado: El rol no tiene el permiso roles.read
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C08 ---
+  actor: consulta_a | rol: CONSULTA
+  operacion: listPermissions
+  permiso_esperado: roles.read
+  resultado_esperado: denegado: El rol no tiene el permiso roles.read
+  resultado_observado: El rol no tiene el permiso roles.read
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C09 ---
+  actor: consulta_a | rol: CONSULTA
+  operacion: listRolePermissions(role 4)
+  permiso_esperado: roles.read
+  resultado_esperado: denegado: El rol no tiene el permiso roles.read
+  resultado_observado: El rol no tiene el permiso roles.read
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C10 ---
+  actor: consulta_a | rol: CONSULTA
+  operacion: createAccount(3)
+  permiso_esperado: accounts.write
+  resultado_esperado: denegado: El rol no tiene el permiso accounts.write
+  resultado_observado: El rol no tiene el permiso accounts.write
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C10v ---
+  actor: admin_a | rol: ADMINISTRADOR
+  operacion: accounts(3) verificacion
+  permiso_esperado: -
+  resultado_esperado: sigue 1 cuenta
+  resultado_observado: OK
+  http: 200 | efecto_datos: C10 no altero datos
+  ESTADO: APROBADO
+
+--- C11 ---
+  actor: consulta_a | rol: CONSULTA
+  operacion: createConcept(3)
+  permiso_esperado: concepts.write
+  resultado_esperado: denegado: El rol no tiene el permiso concepts.write
+  resultado_observado: El rol no tiene el permiso concepts.write
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C12 ---
+  actor: consulta_a | rol: CONSULTA
+  operacion: createTransaction(3,4)
+  permiso_esperado: transactions.write
+  resultado_esperado: denegado: El rol no tiene el permiso transactions.write
+  resultado_observado: El rol no tiene el permiso transactions.write
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C13 ---
+  actor: consulta_a | rol: CONSULTA
+  operacion: deleteTransaction(4)
+  permiso_esperado: transactions.write
+  resultado_esperado: denegado: El rol no tiene el permiso transactions.write
+  resultado_observado: El rol no tiene el permiso transactions.write
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C13v ---
+  actor: admin_a | rol: ADMINISTRADOR
+  operacion: transactions(3) verificacion
+  permiso_esperado: -
+  resultado_esperado: tx4 sigue activa
+  resultado_observado: OK
+  http: 200 | efecto_datos: C13 no altero datos
+  ESTADO: APROBADO
+
+--- C13v-detalle ---
+  actor: None | rol: None
+  operacion: None
+  permiso_esperado: None
+  resultado_esperado: None
+  resultado_observado: None
+  http: None | efecto_datos: None
+  ESTADO: APROBADO
+
+--- C14 ---
+  actor: consulta_a | rol: CONSULTA
+  operacion: assignRole(cu10, role3)
+  permiso_esperado: roles.write
+  resultado_esperado: denegado: El rol no tiene el permiso roles.write
+  resultado_observado: El rol no tiene el permiso roles.write
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C15 ---
+  actor: consulta_a | rol: CONSULTA
+  operacion: createCompanyUser(3, user13)
+  permiso_esperado: company.users.write
+  resultado_esperado: denegado: El rol no tiene el permiso company.users.write
+  resultado_observado: El rol no tiene el permiso company.users.write
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C16 ---
+  actor: consulta_a | rol: CONSULTA
+  operacion: createRole
+  permiso_esperado: roles.write
+  resultado_esperado: denegado: El rol no tiene el permiso roles.write
+  resultado_observado: El rol no tiene el permiso roles.write
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C17 ---
+  actor: capturista_a | rol: CAPTURISTA
+  operacion: accounts(3)
+  permiso_esperado: accounts.read
+  resultado_esperado: 1 cuenta
+  resultado_observado: OK
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C18 ---
+  actor: capturista_a | rol: CAPTURISTA
+  operacion: transactions(3)
+  permiso_esperado: transactions.read
+  resultado_esperado: 2 transacciones
+  resultado_observado: OK
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C19 ---
+  actor: capturista_a | rol: CAPTURISTA
+  operacion: createTransaction(3,4,INCOME,10)
+  permiso_esperado: transactions.write
+  resultado_esperado: transaccion creada captured_by=11
+  resultado_observado: OK
+  http: 200 | efecto_datos: +1 transaccion (se soft-delete en C24)
+  ESTADO: APROBADO
+
+--- C19v ---
+  actor: None | rol: None
+  operacion: None
+  permiso_esperado: None
+  resultado_esperado: None
+  resultado_observado: None
+  http: None | efecto_datos: None
+  ESTADO: APROBADO
+
+--- C20 ---
+  actor: capturista_a | rol: CAPTURISTA
+  operacion: createAccount(3)
+  permiso_esperado: accounts.write
+  resultado_esperado: denegado: El rol no tiene el permiso accounts.write
+  resultado_observado: El rol no tiene el permiso accounts.write
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C21 ---
+  actor: capturista_a | rol: CAPTURISTA
+  operacion: createConcept(3)
+  permiso_esperado: concepts.write
+  resultado_esperado: denegado: El rol no tiene el permiso concepts.write
+  resultado_observado: El rol no tiene el permiso concepts.write
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C22 ---
+  actor: capturista_a | rol: CAPTURISTA
+  operacion: assignConceptToAccount(cuenta3, concepto Beta 6)
+  permiso_esperado: concepts.write
+  resultado_esperado: denegado por permiso ANTES del chequeo de empresa
+  resultado_observado: El rol no tiene el permiso concepts.write
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C23 ---
+  actor: capturista_a | rol: CAPTURISTA
+  operacion: listRoles
+  permiso_esperado: roles.read
+  resultado_esperado: denegado: El rol no tiene el permiso roles.read
+  resultado_observado: El rol no tiene el permiso roles.read
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C24 ---
+  actor: capturista_a | rol: CAPTURISTA
+  operacion: deleteTransaction(7)
+  permiso_esperado: transactions.write
+  resultado_esperado: transaccion soft-deleted
+  resultado_observado: OK
+  http: 200 | efecto_datos: tx C19 pasa a is_active=false
+  ESTADO: APROBADO
+
+--- C25 ---
+  actor: capturista_a | rol: CAPTURISTA
+  operacion: createCompanyUser
+  permiso_esperado: company.users.write
+  resultado_esperado: denegado: El rol no tiene el permiso company.users.write
+  resultado_observado: El rol no tiene el permiso company.users.write
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C26 ---
+  actor: contador_a | rol: CONTADOR
+  operacion: accounts(3)
+  permiso_esperado: accounts.read
+  resultado_esperado: 1 cuenta
+  resultado_observado: OK
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C27 ---
+  actor: contador_a | rol: CONTADOR
+  operacion: createAccount nombre duplicado (Cuenta Alpha Pruebas)
+  permiso_esperado: accounts.write
+  resultado_esperado: demuestra accounts.write via 'Ya existe una cuenta activa con ese nombre'
+  resultado_observado: Ya existe una cuenta activa con ese nombre
+  http: 200 | efecto_datos: sin cambio (duplicado rechazado)
+  ESTADO: APROBADO
+
+--- C28 ---
+  actor: contador_a | rol: CONTADOR
+  operacion: createConcept nombre duplicado (Ingreso Alpha Pruebas)
+  permiso_esperado: concepts.write
+  resultado_esperado: demuestra concepts.write via 'Ya existe un concepto activo con ese nombre'
+  resultado_observado: Ya existe un concepto activo con ese nombre
+  http: 200 | efecto_datos: sin cambio (duplicado rechazado)
+  ESTADO: APROBADO
+
+--- C29a ---
+  actor: contador_a | rol: CONTADOR
+  operacion: createTransaction(3,4,INCOME,5)
+  permiso_esperado: transactions.write
+  resultado_esperado: transaccion creada
+  resultado_observado: OK
+  http: 200 | efecto_datos: +1 transaccion (se soft-delete en C29b)
+  ESTADO: APROBADO
+
+--- C29b ---
+  actor: contador_a | rol: CONTADOR
+  operacion: deleteTransaction(8)
+  permiso_esperado: transactions.write
+  resultado_esperado: soft-delete OK
+  resultado_observado: OK
+  http: 200 | efecto_datos: tx C29 pasa a is_active=false
+  ESTADO: APROBADO
+
+--- C30 ---
+  actor: contador_a | rol: CONTADOR
+  operacion: assignRole(cu10, role3)
+  permiso_esperado: roles.write
+  resultado_esperado: denegado: El rol no tiene el permiso roles.write
+  resultado_observado: El rol no tiene el permiso roles.write
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C31 ---
+  actor: contador_a | rol: CONTADOR
+  operacion: createRole
+  permiso_esperado: roles.write
+  resultado_esperado: denegado: El rol no tiene el permiso roles.write
+  resultado_observado: El rol no tiene el permiso roles.write
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C32 ---
+  actor: contador_a | rol: CONTADOR
+  operacion: listRoles
+  permiso_esperado: roles.read
+  resultado_esperado: 4 roles
+  resultado_observado: OK
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C33 ---
+  actor: contador_a | rol: CONTADOR
+  operacion: createCompanyUser(3, user13)
+  permiso_esperado: company.users.write
+  resultado_esperado: denegado: El rol no tiene el permiso company.users.write
+  resultado_observado: El rol no tiene el permiso company.users.write
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C34 ---
+  actor: admin_b | rol: ADMINISTRADOR (Beta)
+  operacion: createCompanyUser(empresa 4, user 13, is_admin=false)
+  permiso_esperado: company.users.write
+  resultado_esperado: membresia creada para sin_membresia_a en Beta
+  resultado_observado: OK
+  http: 200 | efecto_datos: +1 company_user en Beta (se desactiva en C35)
+  ESTADO: APROBADO
+
+--- C35 ---
+  actor: admin_b | rol: ADMINISTRADOR (Beta)
+  operacion: deactivateCompanyUser(11)
+  permiso_esperado: company.users.write
+  resultado_esperado: membresia inactiva
+  resultado_observado: OK
+  http: 200 | efecto_datos: membresia 11 is_active=false
+  ESTADO: APROBADO
+
+--- B05 ---
+  actor: sin_membresia_a | rol: -
+  operacion: accounts(actor=11) con membresia inactiva en Beta
+  permiso_esperado: -
+  resultado_esperado: La membresia no existe o esta inactiva
+  resultado_observado: La membresía no existe o está inactiva
+  http: 200 | efecto_datos: sin cambio (membresia inactiva)
+  ESTADO: APROBADO
+
+--- C36 ---
+  actor: admin_a | rol: ADMINISTRADOR
+  operacion: assignRole(cu10, role3 CAPTURISTA)
+  permiso_esperado: roles.write
+  resultado_esperado: rotacion CONSULTA->CAPTURISTA
+  resultado_observado: OK
+  http: 200 | efecto_datos: cu10 ahora CAPTURISTA; +1 fila role inactiva
+  ESTADO: APROBADO
+
+--- C37 ---
+  actor: admin_a | rol: ADMINISTRADOR
+  operacion: assignRole(cu10, role4 CONSULTA)
+  permiso_esperado: roles.write
+  resultado_esperado: restauracion a CONSULTA
+  resultado_observado: OK
+  http: 200 | efecto_datos: cu10 restaurado a CONSULTA
+  ESTADO: APROBADO
+
+--- C38 ---
+  actor: admin_a | rol: ADMINISTRADOR
+  operacion: assignRole(cu10, role4) repetido
+  permiso_esperado: roles.write
+  resultado_esperado: denegado: La membresia ya tiene asignado este rol
+  resultado_observado: La membresía ya tiene asignado este rol
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C39 ---
+  actor: admin_a | rol: ADMINISTRADOR
+  operacion: deactivateRole(1 ADMINISTRADOR)
+  permiso_esperado: roles.write
+  resultado_esperado: denegado: El rol ADMINISTRADOR no se puede desactivar
+  resultado_observado: El rol ADMINISTRADOR no se puede desactivar
+  http: 200 | efecto_datos: sin cambio (rol 1 sigue activo)
+  ESTADO: APROBADO
+
+--- C40 ---
+  actor: admin_a | rol: ADMINISTRADOR
+  operacion: removePermissionFromRole(role 1, perm 10 roles.write)
+  permiso_esperado: roles.write
+  resultado_esperado: denegado: No se puede retirar el permiso roles.write del rol ADMINISTRADOR
+  resultado_observado: No se puede retirar el permiso roles.write del rol ADMINISTRADOR
+  http: 200 | efecto_datos: sin cambio (relacion 1-10 sigue activa)
+  ESTADO: APROBADO
+
+--- C41 ---
+  actor: admin_a | rol: ADMINISTRADOR
+  operacion: createRole(code=ADMINISTRADOR)
+  permiso_esperado: roles.write
+  resultado_esperado: denegado: Ya existe un rol con ese codigo
+  resultado_observado: Ya existe un rol con ese código
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C42 ---
+  actor: admin_a | rol: ADMINISTRADOR
+  operacion: createPermission(code=accounts.read)
+  permiso_esperado: roles.write
+  resultado_esperado: denegado: Ya existe un permiso con ese codigo
+  resultado_observado: Ya existe un permiso con ese código
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C43-pre ---
+  actor: admin_a | rol: ADMINISTRADOR
+  operacion: listRolePermissions(role 2) conteo PRE
+  permiso_esperado: roles.read
+  resultado_esperado: 8 relaciones activas de CONTADOR
+  resultado_observado: OK
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C43 ---
+  actor: admin_a | rol: ADMINISTRADOR
+  operacion: removePermissionFromRole(CONTADOR, roles.read)
+  permiso_esperado: roles.write
+  resultado_esperado: relacion desactivada (26->25 activas)
+  resultado_observado: OK
+  http: 200 | efecto_datos: role_permissions activas: 26->25 (temporal)
+  ESTADO: APROBADO
+
+--- C43v ---
+  actor: contador_a | rol: CONTADOR
+  operacion: listRoles tras quitar roles.read
+  permiso_esperado: roles.read
+  resultado_esperado: denegado: El rol no tiene el permiso roles.read
+  resultado_observado: El rol no tiene el permiso roles.read
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C45 ---
+  actor: admin_a | rol: ADMINISTRADOR
+  operacion: assignPermissionToRole(CONTADOR, roles.read) RESTAURACION
+  permiso_esperado: roles.write
+  resultado_esperado: relacion reactivada (vuelve a 26)
+  resultado_observado: OK
+  http: 200 | efecto_datos: role_permissions activas: 25->26 RESTAURADO
+  ESTADO: APROBADO
+
+--- C45v ---
+  actor: contador_a | rol: CONTADOR
+  operacion: listRoles tras restaurar
+  permiso_esperado: roles.read
+  resultado_esperado: 4 roles de nuevo
+  resultado_observado: OK
+  http: 200 | efecto_datos: estado restaurado
+  ESTADO: APROBADO
+
+--- C45c ---
+  actor: admin_a | rol: ADMINISTRADOR
+  operacion: listRolePermissions(role 2) conteo POST
+  permiso_esperado: roles.read
+  resultado_esperado: 8 relaciones activas de CONTADOR
+  resultado_observado: OK
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C45c-conteo ---
+  actor: None | rol: None
+  operacion: None
+  permiso_esperado: None
+  resultado_esperado: None
+  resultado_observado: None
+  http: None | efecto_datos: None
+  ESTADO: APROBADO
+
+--- C46 ---
+  actor: admin_a | rol: ADMINISTRADOR
+  operacion: assignPermissionToRole(CONTADOR, roles.read) repetido
+  permiso_esperado: roles.write
+  resultado_esperado: denegado: El permiso ya esta asignado al rol
+  resultado_observado: El permiso ya está asignado al rol
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- C47 ---
+  actor: admin_a | rol: ADMINISTRADOR
+  operacion: createCompanyUser(3, user13, is_admin=true)
+  permiso_esperado: company.users.write
+  resultado_esperado: denegado: La empresa ya tiene un administrador principal
+  resultado_observado: La empresa ya tiene un administrador principal
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- D01 ---
+  actor: admin_a | rol: ADMINISTRADOR (Alpha)
+  operacion: accounts(empresa 4)
+  permiso_esperado: accounts.read
+  resultado_esperado: denegado: El actor no pertenece a la empresa del recurso
+  resultado_observado: El actor no pertenece a la empresa del recurso
+  http: 200 | efecto_datos: sin cambio (recurso Beta protegido)
+  ESTADO: APROBADO
+
+--- D02 ---
+  actor: admin_a | rol: ADMINISTRADOR (Alpha)
+  operacion: account(4)
+  permiso_esperado: accounts.read
+  resultado_esperado: denegado: El actor no pertenece a la empresa del recurso
+  resultado_observado: El actor no pertenece a la empresa del recurso
+  http: 200 | efecto_datos: sin cambio (recurso Beta protegido)
+  ESTADO: APROBADO
+
+--- D03 ---
+  actor: admin_a | rol: ADMINISTRADOR (Alpha)
+  operacion: concepts(empresa 4)
+  permiso_esperado: concepts.read
+  resultado_esperado: denegado: El actor no pertenece a la empresa del recurso
+  resultado_observado: El actor no pertenece a la empresa del recurso
+  http: 200 | efecto_datos: sin cambio (recurso Beta protegido)
+  ESTADO: APROBADO
+
+--- D04 ---
+  actor: admin_a | rol: ADMINISTRADOR (Alpha)
+  operacion: concept(6)
+  permiso_esperado: concepts.read
+  resultado_esperado: denegado: El actor no pertenece a la empresa del recurso
+  resultado_observado: El actor no pertenece a la empresa del recurso
+  http: 200 | efecto_datos: sin cambio (recurso Beta protegido)
+  ESTADO: APROBADO
+
+--- D05 ---
+  actor: admin_a | rol: ADMINISTRADOR (Alpha)
+  operacion: accountConcepts(cuenta 4)
+  permiso_esperado: accounts.read
+  resultado_esperado: denegado: El actor no pertenece a la empresa del recurso
+  resultado_observado: El actor no pertenece a la empresa del recurso
+  http: 200 | efecto_datos: sin cambio (recurso Beta protegido)
+  ESTADO: APROBADO
+
+--- D06 ---
+  actor: admin_a | rol: ADMINISTRADOR (Alpha)
+  operacion: transactions(cuenta 4)
+  permiso_esperado: transactions.read
+  resultado_esperado: denegado: El actor no pertenece a la empresa del recurso
+  resultado_observado: El actor no pertenece a la empresa del recurso
+  http: 200 | efecto_datos: sin cambio (recurso Beta protegido)
+  ESTADO: APROBADO
+
+--- D07 ---
+  actor: admin_a | rol: ADMINISTRADOR (Alpha)
+  operacion: createAccount(empresa 4)
+  permiso_esperado: accounts.write
+  resultado_esperado: denegado: El actor no pertenece a la empresa del recurso
+  resultado_observado: El actor no pertenece a la empresa del recurso
+  http: 200 | efecto_datos: sin cambio (empresa Beta sin cuentas nuevas)
+  ESTADO: APROBADO
+
+--- D08 ---
+  actor: admin_a | rol: ADMINISTRADOR (Alpha)
+  operacion: createConcept(empresa 4)
+  permiso_esperado: concepts.write
+  resultado_esperado: denegado: El actor no pertenece a la empresa del recurso
+  resultado_observado: El actor no pertenece a la empresa del recurso
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- D09 ---
+  actor: admin_a | rol: ADMINISTRADOR (Alpha)
+  operacion: createTransaction(cuenta 4, concepto 6)
+  permiso_esperado: transactions.write
+  resultado_esperado: denegado: El actor no pertenece a la empresa del recurso
+  resultado_observado: El actor no pertenece a la empresa del recurso
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- D10 ---
+  actor: admin_a | rol: ADMINISTRADOR (Alpha)
+  operacion: assignConceptToAccount(cuenta Alpha 3, concepto Beta 6)
+  permiso_esperado: concepts.write (scope pasa; falla validacion de empresa)
+  resultado_esperado: denegado VALIDACION: La cuenta y el concepto deben pertenecer a la misma empresa
+  resultado_observado: La cuenta y el concepto deben pertenecer a la misma empresa
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- D11 ---
+  actor: admin_a | rol: ADMINISTRADOR (Alpha)
+  operacion: removeConceptFromAccount(cuenta 4, concepto 6)
+  permiso_esperado: concepts.write
+  resultado_esperado: denegado: El actor no pertenece a la empresa del recurso
+  resultado_observado: El actor no pertenece a la empresa del recurso
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- D12 ---
+  actor: admin_a | rol: ADMINISTRADOR (Alpha)
+  operacion: assignRole(cu7 Beta, role2)
+  permiso_esperado: roles.write
+  resultado_esperado: denegado: El actor no pertenece a la empresa del recurso
+  resultado_observado: El actor no pertenece a la empresa del recurso
+  http: 200 | efecto_datos: sin cambio (admin_b conserva rol)
+  ESTADO: APROBADO
+
+--- D13 ---
+  actor: admin_a | rol: ADMINISTRADOR (Alpha)
+  operacion: deactivateCompanyUser(cu7)
+  permiso_esperado: company.users.write
+  resultado_esperado: denegado: El actor no pertenece a la empresa del recurso
+  resultado_observado: El actor no pertenece a la empresa del recurso
+  http: 200 | efecto_datos: sin cambio (cu7 sigue activa)
+  ESTADO: APROBADO
+
+--- D14 ---
+  actor: admin_a | rol: ADMINISTRADOR (Alpha)
+  operacion: createCompanyUser(empresa 4, user13)
+  permiso_esperado: company.users.write
+  resultado_esperado: denegado: El actor no pertenece a la empresa del recurso
+  resultado_observado: El actor no pertenece a la empresa del recurso
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- D15 ---
+  actor: admin_b | rol: ADMINISTRADOR (Beta)
+  operacion: account(3 Alpha)
+  permiso_esperado: accounts.read
+  resultado_esperado: denegado: El actor no pertenece a la empresa del recurso
+  resultado_observado: El actor no pertenece a la empresa del recurso
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- D16 ---
+  actor: admin_b | rol: ADMINISTRADOR (Beta)
+  operacion: createAccount(empresa 3)
+  permiso_esperado: accounts.write
+  resultado_esperado: denegado: El actor no pertenece a la empresa del recurso
+  resultado_observado: El actor no pertenece a la empresa del recurso
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- D17 ---
+  actor: admin_b | rol: ADMINISTRADOR (Beta)
+  operacion: transactions(cuenta 3)
+  permiso_esperado: transactions.read
+  resultado_esperado: denegado: El actor no pertenece a la empresa del recurso
+  resultado_observado: El actor no pertenece a la empresa del recurso
+  http: 200 | efecto_datos: sin cambio
+  ESTADO: APROBADO
+
+--- D18 ---
+  actor: admin_b | rol: ADMINISTRADOR (Beta)
+  operacion: assignRole(cu8 Alpha, role4)
+  permiso_esperado: roles.write
+  resultado_esperado: denegado: El actor no pertenece a la empresa del recurso
+  resultado_observado: El actor no pertenece a la empresa del recurso
+  http: 200 | efecto_datos: sin cambio (contador_a conserva CONTADOR)
+  ESTADO: APROBADO
+

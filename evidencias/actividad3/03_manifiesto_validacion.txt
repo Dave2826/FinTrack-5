@@ -1,0 +1,72 @@
+========================================================================
+EVIDENCIA 03 - VALIDACION DEL MANIFIESTO
+Actividad 3 - FinTrack-5: Roles y control de acceso
+========================================================================
+Fecha y hora: 2026-10-09T18:20 (UTC-6)
+Archivo validado: manifiesto_pruebas.json (raíz del repositorio)
+Origen: stdout del setup inicial con EXIT=0 (ver evidencia 02, secciones 7-8)
+
+------------------------------------------------------------------------
+1. EXISTENCIA Y JSON VALIDO
+------------------------------------------------------------------------
+Comando: py -c "import json; m = json.load(open('manifiesto_pruebas.json', encoding='utf-8')); ..."
+Resultado: JSON_VALIDO=True (código de salida 0)
+Nota: la primera lectura falló con UnicodeDecodeError por BOM UTF-16 de la
+redirección de PowerShell; se convirtió a UTF-8 sin alterar contenido
+(evidencia 02, sección 8) y se revalidó correctamente.
+
+------------------------------------------------------------------------
+2. AUSENCIA DE SECRETOS
+------------------------------------------------------------------------
+Comando: py -c "... busca 'password', 'hash', 'secret', 'token', 'jwt', 'contrasena' en el JSON ..."
+Resultado: patrones_prohibidos= ninguno
+Código de salida: 0
+Nota: el manifiesto no contiene password_hash, contraseñas ni tokens.
+
+------------------------------------------------------------------------
+3. ESTRUCTURA ESPERADA
+------------------------------------------------------------------------
+estado = OK
+alembic = 3b9f41c7d2ae
+
+Empresas (2/2 esperadas):
+  alpha -> id=1, nombre='Pruebas Alpha SA'
+  beta  -> id=2, nombre='Pruebas Beta SA'
+
+Usuarios (7/7 esperados):
+  admin_a        -> id=1, email=admin_a@test.local,        membresia_id=1, rol=ADMINISTRADOR
+  admin_b        -> id=2, email=admin_b@test.local,        membresia_id=2, rol=ADMINISTRADOR
+  contador_a     -> id=3, email=contador_a@test.local,     membresia_id=3, rol=CONTADOR
+  capturista_a   -> id=4, email=capturista_a@test.local,   membresia_id=4, rol=CAPTURISTA
+  consulta_a     -> id=5, email=consulta_a@test.local,     membresia_id=5, rol=CONSULTA
+  sin_membresia_a-> id=6, email=sin_membresia_a@test.local, membresia_id=None, rol=None
+  inactivo_a     -> id=7, email=inactivo_a@test.local,     membresia_id=None, rol=None, is_active=False
+
+Roles (4):
+  ADMINISTRADOR=1, CONTADOR=2, CAPTURISTA=3, CONSULTA=4
+
+Permisos (10, codigos oficiales):
+  accounts.read, accounts.write, company.users.read, company.users.write,
+  concepts.read, concepts.write, roles.read, roles.write,
+  transactions.read, transactions.write
+
+Recursos alpha: cuenta_id=1, conceptos=[1,2], relaciones=[1,2], transacciones=[1,2]
+Recursos beta:  cuenta_id=2, conceptos=[3],    relaciones=[3],    transacciones=[3]
+
+Seed (contadores): roles_creados=4, permisos_creados=10, relaciones_creadas=26,
+relaciones_oficiales=26; sin reutilizados ni reactivados (primera corrida).
+
+------------------------------------------------------------------------
+4. CRUZE CONTRA LA BASE (solo lectura, ver evidencia 02 seccion 9)
+------------------------------------------------------------------------
+users=7, companies=2, company_users=5, company_user_roles=5,
+roles=4, permissions=10, role_permissions=26 (matriz 10/8/4/4),
+accounts=2, concepts=3, account_concepts=3, transactions=3,
+alembic=3b9f41c7d2ae. Los conteos coinciden con el manifiesto.
+
+------------------------------------------------------------------------
+CONCLUSION EVIDENCIA 03
+------------------------------------------------------------------------
+MANIFIESTO VALIDO: JSON analizable, sin secretos, con las 2 empresas,
+los 7 usuarios con membresias/roles correctos, el catalogo completo y
+los recursos de ambas empresas. Apto para el paso de dry-run.

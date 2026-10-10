@@ -1,0 +1,36 @@
+{"caso": "C36", "actor": "admin_a", "rol": "ADMINISTRADOR", "operacion": "assignRole(cu10, role3 CAPTURISTA)", "permiso_esperado": "roles.write", "resultado_esperado": "rotacion CONSULTA->CAPTURISTA", "resultado_observado": "OK", "http": 200, "estado": "APROBADO", "efecto_datos": "cu10 ahora CAPTURISTA; +1 fila role inactiva"}
+
+{"caso": "C37", "actor": "admin_a", "rol": "ADMINISTRADOR", "operacion": "assignRole(cu10, role4 CONSULTA)", "permiso_esperado": "roles.write", "resultado_esperado": "restauracion a CONSULTA", "resultado_observado": "OK", "http": 200, "estado": "APROBADO", "efecto_datos": "cu10 restaurado a CONSULTA"}
+
+{"caso": "C38", "actor": "admin_a", "rol": "ADMINISTRADOR", "operacion": "assignRole(cu10, role4) repetido", "permiso_esperado": "roles.write", "resultado_esperado": "denegado: La membresia ya tiene asignado este rol", "resultado_observado": "La membresía ya tiene asignado este rol", "http": 200, "estado": "APROBADO", "efecto_datos": "sin cambio"}
+
+{"caso": "C39", "actor": "admin_a", "rol": "ADMINISTRADOR", "operacion": "deactivateRole(1 ADMINISTRADOR)", "permiso_esperado": "roles.write", "resultado_esperado": "denegado: El rol ADMINISTRADOR no se puede desactivar", "resultado_observado": "El rol ADMINISTRADOR no se puede desactivar", "http": 200, "estado": "APROBADO", "efecto_datos": "sin cambio (rol 1 sigue activo)"}
+
+{"caso": "C40", "actor": "admin_a", "rol": "ADMINISTRADOR", "operacion": "removePermissionFromRole(role 1, perm 10 roles.write)", "permiso_esperado": "roles.write", "resultado_esperado": "denegado: No se puede retirar el permiso roles.write del rol ADMINISTRADOR", "resultado_observado": "No se puede retirar el permiso roles.write del rol ADMINISTRADOR", "http": 200, "estado": "APROBADO", "efecto_datos": "sin cambio (relacion 1-10 sigue activa)"}
+
+{"caso": "C41", "actor": "admin_a", "rol": "ADMINISTRADOR", "operacion": "createRole(code=ADMINISTRADOR)", "permiso_esperado": "roles.write", "resultado_esperado": "denegado: Ya existe un rol con ese codigo", "resultado_observado": "Ya existe un rol con ese código", "http": 200, "estado": "APROBADO", "efecto_datos": "sin cambio"}
+
+{"caso": "C42", "actor": "admin_a", "rol": "ADMINISTRADOR", "operacion": "createPermission(code=accounts.read)", "permiso_esperado": "roles.write", "resultado_esperado": "denegado: Ya existe un permiso con ese codigo", "resultado_observado": "Ya existe un permiso con ese código", "http": 200, "estado": "APROBADO", "efecto_datos": "sin cambio"}
+
+{"caso": "C43-pre", "actor": "admin_a", "rol": "ADMINISTRADOR", "operacion": "listRolePermissions(role 2) conteo PRE", "permiso_esperado": "roles.read", "resultado_esperado": "8 relaciones activas de CONTADOR", "resultado_observado": "OK", "http": 200, "estado": "APROBADO", "efecto_datos": "sin cambio"}
+
+{"caso": "C43-pre-conteo", "relaciones_activas": 8}
+
+{"caso": "C43", "actor": "admin_a", "rol": "ADMINISTRADOR", "operacion": "removePermissionFromRole(CONTADOR, roles.read)", "permiso_esperado": "roles.write", "resultado_esperado": "relacion desactivada (26->25 activas)", "resultado_observado": "OK", "http": 200, "estado": "APROBADO", "efecto_datos": "role_permissions activas: 26->25 (temporal)"}
+
+{"caso": "C43v", "actor": "contador_a", "rol": "CONTADOR", "operacion": "listRoles tras quitar roles.read", "permiso_esperado": "roles.read", "resultado_esperado": "denegado: El rol no tiene el permiso roles.read", "resultado_observado": "El rol no tiene el permiso roles.read", "http": 200, "estado": "APROBADO", "efecto_datos": "sin cambio"}
+
+{"caso": "C45", "actor": "admin_a", "rol": "ADMINISTRADOR", "operacion": "assignPermissionToRole(CONTADOR, roles.read) RESTAURACION", "permiso_esperado": "roles.write", "resultado_esperado": "relacion reactivada (vuelve a 26)", "resultado_observado": "OK", "http": 200, "estado": "APROBADO", "efecto_datos": "role_permissions activas: 25->26 RESTAURADO"}
+
+{"caso": "C45v", "actor": "contador_a", "rol": "CONTADOR", "operacion": "listRoles tras restaurar", "permiso_esperado": "roles.read", "resultado_esperado": "4 roles de nuevo", "resultado_observado": "OK", "http": 200, "estado": "APROBADO", "efecto_datos": "estado restaurado"}
+
+{"caso": "C45c", "actor": "admin_a", "rol": "ADMINISTRADOR", "operacion": "listRolePermissions(role 2) conteo POST", "permiso_esperado": "roles.read", "resultado_esperado": "8 relaciones activas de CONTADOR", "resultado_observado": "OK", "http": 200, "estado": "APROBADO", "efecto_datos": "sin cambio"}
+
+{"caso": "C45c-conteo", "relaciones_activas": 8, "estado": "APROBADO"}
+
+{"caso": "C46", "actor": "admin_a", "rol": "ADMINISTRADOR", "operacion": "assignPermissionToRole(CONTADOR, roles.read) repetido", "permiso_esperado": "roles.write", "resultado_esperado": "denegado: El permiso ya esta asignado al rol", "resultado_observado": "El permiso ya está asignado al rol", "http": 200, "estado": "APROBADO", "efecto_datos": "sin cambio"}
+
+{"caso": "C47", "actor": "admin_a", "rol": "ADMINISTRADOR", "operacion": "createCompanyUser(3, user13, is_admin=true)", "permiso_esperado": "company.users.write", "resultado_esperado": "denegado: La empresa ya tiene un administrador principal", "resultado_observado": "La empresa ya tiene un administrador principal", "http": 200, "estado": "APROBADO", "efecto_datos": "sin cambio"}
+
+{"resumen_bloque": "C3", "aprobados": 13, "fallos": []}
+

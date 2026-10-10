@@ -1,0 +1,117 @@
+{
+  "estado": "OK",
+  "alembic": "3b9f41c7d2ae",
+  "empresas": {
+    "alpha": {
+      "id": 1,
+      "nombre": "Pruebas Alpha SA"
+    },
+    "beta": {
+      "id": 2,
+      "nombre": "Pruebas Beta SA"
+    }
+  },
+  "usuarios": {
+    "admin_a": {
+      "id": 1,
+      "email": "admin_a@test.local",
+      "membresia_id": 1,
+      "rol": "ADMINISTRADOR"
+    },
+    "admin_b": {
+      "id": 2,
+      "email": "admin_b@test.local",
+      "membresia_id": 2,
+      "rol": "ADMINISTRADOR"
+    },
+    "contador_a": {
+      "id": 3,
+      "email": "contador_a@test.local",
+      "membresia_id": 3,
+      "rol": "CONTADOR"
+    },
+    "capturista_a": {
+      "id": 4,
+      "email": "capturista_a@test.local",
+      "membresia_id": 4,
+      "rol": "CAPTURISTA"
+    },
+    "consulta_a": {
+      "id": 5,
+      "email": "consulta_a@test.local",
+      "membresia_id": 5,
+      "rol": "CONSULTA"
+    },
+    "sin_membresia_a": {
+      "id": 6,
+      "email": "sin_membresia_a@test.local",
+      "membresia_id": null,
+      "rol": null
+    },
+    "inactivo_a": {
+      "id": 7,
+      "email": "inactivo_a@test.local",
+      "membresia_id": null,
+      "rol": null,
+      "is_active": false
+    }
+  },
+  "roles": {
+    "ADMINISTRADOR": 1,
+    "CONTADOR": 2,
+    "CAPTURISTA": 3,
+    "CONSULTA": 4
+  },
+  "permisos": {
+    "company.users.read": 1,
+    "company.users.write": 2,
+    "accounts.read": 3,
+    "accounts.write": 4,
+    "concepts.read": 5,
+    "concepts.write": 6,
+    "transactions.read": 7,
+    "transactions.write": 8,
+    "roles.read": 9,
+    "roles.write": 10
+  },
+  "recursos": {
+    "alpha": {
+      "cuenta_id": 1,
+      "conceptos": [
+        1,
+        2
+      ],
+      "relaciones": [
+        1,
+        2
+      ],
+      "transacciones": [
+        1,
+        2
+      ]
+    },
+    "beta": {
+      "cuenta_id": 2,
+      "conceptos": [
+        3
+      ],
+      "relaciones": [
+        3
+      ],
+      "transacciones": [
+        3
+      ]
+    }
+  },
+  "seed": {
+    "roles_creados": 4,
+    "roles_reutilizados": 0,
+    "roles_reactivados": 0,
+    "permisos_creados": 10,
+    "permisos_reutilizados": 0,
+    "relaciones_creadas": 26,
+    "relaciones_reutilizadas": 0,
+    "relaciones_reactivadas": 0,
+    "relaciones_oficiales": 26
+  }
+}

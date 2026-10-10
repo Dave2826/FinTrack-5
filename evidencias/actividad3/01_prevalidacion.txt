@@ -1,0 +1,105 @@
+========================================================================
+EVIDENCIA 01 - PREVALIDACION
+Actividad 3 - FinTrack-5: Roles y control de acceso
+========================================================================
+Fecha y hora: 2026-10-09T18:15:36-06:00
+Modo: BUILD (solo pruebas sobre fintrack5_test)
+
+------------------------------------------------------------------------
+1. IDENTIDAD DEL REPOSITORIO
+------------------------------------------------------------------------
+Comando: git rev-parse --show-toplevel
+Resultado: C:/Users/deey1/OneDrive - Instituto Tecnológico de Software/Actividades/Fundamentos de Arqui/actividad5_david_morales
+Código de salida: 0
+
+Comando: git branch --show-current
+Resultado: main
+Código de salida: 0
+
+Comando: git rev-parse --short HEAD / git log --oneline -1
+Resultado: 457b501 fix: corregir autorización y roles administrativos
+Código de salida: 0
+
+Comando: git status --short
+Resultado:
+ M .dockerignore
+ M .gitignore
+?? compose.test.yaml
+?? scripts/
+Nota: cambios de infraestructura de pruebas sin commitear (esperados); HEAD coincide con el esperado 457b501.
+
+------------------------------------------------------------------------
+2. SERVICIOS DE PRUEBA ACTIVOS
+------------------------------------------------------------------------
+Comando: docker compose -p fintrack5_test --env-file .env.test -f compose.yaml -f compose.test.yaml ps --format "table {{.Name}}\t{{.Status}}\t{{.Project}}"
+Resultado:
+NAME                      STATUS       PROJECT
+fintrack5-test-api        Up 2 hours   fintrack5_test
+fintrack5-test-postgres   Up 3 hours   fintrack5_test
+Código de salida: 0
+
+------------------------------------------------------------------------
+3. CONFIGURACION EFECTIVA EXCLUSIVA DE fintrack5_test
+------------------------------------------------------------------------
+Comando (API de pruebas): docker compose -p fintrack5_test --env-file .env.test -f compose.yaml -f compose.test.yaml exec -T api python -c "import os; ... imprime DB_NAME/DB_HOST/DB_PORT ..."
+Resultado:
+DB_NAME=fintrack5_test
+DB_HOST=postgres
+DB_PORT=5432
+Código de salida: 0
+
+Comando (psql dentro del contenedor de pruebas): docker compose ... exec -T postgres psql -U fintrack5_test_user -d fintrack5_test -tAc "SELECT current_database(), current_user"
+Resultado: fintrack5_test|fintrack5_test_user
+Código de salida: 0
+
+Comando (volumen montado): docker inspect fintrack5-test-postgres --format "{{range .Mounts}}{{.Name}} -> {{.Destination}}{{println}}{{end}}"
+Resultado: fintrack5_test_pgdata -> /var/lib/postgresql/data
+Nota: volumen propio del proyecto fintrack5_test, separado de la BD de desarrollo.
+
+Comando (env API de pruebas, solo claves no sensibles): docker inspect fintrack5-test-api ... | filtro ^(DB_NAME|DB_HOST|DB_PORT|DB_USER)=
+Resultado:
+DB_NAME=fintrack5_test
+DB_HOST=postgres
+DB_PORT=5432
+DB_USER=fintrack5_test_user
+
+------------------------------------------------------------------------
+4. BASE DE DESARROLLO SEPARADA (NO SE USARA)
+------------------------------------------------------------------------
+Comando: docker ps --filter "name=actividad5" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+Resultado:
+NAMES                    STATUS      PORTS
+fastapi-api-actividad5   Up 29 hours 0.0.0.0:8002->8000/tcp, [::]:8000/tcp
+postgres-actividad5      Up 29 hours 0.0.0.0:5434->5432/tcp, [::]:5432/tcp
+pgadmin-actividad5       Up 29 hours 0.0.0.0:5052->80/tcp, [::]:80/tcp
+
+Comando (solo lectura, baseline para comparacion final): docker exec postgres-actividad5 psql -U actividad5_user -d actividad5 -tAc "<conteos>"
+Resultado (BASELINE DESARROLLO):
+users|1
+companies|1
+company_users|1
+company_user_roles|0
+roles|4
+permissions|10
+role_permissions|26
+accounts|3
+concepts|10
+account_concepts|10
+transactions|21
+alembic|3b9f41c7d2ae
+Código de salida: 0
+Nota: primer intento de la misma consulta fallo con "UNION types bigint and character varying cannot be matched" (EXIT=1); se corrigio con cast ::text y se re-ejecuto correctamente. El fallo original se conserva aqui por honestidad.
+
+------------------------------------------------------------------------
+5. CREACION DEL DIRECTORIO DE EVIDENCIAS
+------------------------------------------------------------------------
+Comando: New-Item -ItemType Directory -Force -Path "evidencias\actividad3"
+Resultado: creado; Test-Path -> True
+Código de salida: 0
+
+------------------------------------------------------------------------
+CONCLUSION PREVALIDACION
+------------------------------------------------------------------------
+OK: repositorio, rama y HEAD correctos; servicios de pruebas activos;
+configuracion efectiva exclusiva de fintrack5_test; desarrollo separado
+y baseline registrado. Autorizado el paso a la primera preparacion.

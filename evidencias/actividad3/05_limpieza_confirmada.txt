@@ -1,0 +1,89 @@
+========================================================================
+EVIDENCIA 05 - LIMPIEZA CONFIRMADA Y VERIFICACION POST-LIMPIEZA
+Actividad 3 - FinTrack-5: Roles y control de acceso
+========================================================================
+Fecha y hora: 2026-10-09T18:24 (UTC-6)
+Resultado: EXITOSO (EXIT=0); datos de prueba eliminados; catálogo intacto
+
+------------------------------------------------------------------------
+1. COMANDO EJECUTADO
+------------------------------------------------------------------------
+  docker compose -p fintrack5_test --env-file .env.test -f compose.yaml -f compose.test.yaml ^
+    exec -T -e PYTHONPATH=/app api python scripts/limpiar_pruebas.py --confirm
+
+Código de salida: 0
+Prerequisito cumplido: el dry-run de la evidencia 04 fue inspeccionado y
+aprobado antes de usar --confirm.
+
+------------------------------------------------------------------------
+2. SALIDA COMPLETA (sin alterar)
+------------------------------------------------------------------------
+[limpieza] guardas verificadas: BD fintrack5_test y alembic
+[limpieza] MODO --confirm
+[limpieza] empresas: [(1, 'Pruebas Alpha SA'), (2, 'Pruebas Beta SA')]
+[limpieza] company_users: [1, 2, 3, 4, 5]
+[limpieza] company_user_roles: [1, 2, 3, 4, 5]
+[limpieza] accounts: [1, 2]
+[limpieza] concepts: [1, 2, 3]
+[limpieza] account_concepts: [1, 2, 3]
+[limpieza] transactions: [1, 2, 3]
+[limpieza] users: [(1, 'admin_a@test.local'), (2, 'admin_b@test.local'), (3, 'contador_a@test.local'), (4, 'capturista_a@test.local'), (5, 'consulta_a@test.local'), (6, 'sin_membresia_a@test.local'), (7, 'inactivo_a@test.local')]
+[limpieza] roles/permissions/role_permissions: NO se eliminan (catalogo oficial)
+[limpieza] eliminados transactions: 3
+[limpieza] eliminados account_concepts: 3
+[limpieza] eliminados accounts: 2
+[limpieza] eliminados concepts: 3
+[limpieza] eliminados company_user_roles: 5
+[limpieza] eliminados company_users: 5
+[limpieza] eliminados companies: 2
+[limpieza] eliminados users: 7
+[limpieza] LIMPIEZA COMPLETADA
+
+Resumen: 30 filas eliminadas en orden FK (transactions -> account_concepts
+-> accounts -> concepts -> company_user_roles -> company_users ->
+companies -> users) con un único commit; el plan coincidió exactamente
+con el alcance del dry-run (evidencia 04).
+
+------------------------------------------------------------------------
+3. VERIFICACION POST-LIMPIEZA (solo lectura)
+------------------------------------------------------------------------
+Comando: docker compose ... exec -T postgres psql -U fintrack5_test_user -d fintrack5_test -tAc "<conteos>"
+Resultado:
+users|0
+companies|0
+company_users|0
+company_user_roles|0
+roles|4
+permissions|10
+role_permissions|26
+accounts|0
+concepts|0
+account_concepts|0
+transactions|0
+alembic|3b9f41c7d2ae
+Código de salida: 0
+
+Comando: docker compose ... psql ... "SELECT 'roles_activos'... ; 'relaciones_activas'..."
+Resultado:
+roles_activos|4
+relaciones_activas|26
+
+Comprobaciones:
+a) Los datos creados por el setup se eliminaron:
+   OK - users/companies/company_users/company_user_roles/accounts/
+        concepts/account_concepts/transactions = 0.
+b) No se eliminaron datos ajenos:
+   OK - el borrado se limitó a los IDs planificados por el dry-run
+        (no existían datos ajenos que pudieran verse afectados; el
+        catálogo y cualquier otra fila quedaron intactos).
+c) El catálogo oficial sigue disponible:
+   OK - roles=4 (4 activos), permissions=10, role_permissions=26 (26 activas).
+d) Revisión Alembic:
+   OK - 3b9f41c7d2ae (sin cambios).
+
+------------------------------------------------------------------------
+CONCLUSION EVIDENCIA 05
+------------------------------------------------------------------------
+Limpieza confirmada completa y verificada. La BD de pruebas vuelve a un
+estado "vacío de negocio + catálogo sembrado", apto para la repetición
+del setup. No hay fallos ni advertencias que registrar.

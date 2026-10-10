@@ -1,0 +1,27 @@
+services:
+  api:
+    container_name: fintrack5-test-api
+    env_file: !reset []
+    ports: !reset []
+    environment:
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: ${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      JWT_ALGORITHM: ${JWT_ALGORITHM}
+      JWT_EXPIRE_MINUTES: ${JWT_EXPIRE_MINUTES}
+
+  postgres:
+    container_name: fintrack5-test-postgres
+    ports: !reset []
+
+  pgadmin:
+    container_name: fintrack5-test-pgadmin
+    profiles: ["herramientas"]
+    ports: !reset []
+
+volumes:
+  postgres_data_actividad5:
+    name: fintrack5_test_pgdata

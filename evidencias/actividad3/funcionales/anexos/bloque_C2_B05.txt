@@ -1,0 +1,10 @@
+{"caso": "C34", "actor": "admin_b", "rol": "ADMINISTRADOR (Beta)", "operacion": "createCompanyUser(empresa 4, user 13, is_admin=false)", "permiso_esperado": "company.users.write", "resultado_esperado": "membresia creada para sin_membresia_a en Beta", "resultado_observado": "OK", "http": 200, "estado": "APROBADO", "efecto_datos": "+1 company_user en Beta (se desactiva en C35)"}
+
+{"caso": "C34-id", "membresia_nueva": 11}
+
+{"caso": "C35", "actor": "admin_b", "rol": "ADMINISTRADOR (Beta)", "operacion": "deactivateCompanyUser(11)", "permiso_esperado": "company.users.write", "resultado_esperado": "membresia inactiva", "resultado_observado": "OK", "http": 200, "estado": "APROBADO", "efecto_datos": "membresia 11 is_active=false"}
+
+{"caso": "B05", "actor": "sin_membresia_a", "rol": "-", "operacion": "accounts(actor=11) con membresia inactiva en Beta", "permiso_esperado": "-", "resultado_esperado": "La membresia no existe o esta inactiva", "resultado_observado": "La membresía no existe o está inactiva", "http": 200, "estado": "APROBADO", "efecto_datos": "sin cambio (membresia inactiva)"}
+
+{"resumen_bloque": "C2", "aprobados": 3, "fallos": []}
+

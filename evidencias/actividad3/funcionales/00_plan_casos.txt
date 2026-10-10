@@ -1,0 +1,73 @@
+========================================================================
+EVIDENCIA 00 - PLAN DE CASOS FUNCIONALES (ejecutado)
+Actividad 3 - FinTrack-5: Roles y control de acceso
+========================================================================
+Plan inspeccionado previamente; ejecutado con la corrección obligatoria:
+C34-C35 usan admin_b (ADMINISTRADOR de Beta) para crear y desactivar la
+membresía temporal de sin_membresia_a en la empresa 4. H01-H05 BLOQUEADOS.
+
+------------------------------------------------------------------------
+MATRIZ OFICIAL CONTRASTADA (verificada por introspección y ejecución)
+------------------------------------------------------------------------
+OPERACIÓN (GraphQL)              | PERMISO EXIGIDO        | SCOPE
+---------------------------------+------------------------+------
+accounts/account/accountConcepts | accounts.read          | sí
+createAccount                    | accounts.write         | sí
+concepts/concept                 | concepts.read          | sí
+createConcept                    | concepts.write         | sí
+assignConcept/RemoveConcept      | concepts.write         | sí (empresa de la cuenta)
+transactions                     | transactions.read      | sí (empresa de la cuenta)
+createTransaction/DeleteTx       | transactions.write     | sí (empresa de la cuenta)
+listRoles/listPermissions/       | roles.read             | NO (global)
+  listRolePermissions            |                        |
+createRole/deactivateRole/       | roles.write            | NO (global)
+  createPermission/assignPerm/   |                        |
+  removePerm                     |                        |
+createCompanyUser/deactivateCU   | company.users.write    | sí
+assignRole                       | roles.write            | sí (empresa de la membresía destino)
+login                            | - (sin autorización)   | -
+
+Discrepancias documentadas (no corregidas):
+D-I: company.users.read no la exige ninguna operación GraphQL expuesta.
+D-II: catálogo de roles/permisos global (sin scope por empresa).
+
+------------------------------------------------------------------------
+INTROSPECCIÓN P01 (anexo p01_introspeccion.txt)
+------------------------------------------------------------------------
+9 queries: account, accountConcepts, accounts, concept, concepts,
+listPermissions, listRolePermissions, listRoles, transactions.
+15 mutations: assignConceptToAccount, assignPermissionToRole, assignRole,
+createAccount, createCompanyUser, createConcept, createPermission,
+createRole, createTransaction, deactivateCompanyUser, deactivateRole,
+deleteTransaction, login, removeConceptFromAccount, removePermissionFromRole.
+Nombres de input fields confirmados (camelCase): actorCompanyUserId,
+companyId, accountType, transactionType, isAdmin, accessToken, tokenType.
+
+------------------------------------------------------------------------
+CASOS EJECUTADOS
+------------------------------------------------------------------------
+P01 introspección · P02/P02b smoke · A01-A08 autenticación ·
+B01-B04 actor · B05 membresía inactiva (tras C34-C35) ·
+C01-C16 CONSULTA · C17-C25 CAPTURISTA · C26-C33 CONTADOR ·
+C34-C35 admin_b (Beta) · C36-C47 ADMINISTRADOR · D01-D18 aislamiento.
+
+Total registros ejecutados: 89 APROBADO, 0 FALLIDO
+(ver 02_resultados_casos.txt; el desglose por bloque suma 89).
+
+------------------------------------------------------------------------
+CASOS BLOQUEADOS (no ejecutados; ninguno marcado APROBADO)
+------------------------------------------------------------------------
+H01 membresía sin rol activo: requiere modificar directamente los
+    datos (crear una membresía sin asignarle rol); no se ejecutó.
+H02 rol inactivo: requiere una modificación que puede dejar el
+    entorno en un estado no restaurado; no se ejecutó.
+H03 permiso global inactivo: no existe una operación segura
+    disponible para realizar esta prueba; no se ejecutó.
+H04 creación positiva de otro administrador principal: requiere
+    alterar previamente el estado del administrador existente;
+    no se ejecutó.
+H05 creación positiva de roles o permisos: puede dejar residuos en
+    el catálogo global; no se ejecutó.
+
+Los guards C39-C42 verifican mensajes de denegación, pero no
+sustituyen la ejecución de H01-H05.

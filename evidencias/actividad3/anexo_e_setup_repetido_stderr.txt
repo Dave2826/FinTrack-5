@@ -1,0 +1,25 @@
+docker : [setup] guardas verificadas: BD fintrack5_test, alembic, tablas vacias
+En línea: 1 Carácter: 1
++ docker compose -p fintrack5_test --env-file .env.test -f compose.yaml ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([setup] guardas..., tablas vacias:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[setup] fase 1: catalogo oficial (seed)
+[setup] catalogo listo: {'roles_creados': 0, 'roles_reutilizados': 4, 'roles_reactivados': 0, 'permisos_creados': 0, 
+'permisos_reutilizados': 10, 'relaciones_creadas': 0, 'relaciones_reutilizadas': 26, 'relaciones_reactivadas': 0, 
+'relaciones_oficiales': 26}
+[setup] fase 2: empresas ficticias
+[setup] empresas creadas: alpha_id=3 beta_id=4
+[setup] fase 3: usuarios ficticios
+[setup] usuarios creados: ['admin_a', 'admin_b', 'capturista_a', 'consulta_a', 'contador_a', 'inactivo_a', 
+'sin_membresia_a']
+[setup] fase 4: administradores bootstrap
+[setup] admins bootstrap: alpha=6 beta=7
+[setup] fase 5: membresias CONTADOR/CAPTURISTA/CONSULTA
+[setup] roles operativos asignados: {'contador_a': 8, 'capturista_a': 9, 'consulta_a': 10}
+[setup] fase 6: recursos financieros ficticios
+[setup] recursos ficticios creados en ambas empresas
+[setup] fase 7: verificacion final
+[setup] verificacion final: integridad confirmada
+[setup] SETUP COMPLETADO

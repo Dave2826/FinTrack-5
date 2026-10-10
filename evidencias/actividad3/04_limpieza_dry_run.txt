@@ -1,0 +1,80 @@
+========================================================================
+EVIDENCIA 04 - INSPECCION DEL DRY-RUN DE LIMPIEZA
+Actividad 3 - FinTrack-5: Roles y control de acceso
+========================================================================
+Fecha y hora: 2026-10-09T18:22 (UTC-6)
+Resultado: EXITOSO (EXIT=0); alcance demostrado; autorizado el --confirm
+
+------------------------------------------------------------------------
+1. COMANDO EJECUTADO
+------------------------------------------------------------------------
+  docker compose -p fintrack5_test --env-file .env.test -f compose.yaml -f compose.test.yaml ^
+    exec -T -e PYTHONPATH=/app api python scripts/limpiar_pruebas.py
+
+Código de salida: 0
+
+------------------------------------------------------------------------
+2. SALIDA COMPLETA (stderr+stdout combinados, sin alterar)
+------------------------------------------------------------------------
+[limpieza] guardas verificadas: BD fintrack5_test y alembic
+[limpieza] MODO DRY-RUN (sin escrituras)
+[limpieza] empresas: [(1, 'Pruebas Alpha SA'), (2, 'Pruebas Beta SA')]
+[limpieza] company_users: [1, 2, 3, 4, 5]
+[limpieza] company_user_roles: [1, 2, 3, 4, 5]
+[limpieza] accounts: [1, 2]
+[limpieza] concepts: [1, 2, 3]
+[limpieza] account_concepts: [1, 2, 3]
+[limpieza] transactions: [1, 2, 3]
+[limpieza] users: [(1, 'admin_a@test.local'), (2, 'admin_b@test.local'), (3, 'contador_a@test.local'), (4, 'capturista_a@test.local'), (5, 'consulta_a@test.local'), (6, 'sin_membresia_a@test.local'), (7, 'inactivo_a@test.local')]
+[limpieza] roles/permissions/role_permissions: NO se eliminan (catalogo oficial)
+[limpieza] dry-run finalizado sin escrituras
+
+------------------------------------------------------------------------
+3. COMPROBACIONES OBLIGATORIAS PREVIAS AL --confirm
+------------------------------------------------------------------------
+a) Se identifica como simulación:
+   OK - "MODO DRY-RUN (sin escrituras)" y "dry-run finalizado sin escrituras".
+
+b) Solo aparecen registros de prueba esperados:
+   OK - empresas (1,2) = las dos creadas por el setup;
+        company_users/roles 1..5 = 2 admins + 3 operativos;
+        accounts 1..2; concepts 1..3; account_concepts 1..3;
+        transactions 1..3; users 1..7 = exactamente los 7 emails del setup.
+
+c) No aparecen registros ajenos a las dos empresas de prueba:
+   OK - ninguna id fuera de los rangos anteriores; ningún correo distinto
+        de la lista del setup; el catálogo (roles/permissions/
+        role_permissions) figura explícitamente como no eliminable.
+
+d) Exclusiones de usuarios con relaciones ajenas:
+   OK - no hay líneas "EXCLUIDO" porque ninguna de las identificaciones
+        coincide con empresas ajenas ni con correos @test.local fuera de
+        la lista (el mecanismo de exclusión existe y simplemente no
+        encontró nada que excluir en esta BD de pruebas aislada).
+
+e) Conservación del catálogo oficial:
+   OK - "roles/permissions/role_permissions: NO se eliminan (catalogo oficial)".
+
+f) El dry-run no modifica los datos (prueba empírica de conteos):
+   Comando (post-dry-run): docker compose ... exec -T postgres psql -U fintrack5_test_user -d fintrack5_test -tAc "<conteos>"
+   Resultado:
+   users|7
+   companies|2
+   company_users|5
+   company_user_roles|5
+   roles|4
+   permissions|10
+   role_permissions|26
+   accounts|2
+   concepts|3
+   account_concepts|3
+   transactions|3
+   alembic|3b9f41c7d2ae
+   OK - idéntico a los conteos registrados tras el setup (evidencia 02, sección 9).
+
+------------------------------------------------------------------------
+CONCLUSION EVIDENCIA 04
+------------------------------------------------------------------------
+Dry-run verificado en las seis comprobaciones. Ningún registro
+inesperado, alcance acotado demostrado, catálogo protegido y base sin
+modificaciones. Autorizado el paso de limpieza confirmada (--confirm).

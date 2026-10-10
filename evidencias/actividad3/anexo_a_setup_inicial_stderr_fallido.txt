@@ -1,0 +1,10 @@
+docker : Traceback (most recent call last):
+En línea: 1 Carácter: 1
++ docker compose -p fintrack5_test --env-file .env.test -f compose.yaml ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  File "/app/scripts/setup_pruebas.py", line 12, in <module>
+    from database.connection import SessionLocal
+ModuleNotFoundError: No module named 'database'

@@ -1,0 +1,76 @@
+========================================================================
+EVIDENCIA 08 - ESTADO DE GIT AL CIERRE DE LA FASE
+Actividad 3 - FinTrack-5: Roles y control de acceso
+========================================================================
+Fecha y hora: 2026-10-09T18:32 (UTC-6)
+Resultado: sin commits nuevos; sin modificaciones a la implementación.
+
+------------------------------------------------------------------------
+1. COMMITS Y RAMA
+------------------------------------------------------------------------
+Comando: git log --oneline -5
+Resultado:
+457b501 fix: corregir autorización y roles administrativos
+0a23f38 feat: proteger operaciones pendientes (Fase 4F-D)
+80e428b feat: proteger accountconcept y transactions (Fase 4F-C)
+c681fab feat: proteger account y concept services (Fase 4F-B)
+cd603cc feat: agregar scope por empresa a la autorizacion (Fase 4F-A)
+
+Comando: git branch --show-current
+Resultado: main
+
+Verificación: HEAD = 457b501, idéntico al HEAD esperado antes de comenzar
+la fase y al registrado en la prevalidación (evidencia 01). No se hizo
+ningún commit ni push.
+
+------------------------------------------------------------------------
+2. ESTADO DEL ARBOL DE TRABAJO
+------------------------------------------------------------------------
+Comando: git status --short
+Resultado:
+ M .dockerignore
+ M .gitignore
+?? compose.test.yaml
+?? evidencias/actividad3/
+?? manifiesto_pruebas.json
+?? manifiesto_pruebas_repetido.json
+?? scripts/
+
+Comando: git diff --name-only
+Resultado (solo archivos trakeados modificados):
+.dockerignore
+.gitignore
+
+Comando: git diff --stat
+Resultado:
+ .dockerignore | 1 +
+ .gitignore    | 1 +
+ 2 files changed, 2 insertions(+)
+
+------------------------------------------------------------------------
+3. INTERPRETACION
+------------------------------------------------------------------------
+- Archivos de implementación (graphql_api/, services/, models/,
+  repositories/, database/, security/, alembic/, main.py, etc.):
+  SIN modificaciones en esta fase.
+- scripts/setup_pruebas.py y scripts/limpiar_pruebas.py: sin cambios
+  durante esta fase (el fallo de invocación se resolvió con
+  PYTHONPATH=/app, sin editar el código; SHA-256 verificados en la
+  evidencia 02, sección 1).
+- .dockerignore y .gitignore: modificaciones preexistentes de las fases
+  B-0/B-2 (una línea cada uno, referentes a .env.test); NO se tocaron
+  en esta fase.
+- compose.test.yaml, compose.yaml, .env.test, .env: sin cambios en esta
+  fase (ninguno figura como modificado; los no trakeados siguen como
+  "?? " desde las fases previas).
+- Nuevos sin trakear generados por esta fase (esperados):
+  evidencias/actividad3/ (13 archivos .txt),
+  manifiesto_pruebas.json, manifiesto_pruebas_repetido.json.
+- Ningún commit, amend, push ni staging durante la fase.
+
+------------------------------------------------------------------------
+CONCLUSION EVIDENCIA 08
+------------------------------------------------------------------------
+Estado de Git limpio respecto a la fase: HEAD intacto en 457b501, rama
+main, únicamente artefactos de pruebas y evidencias sin trakear, y las
+dos líneas preexistentes de .dockerignore/.gitignore sin tocar.

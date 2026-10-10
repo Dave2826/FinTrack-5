@@ -1,6 +1,7 @@
 .git
 .gitignore
 .env
+.env.test
 .venv
 venv
 __pycache__

@@ -1,0 +1,38 @@
+========================================================================
+EVIDENCIA 01 - PREVALIDACION FUNCIONAL
+Actividad 3 - FinTrack-5: Roles y control de acceso
+========================================================================
+Fecha y hora: 2026-10-09T18:46:26-06:00
+Resultado: LAS 10 GUARDAS OK; autorizada la ejecución de escrituras.
+
+1. Ruta/rama/HEAD: repo actividad5_david_morales; rama main;
+   HEAD 457b501 "fix: corregir autorización y roles administrativos".
+   git status: sin commits nuevos; cambios preexistentes de fases
+   anteriores (.dockerignore/.gitignore) y artefactos sin trakear.
+2. Contenedores: fintrack5-test-api (Up), fintrack5-test-postgres (Up),
+   proyecto fintrack5_test.
+3. Config efectiva: compose.test.yaml con DB_HOST=postgres y puertos
+   !reset [] (sin publicación al host).
+4. DB_NAME=fintrack5_test (env del contenedor api).
+5. DB_HOST=postgres (env del contenedor api).
+6. SELECT current_database() -> fintrack5_test.
+7. Alembic -> 3b9f41c7d2ae.
+8. IDs del manifiesto repetido vs BD reales (todos coinciden):
+   users 8-14 (admin_a..inactivo_a; user 14 is_active=f);
+   company_users 6-10 (cu6 Alpha/8 admin; cu7 Beta/9 admin;
+   cu8/9/10 Alpha: 10/11/12); roles 1-4 (ADMINISTRADOR..CONSULTA);
+   cuentas 3 (Alpha) y 4 (Beta); conceptos 4-5 (Alpha) y 6 (Beta);
+   transacciones 4-5 (Alpha) y 6 (Beta), todas activas.
+9. Catálogo: roles 4/4 activos; permissions 10/10; role_permissions
+   26/26 activas (matriz 10/8/4/4 verificada en cierre).
+10. Desarrollo (solo lectura): users 1, companies 1, company_users 1,
+    company_user_roles 0, roles 4, permissions 10, role_permissions 26,
+    accounts 3, concepts 10, account_concepts 10, transactions 21,
+    alembic 3b9f41c7d2ae -> IDÉNTICO al baseline de la fase previa.
+
+Cliente: runner temporal /tmp/runner/runner.py (copiado con docker cp;
+SHA-256 host==contenedor: 73a28164... tras la corrección 1c9b2b1d...).
+GraphQL ejecutado dentro del contenedor api vía urllib a
+http://127.0.0.1:8000/graphql (sin publicar puertos).
+Credenciales: importadas en tiempo de ejecución desde
+scripts.setup_pruebas.CONTRASENA_PRUEBAS; nunca impresas ni guardadas.

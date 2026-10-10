@@ -1,0 +1,188 @@
+========================================================================
+EVIDENCIA 02 - PRIMERA PREPARACION (SETUP INICIAL)
+Actividad 3 - FinTrack-5: Roles y control de acceso
+========================================================================
+Fecha y hora: 2026-10-09T18:17 (UTC-6)
+Resultado: FALLIDA - setup abortado antes de escribir; fase detenida
+
+------------------------------------------------------------------------
+1. DISPONIBILIDAD DE LOS SCRIPTS EN EL CONTENEDOR
+------------------------------------------------------------------------
+Comando: docker compose -p fintrack5_test --env-file .env.test -f compose.yaml -f compose.test.yaml exec -T api ls -la /app/scripts/
+Primer resultado: ls: cannot access '/app/scripts/': No such file or directory (EXIT=2)
+Causa: la imagen API se construyo en la etapa B-2, antes de la creacion
+de los scripts; el directorio no forma parte de la imagen.
+
+Accion (no modifica la imagen ni los scripts): copia puntual al contenedor.
+Comando: docker compose ... exec -T api mkdir -p /app/scripts        -> EXIT=0
+Comando: docker cp "scripts\setup_pruebas.py"  fintrack5-test-api:/app/scripts/setup_pruebas.py   -> EXIT=0
+Comando: docker cp "scripts\limpiar_pruebas.py" fintrack5-test-api:/app/scripts/limpiar_pruebas.py -> EXIT=0
+
+Verificacion de integridad (SHA-256 host vs contenedor):
+Comando: docker compose ... exec -T api python -c "import hashlib; ..."  y  py -c "import hashlib; ..."
+Resultado:
+setup   e4537cbeca966c7136780064aef2daa077207a07e4a7651e427ef5cd0e64437e  (coincide)
+limpiar 8f097f8897f1901247717054ffaeacda55b179db0fd0065dbfa400b9af2faaa6  (coincide)
+
+------------------------------------------------------------------------
+2. EJECUCION DEL SETUP - RESULTADO: FALLIDA
+------------------------------------------------------------------------
+Comando ejecutado:
+  docker compose -p fintrack5_test --env-file .env.test -f compose.yaml -f compose.test.yaml ^
+    exec -T api python scripts/setup_pruebas.py > manifiesto_pruebas.json 2> evidencias\actividad3\_setup_stderr.tmp
+
+Código de salida: 1
+
+Salida estándar (stdout): vacía (0 bytes; no se emitio manifiesto).
+Redirección creó un archivo manifiesto_pruebas.json de 0 bytes, que fue
+ELIMINADO inmediatamente: el protocolo exige que el manifiesto solo exista
+como resultado de una ejecución exitosa.
+
+Salida de error (stderr), conservada tal cual:
+  Traceback (most recent call last):
+    File "/app/scripts/setup_pruebas.py", line 12, in <module>
+      from database.connection import SessionLocal
+  ModuleNotFoundError: No module named 'database'
+
+------------------------------------------------------------------------
+3. CAUSA ANALIZADA (solo lectura)
+------------------------------------------------------------------------
+Comando: docker compose ... exec -T api sh -c "pwd; python -c 'import sys; print(sys.path[:3])'; ls /app/scripts"
+Resultado:
+  /app
+  ['', '/usr/local/lib/python3.11.zip', '/usr/local/lib/python3.11']
+  limpiar_pruebas.py
+  setup_pruebas.py
+
+Analisis: al ejecutar "python scripts/setup_pruebas.py", Python inserta el
+directorio del script (/app/scripts) en sys.path, NO el directorio de trabajo
+(/app). Por eso el paquete "database" (ubicado en /app/database) no se
+encuentra. Es un fallo de INVOCACIÓN, no de los scripts ni de los datos.
+Las guardas del script nunca llegaron a ejecutarse; la base no interactuo.
+
+------------------------------------------------------------------------
+4. INSPECCION DE SOLO LECTURA TRAS EL FALLO
+------------------------------------------------------------------------
+Comando: docker compose ... exec -T postgres psql -U fintrack5_test_user -d fintrack5_test -tAc "<conteos>"
+Resultado:
+users|0
+companies|0
+company_users|0
+company_user_roles|0
+roles|0
+permissions|0
+role_permissions|0
+accounts|0
+concepts|0
+account_concepts|0
+transactions|0
+alembic|3b9f41c7d2ae
+Código de salida: 0
+
+Conclusion: cero escrituras; el catálogo oficial NO fue sembrado
+(roles/permissions/role_permissions en 0); revisión Alembic intacta.
+Estado de la BD de pruebas: exactamente igual al pre-experimento (vacía).
+
+------------------------------------------------------------------------
+5. ACCIONES CUMPLIDAS TRAS EL FALLO (segun protocolo)
+------------------------------------------------------------------------
+- No se ejecuto la limpieza confirmada.
+- No se repitio el automaticamente el setup.
+- El error se conservo sin secretos (arriba).
+- Se inspecciono la BD en modo solo lectura (arriba).
+- Se detiene la fase a la espera de autorizacion para re-ejecutar el
+  setup con la invocacion corregida propuesta abajo.
+
+------------------------------------------------------------------------
+6. INVOCACION CORREGIDA PROPUESTA (pendiente de autorizacion)
+------------------------------------------------------------------------
+  docker compose -p fintrack5_test --env-file .env.test -f compose.yaml -f compose.test.yaml ^
+    exec -T -e PYTHONPATH=/app api python scripts/setup_pruebas.py > manifiesto_pruebas.json 2> evidencias\actividad3\_setup_stderr.tmp
+
+Motivo: PYTHONPATH=/app agrega /app a sys.path sin modificar el script.
+Alternativa equivalente: exec -T api python -m scripts.setup_pruebas
+(con /app como directorio de trabajo).
+
+Nota: los scripts permanecen sin modificar en el host y en el contenedor
+(chequeos SHA-256 arriba); no se tocó la implementación de la aplicación.
+
+========================================================================
+7. REINTENTO AUTORIZADO POR EL USUARIO - RESULTADO: EXITOSA
+========================================================================
+Autorizacion del usuario (2026-10-09): "Sí, reintentar con PYTHONPATH".
+
+Fecha y hora: 2026-10-09T18:19 (UTC-6)
+Comando ejecutado:
+  docker compose -p fintrack5_test --env-file .env.test -f compose.yaml -f compose.test.yaml ^
+    exec -T -e PYTHONPATH=/app api python scripts/setup_pruebas.py > manifiesto_pruebas.json 2> evidencias\actividad3\_setup_stderr_retry.tmp
+
+Código de salida: 0
+Salida estándar: manifiesto_pruebas.json (4706 bytes en el momento de la
+captura; convertido posteriormente a UTF-8 ver seccion 8).
+
+Salida de error (stderr del script, logs a stderr por diseño), conservada:
+  [setup] guardas verificadas: BD fintrack5_test, alembic, tablas vacias
+  [setup] fase 1: catalogo oficial (seed)
+  [setup] catalogo listo: {'roles_creados': 4, 'roles_reutilizados': 0,
+    'roles_reactivados': 0, 'permisos_creados': 10, 'permisos_reutilizados': 0,
+    'relaciones_creadas': 26, 'relaciones_reutilizadas': 0,
+    'relaciones_reactivadas': 0, 'relaciones_oficiales': 26}
+  [setup] fase 2: empresas ficticias
+  [setup] empresas creadas: alpha_id=1 beta_id=2
+  [setup] fase 3: usuarios ficticios
+  [setup] usuarios creados: ['admin_a', 'admin_b', 'capturista_a', 'consulta_a',
+    'contador_a', 'inactivo_a', 'sin_membresia_a']
+  [setup] fase 4: administradores bootstrap
+  [setup] admins bootstrap: alpha=1 beta=2
+  [setup] fase 5: membresias CONTADOR/CAPTURISTA/CONSULTA
+  [setup] roles operativos asignados: {'contador_a': 3, 'capturista_a': 4, 'consulta_a': 5}
+  [setup] fase 6: recursos financieros ficticios
+  [setup] recursos ficticios creados en ambas empresas
+  [setup] fase 7: verificacion final
+  [setup] verificacion final: integridad confirmada
+  [setup] SETUP COMPLETADO
+Nota: el envoltorio de PowerShell 5.1 puede envolver stderr con metadatos
+del cmdlet (NativeCommandError); el contenido del script se conserva tal cual.
+
+========================================================================
+8. CONVERSION DE CODIFICACION DEL MANIFIESTO
+========================================================================
+La redireccion ">" de PowerShell 5.1 escribe UTF-16LE con BOM; la
+validacion con UTF-8 dio UnicodeDecodeError (byte 0xff en posicion 0).
+Conversion mecanica sin alterar contenido:
+Comando: py -c "raw.decode('utf-16'); json.loads(...); json.dump(..., utf-8)"
+Resultado: BOM utf-16 detectado=True; convertido_a_utf8=True; JSON valido=True.
+Esto solo normaliza la codificacion del texto capturado; los valores no se
+modificaron.
+
+========================================================================
+9. CONTEOS DE SOLO LECTURA TRAS EL SETUP EXITOSO
+========================================================================
+Comando: docker compose ... exec -T postgres psql -U fintrack5_test_user -d fintrack5_test -tAc "<conteos>"
+Resultado:
+users|7
+companies|2
+company_users|5
+company_user_roles|5
+roles|4
+permissions|10
+role_permissions|26
+accounts|2
+concepts|3
+account_concepts|3
+transactions|3
+alembic|3b9f41c7d2ae
+Código de salida: 0
+
+Comando: docker compose ... exec -T postgres psql ... "SELECT r.code, count(*) ... GROUP BY r.code"
+Resultado (matriz rol-permiso activa):
+ADMINISTRADOR|10
+CAPTURISTA|4
+CONSULTA|4
+CONTADOR|8
+
+------------------------------------------------------------------------
+CONCLUSION EVIDENCIA 02
+------------------------------------------------------------------------
+Setup inicial: FALLIDA (invocación, cero impacto) + REINTENTO EXITOSO
+(EXIT=0, integridad confirmada). Continua la validación del manifiesto.

@@ -1,0 +1,76 @@
+========================================================================
+EVIDENCIA 04 - INCIDENCIAS
+Actividad 3 - FinTrack-5: Roles y control de acceso
+========================================================================
+
+INC-01 (resuelta, SANITIZADA) - Fuga de JWT en anexo P02
+Gravedad: MEDIA. En la primera ejecucion de P02, el runner imprimio el
+payload completo del login, que incluia el accessToken JWT de pruebas
+del entorno aislado. Detectado inmediatamente por inspeccion del anexo.
+Accion: anexo p02_smoke.txt sobrescrito con nota de sanitizacion; el
+token no se conserva; el runner fue corregido para imprimir solo
+tokenType. El JWT afectado era de un entorno Docker aislado sin puertos
+publicados y con secreto ficticio de pruebas; aun asi se elimino de las
+evidencias conforme a la regla de no conservar JWT.
+Evidencia: anexos/p02_smoke.txt (sustituto), anexos/p02_smoke_reintento.txt.
+
+INC-02 (resuelta) - Nombre de argumento GraphQL incorrecto en P02b
+Gravedad: BAJA. El runner uso actorCompanyId; el argumento real (tras
+introspeccion P01) es actorCompanyUserId. P02b fallo una vez con
+"Unknown argument 'actorCompanyId'..." (error de validacion GraphQL, no
+de autorizacion). Accion: runner corregido en todas las operaciones con
+argumentos sueltos; re-ejecucion de P02: 2/2 APROBADOS. No se ejecuto
+ninguna escritura durante el fallo.
+
+INC-03 (informativa) - Codificacion UTF-16 de anexos
+Los anexos capturados con Tee-Object (PowerShell 5.1) quedaron en
+UTF-16LE con BOM; se convirtieron a UTF-8 mecanicamente sin alterar
+contenido (mismo procedimiento validado en la fase previa).
+
+INC-04 (informativa) - Discrepancias matriz/codigo detectadas en la
+inspeccion y confirmadas en ejecucion (no corregidas, son del diseño):
+- company.users.read no es exigida por ninguna operacion GraphQL
+  expuesta (solo existe en el catalogo; CONTADOR/ADMIN/CONSULTA la
+  poseen pero ninguna query la consume aun).
+- El catalogo de roles/permisos es global (roles.read/roles.write sin
+  scope por empresa): un ADMINISTRADOR de Alpha puede alterar roles que
+  usa Beta. No se exploto en esta fase mas alla de C43-C45 (reversible,
+  sobre CONTADOR de Alpha) y los guards C39-C42.
+
+INC-05 (informativa) - HTTP 200 para denegaciones
+Todas las denegaciones llegaron como HTTP 200 con errors[0].message
+(conversion GraphQL). Ningun caso dependio de estados HTTP 4xx/5xx;
+la distincion autorizacion/validacion se hizo por el texto del mensaje
+(coincidencia exacta tras normalizacion de acentos).
+
+INC-06 (resuelta, REPARADA en auditoria documental) - Mojibake CP437
+en capturas de los anexos y en 02_resultados_casos.txt
+Gravedad: BAJA-MEDIA (calidad de la evidencia; no afecto resultados).
+Causa probable: la salida UTF-8 del runner (dentro del contenedor) fue
+decodificada por el pipeline de captura de PowerShell 5.1 usando la
+pagina de codificacion de consola CP437, por lo que cada byte UTF-8 de
+los acentos se interpreto como un caracter CP437 (C3->U+251C "├",
+B3->U+2502 "│", AD->U+00A1 "¡", A1->U+00ED "í"). La conversion
+posterior UTF-16->UTF-8 de INC-03 preservo ese mangled.
+Archivos afectados y reparados:
+  anexos/bloque_A.txt, anexos/bloque_B.txt, anexos/bloque_C2_B05.txt,
+  anexos/bloque_C3.txt, 02_resultados_casos.txt.
+Reparacion: sustitucion SOLO de las secuencias danadas mediante
+run.encode("cp437").decode("utf-8") (dry-run previo: cada run de 2
+caracteres CP437 revirtio de forma univoca a un acento UTF-8: "├í"->á,
+"├¡"->í, "├│"->ó). No se reconvierten archivos completos; el resto del
+texto quedo byte a byte identico.
+Verificaciones tras la reparacion:
+  - 0 caracteres CP437 residual (box-drawing/¡) en los 5 archivos.
+  - JSONL de los anexos: todas las lineas {..} siguen parseando.
+  - Conteos de estado intactos: A=8, B=4, C2+B05=3, C3=16,
+    02: 89 APROBADO / 0 FALLIDO.
+  - Mensajes restaurados con acentos correctos y coincidentes con el
+    codigo: "La membresía no existe o está inactiva" (3),
+    "Credenciales inválidas", "El usuario está inactivo",
+    "Ya existe un rol con ese código",
+    "La membresía ya tiene asignado este rol".
+
+No hubo: errores de conexion, timeouts, ni resultados inesperados que
+obligaran a detener un bloque. Los abortos programados del runner
+(bloques C2/C3) no se activaron.

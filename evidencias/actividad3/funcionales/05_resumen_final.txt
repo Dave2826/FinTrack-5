@@ -1,0 +1,107 @@
+========================================================================
+EVIDENCIA 05 - RESUMEN FINAL
+Actividad 3 - FinTrack-5: Autorizacion con Roles y Control de Acceso
+Fecha: 2026-10-09
+HEAD: 457b501 (sin commits nuevos en toda la actividad)
+Proyecto de pruebas: fintrack5_test (contenedores fintrack5-test-api,
+fintrack5-test-postgres; sin puertos publicados al host)
+========================================================================
+
+RESULTADO GLOBAL: 89 registros ejecutados, 89 APROBADO, 0 FALLIDO.
+Casos bloqueados (no ejecutados, documentados): H01-H05.
+
+Desglose por bloque (registros individuales de 02_resultados_casos.txt;
+suma exacta: 2+8+5+38+2+16+18 = 89):
+  P01 introspeccion ............. verificado (9 queries / 15 mutations;
+                                  prueba de entorno, no genera registro
+                                  de estado y no cuenta en los 89)
+  P02/P02b smoke login .......... 2 APROBADO
+  A01-A08 autenticacion ......... 8 APROBADO
+  B01-B05 actor/membresia ....... 5 APROBADO
+  C01-C33 matriz por rol ........ 38 APROBADO
+  C34-C35 admin_b (Beta) ........ 2 APROBADO
+  C36-C47 ADMINISTRADOR ......... 16 APROBADO
+  D01-D18 aislamiento ........... 18 APROBADO
+
+Nota de conteo (correccion de auditoria): los resumenes automaticos del
+runner ("resumen_bloque") reportaban C1=34 y C3=13 porque su contador
+manual omitia 7 subverificaciones que si generaron registro individual
+con estado APROBADO (en C1: C10v, C13v, C13v-detalle, C19v; en C3:
+tres de C43-pre, C43v, C45v, C45c, C45c-conteo). Los registros JSON de
+los anexos y este consolidado (89) son la fuente autoritativa. Ver
+tambien INC-06 en 04_incidencias.txt.
+
+------------------------------------------------------------------------
+HALLAZGOS FUNCIONALES
+------------------------------------------------------------------------
+1. Las 24 operaciones GraphQL estan protegidas por exigir_permiso con
+   la combinacion permiso+scope descrita en 00_plan_casos.txt.
+2. scope de empresa verificado en cuentas, conceptos, transacciones,
+   miembros (D01-D18, C01-C33): actor de otra empresa siempre denegado
+   con "El actor no pertenece a la empresa del recurso".
+3. is_admin NO es bypass: un ADMINISTRADOR sin el permiso exacto no
+   opera (matriz de permisos por rol intacta al cierre).
+4. Restricciones de proteccion del ADMINISTRADOR verificadas (C39, C40).
+5. Colisiones de unicidad por nombre/codigo verificadas (C27, C28, C41,
+   C42, C46).
+6. Par reversible C43-C45 verificado con conteos pre/desde/post
+   (26->25->26 role_permissions); CONTADOR conserva sus 8 permisos.
+7. Rotacion de rol C36-C37 deja una fila inactiva residual; cu10
+   restaurado y verificado CONSULTA activo via SQL.
+8. Miembros inactivos y sin rol son denegados (B04, B05) con los
+   mensajes exactos del codigo.
+9. Errores llegan como HTTP 200 con payload errors[] (GraphQL); la
+   autenticacion/autorizacion se distingue por texto de mensaje.
+
+------------------------------------------------------------------------
+CAMBIOS DE DATOS (fintrack5_test, todos intencionales y documentados)
+------------------------------------------------------------------------
+Residuos que permanecen (pruebas de soft-delete y de membresia temporal):
+- transactions 7 y 8: is_active=false (C19/C24 y C29a/b).
+- company_user 11: inactiva en Beta (C34/C35, usada por B05).
+- company_user_role: 1 fila inactiva (CAPTURISTA de cu10, C36/C37).
+Ningun cambio GLOBAL sin restaurar. Los conteos completos y la matriz
+de permisos por rol estan en 03_conteos_antes_despues.txt.
+
+Base de desarrollo (actividad5): IDENTICA al baseline, solo lectura.
+
+------------------------------------------------------------------------
+EVIDENCIAS
+------------------------------------------------------------------------
+evidencias/actividad3/funcionales/
+  00_plan_casos.txt
+  01_prevalidacion_funcional.txt
+  02_resultados_casos.txt
+  03_conteos_antes_despues.txt
+  04_incidencias.txt
+  05_resumen_final.txt
+  anexos/  (p01_introspeccion.txt, p02_smoke.txt [sanitizado],
+            p02_smoke_reintento.txt, bloque_A.txt, bloque_B.txt,
+            bloque_C1.txt, bloque_C2_B05.txt, bloque_C3.txt, bloque_D.txt,
+            introspeccion_codigo.py, runner_funcionales_codigo.py)
+  capturas/  (nota: sin herramienta de captura en este entorno;
+              los anexos JSON sustituyen la captura de pantalla)
+
+Escaneo de secretos sobre los 15+ archivos de esta carpeta: 0 hallazgos.
+Credenciales y JWT: en memoria de ejecucion o anonimizados (INC-01).
+
+------------------------------------------------------------------------
+LIMITACIONES Y PENDIENTES
+------------------------------------------------------------------------
+Casos bloqueados (no ejecutados, documentados individualmente):
+- H01 membresia sin rol activo: requiere modificar directamente los
+  datos (alta de membresia sin asignar rol); no se ejecuto.
+- H02 rol inactivo: requiere una modificacion que puede dejar el
+  entorno en un estado no restaurado; no se ejecuto.
+- H03 permiso global inactivo: no existe una operacion segura
+  disponible para realizar esta prueba; no se ejecuto.
+- H04 creacion positiva de otro administrador principal: requiere
+  alterar previamente el estado del administrador existente; no se
+  ejecuto.
+- H05 creacion positiva de roles o permisos: puede dejar residuos en
+  el catalogo global; no se ejecuto.
+Ninguno fue marcado APROBADO; los guards C39/C40 solo verifican los
+mensajes de denegacion, no sustituyen estos casos.
+- No se ejecuto ninguna prueba de la fase de despliegue a produccion.
+- El runner y la introspeccion son temporales; sus copias de anexo son
+  el unico registro, no forman parte del codigo productivo.

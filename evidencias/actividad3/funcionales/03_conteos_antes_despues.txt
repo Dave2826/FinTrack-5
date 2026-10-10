@@ -1,0 +1,109 @@
+========================================================================
+EVIDENCIA 03 - CONTEOS ANTES Y DESPUES
+Actividad 3 - FinTrack-5: Roles y control de acceso
+========================================================================
+Todos los conteos son de fintrack5_test (solo lectura via psql en el
+contenedor de pruebas). Formato: tabla | total | activos.
+
+------------------------------------------------------------------------
+BASELINE PRE-MUTACIONES (tras prevalidacion, antes de P02)
+------------------------------------------------------------------------
+users               | 7 | 6
+companies           | 2 | 2
+company_users       | 5 | 5
+company_user_roles  | 5 | 5
+roles               | 4 | 4
+permissions         | 10| 10
+role_permissions    | 26| 26
+accounts            | 2 | 2
+concepts            | 3 | 3
+account_concepts    | 3 | 3
+transactions        | 3 | 3
+alembic             | 3b9f41c7d2ae
+
+------------------------------------------------------------------------
+POST-BLOQUE C1 (C01-C33)
+------------------------------------------------------------------------
+users               | 7 | 6     (sin cambio)
+companies           | 2 | 2     (sin cambio)
+company_users       | 5 | 5     (sin cambio: C15/C25/C33 denegados)
+company_user_roles  | 5 | 5     (sin cambio: C14/C30 denegados)
+roles               | 4 | 4     (sin cambio: C16/C31 denegados)
+permissions         | 10| 10    (sin cambio)
+role_permissions    | 26| 26    (sin cambio)
+accounts            | 2 | 2     (sin cambio: C10/C20 denegados; C27 duplicado)
+concepts            | 3 | 3     (sin cambio: C11/C21 denegados; C28 duplicado)
+account_concepts    | 3 | 3     (sin cambio: C22 denegado)
+transactions        | 5 | 3     (+2: C19 y C29 creadas; ambas soft-deleted
+                                 en C24 y C29b -> activas siguen en 3)
+alembic             | 3b9f41c7d2ae
+
+EFECTOS RESIDUALES ESPERADOS C1: transacciones 7 (C19) y 8 (C29),
+is_active=false (soft-delete via API, sin endpoint de borrado físico).
+
+------------------------------------------------------------------------
+POST-BLOQUE C2 + B05 (C34-C35 con admin_b en Beta)
+------------------------------------------------------------------------
+company_users       | 6 | 5     (+1: membresia 11 de user 13 en empresa 4,
+                                 creada y DESACTIVADA por admin_b; inactiva)
+company_user_roles  | 5 | 5     (sin cambio: la membresia 11 es no-admin,
+                                 no recibe rol)
+Demas tablas: sin cambios respecto al post-C1.
+La membresia 11 quedo inactiva a proposito para B05
+("La membresia no existe o esta inactiva" observado y APROBADO).
+
+------------------------------------------------------------------------
+POST-BLOQUE C3 (C36-C47, incluye par reversible C43-C45)
+------------------------------------------------------------------------
+company_user_roles  | 6 | 5     (+1 fila inactiva residual: la relacion
+                                 CAPTURISTA de cu10 creada en C36; la
+                                 relacion CONSULTA original fue reactivada
+                                 en C37 -> cu10 verificado CONSULTA activo
+                                 via SQL al cierre)
+role_permissions    | 26| 26    (C43: 26->25 activas; C45 RESTAURACION:
+                                 25->26; conteos via GraphQL: 8 pre,
+                                 7 tras quitar roles.read de CONTADOR,
+                                 8 tras restaurar; verificado C43-pre/C45c)
+roles               | 4 | 4     (C39 denegado; rol 1 sigue activo)
+permissions         | 10| 10    (C42 denegado)
+company_users       | 6 | 5     (C47 denegado; sin alta de admin)
+Demas tablas: sin cambios.
+
+------------------------------------------------------------------------
+POST-BLOQUE D (D01-D18, aislamiento)
+------------------------------------------------------------------------
+Sin cambios en ninguna tabla: los 18 casos fueron denegaciones
+(scope o validacion) o lecturas fallidas; verificado por comparacion
+con el post-C3 y por las verificaciones inline C10v/C13v.
+
+------------------------------------------------------------------------
+CIERRE FINAL (fintrack5_test)
+------------------------------------------------------------------------
+users               | 7 | 6
+companies           | 2 | 2
+company_users       | 6 | 5
+company_user_roles  | 6 | 5
+roles               | 4 | 4     (matriz: ADMIN 10, CONTADOR 8, CAPTURISTA 4, CONSULTA 4)
+permissions         | 10| 10
+role_permissions    | 26| 26    (RESTAURADO)
+accounts            | 2 | 2
+concepts            | 3 | 3
+account_concepts    | 3 | 3
+transactions        | 5 | 3
+alembic             | 3b9f41c7d2ae
+
+Residuos documentados y consentidos (no interferentes):
+- transactions 7 y 8 inactivas (soft-deletes de prueba C19/C24 y C29a/b).
+- company_user 11 inactiva en Beta (membresia temporal C34/C35).
+- company_user_role inactiva (CAPTURISTA de cu10, rotacion C36/C37).
+No quedan cambios globales sin restaurar (role_permissions 26/26;
+cu10 CONSULTA activo; CONTADOR con sus 8 permisos).
+
+------------------------------------------------------------------------
+BASE DE DESARROLLO (actividad5) - ANTES vs DESPUES
+------------------------------------------------------------------------
+Antes (prevalidacion) y despues (cierre) IDENTICOS:
+users 1, companies 1, company_users 1, company_user_roles 0,
+roles 4, permissions 10, role_permissions 26, accounts 3, concepts 10,
+account_concepts 10, transactions 21, alembic 3b9f41c7d2ae.
+Ningun comando de esta fase escribio en actividad5.

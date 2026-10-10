@@ -1,0 +1,20 @@
+[limpieza] guardas verificadas: BD fintrack5_test y alembic
+[limpieza] MODO --confirm
+[limpieza] empresas: [(1, 'Pruebas Alpha SA'), (2, 'Pruebas Beta SA')]
+[limpieza] company_users: [1, 2, 3, 4, 5]
+[limpieza] company_user_roles: [1, 2, 3, 4, 5]
+[limpieza] accounts: [1, 2]
+[limpieza] concepts: [1, 2, 3]
+[limpieza] account_concepts: [1, 2, 3]
+[limpieza] transactions: [1, 2, 3]
+[limpieza] users: [(1, 'admin_a@test.local'), (2, 'admin_b@test.local'), (3, 'contador_a@test.local'), (4, 'capturista_a@test.local'), (5, 'consulta_a@test.local'), (6, 'sin_membresia_a@test.local'), (7, 'inactivo_a@test.local')]
+[limpieza] roles/permissions/role_permissions: NO se eliminan (catalogo oficial)
+[limpieza] eliminados transactions: 3
+[limpieza] eliminados account_concepts: 3
+[limpieza] eliminados accounts: 2
+[limpieza] eliminados concepts: 3
+[limpieza] eliminados company_user_roles: 5
+[limpieza] eliminados company_users: 5
+[limpieza] eliminados companies: 2
+[limpieza] eliminados users: 7
+[limpieza] LIMPIEZA COMPLETADA

@@ -1,0 +1,132 @@
+========================================================================
+EVIDENCIA 06 - REPETICION DEL SETUP
+Actividad 3 - FinTrack-5: Roles y control de acceso
+========================================================================
+Fecha y hora: 2026-10-09T18:27 (UTC-6)
+Resultado: EXITOSO (EXIT=0); ciclo limpieza->setup demostrado; datos
+conservados para la siguiente etapa de pruebas funcionales.
+
+------------------------------------------------------------------------
+1. COMANDO EJECUTADO
+------------------------------------------------------------------------
+  docker compose -p fintrack5_test --env-file .env.test -f compose.yaml -f compose.test.yaml ^
+    exec -T -e PYTHONPATH=/app api python scripts/setup_pruebas.py > manifiesto_pruebas_repetido.json 2> evidencias\actividad3\_setup_repetido_stderr.tmp
+
+Código de salida: 0
+Prerequisito cumplido: la limpieza confirmada (evidencia 05) fue verificada
+antes de esta segunda preparación.
+
+Salida estándar: manifiesto_pruebas_repetido.json (4718 bytes capturados;
+convertido a UTF-8 igual que el primero, ver seccion 4).
+
+------------------------------------------------------------------------
+2. SALIDA DE ERRORES/LOGS (stderr, sin alterar)
+------------------------------------------------------------------------
+[setup] guardas verificadas: BD fintrack5_test, alembic, tablas vacias
+[setup] fase 1: catalogo oficial (seed)
+[setup] catalogo listo: {'roles_creados': 0, 'roles_reutilizados': 4,
+  'roles_reactivados': 0, 'permisos_creados': 0, 'permisos_reutilizados': 10,
+  'relaciones_creadas': 0, 'relaciones_reutilizadas': 26,
+  'relaciones_reactivadas': 0, 'relaciones_oficiales': 26}
+[setup] fase 2: empresas ficticias
+[setup] empresas creadas: alpha_id=3 beta_id=4
+[setup] fase 3: usuarios ficticios
+[setup] usuarios creados: ['admin_a', 'admin_b', 'capturista_a', 'consulta_a', 'contador_a', 'inactivo_a', 'sin_membresia_a']
+[setup] fase 4: administradores bootstrap
+[setup] admins bootstrap: alpha=6 beta=7
+[setup] fase 5: membresias CONTADOR/CAPTURISTA/CONSULTA
+[setup] roles operativos asignados: {'contador_a': 8, 'capturista_a': 9, 'consulta_a': 10}
+[setup] fase 6: recursos financieros ficticios
+[setup] recursos ficticios creados en ambas empresas
+[setup] fase 7: verificacion final
+[setup] verificacion final: integridad confirmada
+[setup] SETUP COMPLETADO
+
+Nota de idempotencia del seed: 0 creados / 4 reutilizados (roles),
+0 creados / 10 reutilizados (permisos), 0 creadas / 26 reutilizadas
+(relaciones). El catálogo existente se detectó y no se duplicó.
+Los IDs nuevos (empresas 3-4, usuarios 8-14, etc.) corresponden a la
+continuación de las secuencias de PostgreSQL tras la limpieza; los
+requisitos únicos (email, tax_id, códigos de rol) pasaron sin conflicto.
+
+------------------------------------------------------------------------
+3. VERIFICACION DEL NUEVO MANIFIESTO (solo lectura)
+------------------------------------------------------------------------
+Comando: py -c "json.loads(...); ..."
+Resultado:
+JSON_VALIDO=True; estado=OK; alembic=3b9f41c7d2ae
+empresas: alpha id=3 'Pruebas Alpha SA', beta id=4 'Pruebas Beta SA'
+7 usuarios: admin_a(8,membresia 6,ADMINISTRADOR), admin_b(9,7,ADMINISTRADOR),
+  contador_a(10,8,CONTADOR), capturista_a(11,9,CAPTURISTA),
+  consulta_a(12,10,CONSULTA), sin_membresia_a(13,sin membresia),
+  inactivo_a(14,sin membresia,is_active=False)
+roles: ADMINISTRADOR=1, CONTADOR=2, CAPTURISTA=3, CONSULTA=4 (mismos IDs)
+permisos: 10 (codigos oficiales)
+recursos alpha: cuenta 3, conceptos [4,5], relaciones [4,5], transacciones [4,5]
+recursos beta:  cuenta 4, conceptos [6], relaciones [6], transacciones [6]
+patrones_prohibidos (password/hash/secret/token/jwt/contrasena): ninguno
+Código de salida: 0
+
+------------------------------------------------------------------------
+4. VERIFICACION CONTRA LA BASE (solo lectura)
+------------------------------------------------------------------------
+Comando: docker compose ... exec -T postgres psql -U fintrack5_test_user -d fintrack5_test -tAc "<conteos>"
+Resultado:
+users|7
+companies|2
+company_users|5
+company_user_roles|5
+roles|4
+permissions|10
+role_permissions|26
+accounts|2
+concepts|3
+account_concepts|3
+transactions|3
+alembic|3b9f41c7d2ae
+
+Comando: psql ... consulta de duplicados (emails, tax_id, codigos de rol, membresias)
+Resultado:
+emails_duplicados|0
+tax_ids_duplicados|0
+roles_por_codigo_duplicados|0
+membresias_activas_por_usuario_duplicadas|0
+
+Comando: psql ... matriz rol-permiso activa
+Resultado:
+ADMINISTRADOR|10
+CAPTURISTA|4
+CONSULTA|4
+CONTADOR|8
+
+Comando: psql ... membresias y roles asignados
+Resultado:
+admin_a@test.local|Pruebas Alpha SA|ADMINISTRADOR|t
+admin_b@test.local|Pruebas Beta SA|ADMINISTRADOR|t
+capturista_a@test.local|Pruebas Alpha SA|CAPTURISTA|t
+consulta_a@test.local|Pruebas Alpha SA|CONSULTA|t
+contador_a@test.local|Pruebas Alpha SA|CONTADOR|t
+
+------------------------------------------------------------------------
+5. COMPROBACIONES DE LA REPETICION
+------------------------------------------------------------------------
+a) Segunda preparación con código 0: OK.
+b) Dos empresas y siete usuarios presentes: OK (conteos 2 y 7).
+c) Roles operativos asignados correctamente: OK (matriz de membresias
+   anterior: CONTADOR/CAPTURISTA/CONSULTA en Alpha; ADMINISTRADOR en
+   Alpha y Beta; los activos coinciden con el manifiesto).
+d) Recursos y relaciones creados: OK (cuentas 2, conceptos 3,
+   account_concepts 3, transacciones 3, repartidos 2/1 y 1/0 entre
+   Alpha y Beta).
+e) Sin duplicados inesperados: OK (0 duplicados en emails, tax_id,
+   códigos de rol y membresías; el seed reutilizó el catálogo).
+f) Catálogo 4 roles / 10 permisos / 26 relaciones: OK.
+g) Alembic 3b9f41c7d2ae: OK.
+
+------------------------------------------------------------------------
+CONCLUSION EVIDENCIA 06
+------------------------------------------------------------------------
+El ciclo limpieza -> re-setup funciona de extremo a extremo. La base de
+pruebas queda poblada con los datos ficticios de la segunda preparación,
+listos y CONSERVADOS para la etapa siguiente de pruebas funcionales de
+permisos y aislamiento entre empresas. No se vuelve a limpiar.

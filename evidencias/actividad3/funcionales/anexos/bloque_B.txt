@@ -1,0 +1,10 @@
+{"caso": "B01", "actor": "admin_a", "rol": "ADMINISTRADOR", "operacion": "accounts(actor=7)", "permiso_esperado": "-", "resultado_esperado": "El actor no corresponde al usuario autenticado", "resultado_observado": "El actor no corresponde al usuario autenticado", "http": 200, "estado": "APROBADO", "efecto_datos": "sin cambio (membresia ajena)"}
+
+{"caso": "B02", "actor": "admin_a", "rol": "ADMINISTRADOR", "operacion": "accounts(actor=9999)", "permiso_esperado": "-", "resultado_esperado": "La membresia no existe o esta inactiva", "resultado_observado": "La membresía no existe o está inactiva", "http": 200, "estado": "APROBADO", "efecto_datos": "sin cambio (membresia inexistente)"}
+
+{"caso": "B03", "actor": "sin_membresia_a", "rol": "-", "operacion": "accounts(actor=6)", "permiso_esperado": "-", "resultado_esperado": "El actor no corresponde al usuario autenticado", "resultado_observado": "El actor no corresponde al usuario autenticado", "http": 200, "estado": "APROBADO", "efecto_datos": "sin cambio"}
+
+{"caso": "B04", "actor": "sin_membresia_a", "rol": "-", "operacion": "accounts(actor=9999)", "permiso_esperado": "-", "resultado_esperado": "La membresia no existe o esta inactiva", "resultado_observado": "La membresía no existe o está inactiva", "http": 200, "estado": "APROBADO", "efecto_datos": "sin cambio"}
+
+{"resumen_bloque": "B", "aprobados": 4, "fallos": []}
+

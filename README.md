@@ -91,7 +91,12 @@ Cada capa tiene una responsabilidad específica:
     │   ├── account_repository.py
     │   ├── account_concept_repository.py
     │   ├── company_repository.py
+    │   ├── company_user_repository.py
+    │   ├── company_user_role_repository.py
     │   ├── concept_repository.py
+    │   ├── permission_repository.py
+    │   ├── role_repository.py
+    │   ├── role_permission_repository.py
     │   ├── transaction_repository.py
     │   └── user_repository.py
     ├── security/
@@ -102,7 +107,13 @@ Cada capa tiene una responsabilidad específica:
     │   ├── account_service.py
     │   ├── account_concept_service.py
     │   ├── auth_service.py
+    │   ├── authorization_service.py
+    │   ├── company_user_service.py
     │   ├── concept_service.py
+    │   ├── permission_service.py
+    │   ├── role_permission_service.py
+    │   ├── role_service.py
+    │   ├── seed_service.py
     │   └── transaction_service.py
     ├── evidencias/
     ├── .dockerignore
@@ -308,7 +319,125 @@ Para consultar la migración actual:
 
 La migración actual utilizada por el proyecto es:
 
-    2ceeae7ff07c (head)
+    3b9f41c7d2ae (head)
+
+Migraciones existentes (orden):
+
+    1f16b37ae1a4  base inicial (Actividad 5)
+    2ceeae7ff07c  esquema financiero
+    3b9f41c7d2ae  roles y permisos (Actividad 3)
+
+## Actividad 3 — Autorización con roles y control de acceso
+
+### Arquitectura de autorización
+
+Las 24 operaciones GraphQL (9 queries y 15 mutations) pasan por
+`services/authorization_service.py`, que expone `exigir_permiso`:
+
+- Exige el permiso exacto (código) del rol activo de la membresía del
+  actor en la empresa indicada (`actorCompanyUserId`).
+- Aplica scope por empresa para recursos de negocio (cuentas,
+  conceptos, transacciones, membresías y asignación de roles).
+- El catálogo de roles y permisos es global (sin scope): las
+  operaciones de catálogo exigen `roles.read` / `roles.write`.
+- `is_admin` NO es un bypass: el alta como administrador asigna el
+  rol ADMINISTRADOR con todos los permisos, pero toda operación sigue
+  exigiendo el permiso correspondiente.
+- Los errores de autorización se devuelven como errores GraphQL
+  (HTTP 200 con payload `errors`), con mensajes fijos del código.
+
+### Roles oficiales
+
+- ADMINISTRADOR (protegido: no se puede desactivar ni retirarle
+  `roles.write`).
+- CONTADOR
+- CAPTURISTA
+- CONSULTA
+
+### Permisos (catálogo de 10)
+
+- company.users.read, company.users.write
+- accounts.read, accounts.write
+- concepts.read, concepts.write
+- transactions.read, transactions.write
+- roles.read, roles.write
+
+### Módulos de la Actividad 3
+
+- `services/authorization_service.py` — `exigir_permiso` y scope.
+- `services/role_service.py`, `services/permission_service.py`,
+  `services/role_permission_service.py` — catálogo.
+- `services/company_user_service.py` — membresías empresa-usuario y
+  asignación de roles.
+- `services/seed_service.py` — roles y permisos iniciales.
+- `repositories/role_repository.py`, `permission_repository.py`,
+  `role_permission_repository.py`, `company_user_repository.py`,
+  `company_user_role_repository.py`.
+- Migración `3b9f41c7d2ae_roles_y_permisos.py`.
+
+### Entorno de pruebas aislado (compose.test.yaml)
+
+Existe un overlay de Compose, `compose.test.yaml`, que:
+
+- Renombra los contenedores (`fintrack5-test-api`,
+  `fintrack5-test-postgres`) y usa el volumen `fintrack5_test_pgdata`.
+- Elimina la publicación de puertos (`ports: !reset []`): la API y la
+  base solo son accesibles desde dentro de la red de Docker.
+- Fija `DB_HOST=postgres` y `DB_NAME` a la base de pruebas
+  `fintrack5_test` (distinta de la base de desarrollo `actividad5`).
+
+Invocación canónica (desde la raíz del repo):
+
+    docker compose -p fintrack5_test --env-file .env.test \
+      -f compose.yaml -f compose.test.yaml <comando>
+
+### Configuración del entorno de pruebas
+
+Copia la plantilla y completa los valores ficticios que desees:
+
+    cp .env.test.example .env.test
+
+`.env.test` está excluido de Git (`.gitignore` y `.dockerignore`).
+La plantilla solo incluye nombres de variables y valores de ejemplo;
+no contiene credenciales reales.
+
+Variables requeridas por `compose.test.yaml` (interpolación):
+`POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`,
+`JWT_SECRET_KEY`, `JWT_ALGORITHM`, `JWT_EXPIRE_MINUTES`.
+El servicio `pgadmin` (perfil `herramientas`) usa además
+`PGADMIN_EMAIL` y `PGADMIN_PASSWORD`; las variables `APP_PORT`,
+`POSTGRES_PORT` y `PGADMIN_PORT` se mantienen solo para la
+interpolación del `compose.yaml` base.
+
+### Preparación, pruebas y limpieza (solo sobre fintrack5_test)
+
+Los scripts viven en `scripts/` y NO están dentro de la imagen: cópialos
+al contenedor antes de ejecutarlos.
+
+    docker compose -p fintrack5_test --env-file .env.test \
+      -f compose.yaml -f compose.test.yaml cp scripts/setup_pruebas.py api:/app/scripts/setup_pruebas.py
+
+    docker compose -p fintrack5_test --env-file .env.test \
+      -f compose.yaml -f compose.test.yaml exec -T -e PYTHONPATH=/app api \
+      python /app/scripts/setup_pruebas.py
+
+Para limpiar (primero simula; aplica solo con `--confirm`):
+
+    ... exec -T -e PYTHONPATH=/app api python /app/scripts/limpiar_pruebas.py
+    ... exec -T -e PYTHONPATH=/app api python /app/scripts/limpiar_pruebas.py --confirm
+
+ADVERTENCIAS:
+
+- Ambos scripts se niegan a ejecutarse si `DB_NAME` no es
+  `fintrack5_test` o si `DB_HOST` no es `postgres`: nunca apuntan a la
+  base de desarrollo.
+- `limpiar_pruebas.py` borra datos ficticios de `fintrack5_test` (las
+  empresas "Pruebas Alpha SA" y "Pruebas Beta SA" y sus recursos);
+  ejecuta primero sin `--confirm`.
+- No ejecutes estos scripts contra la base de desarrollo `actividad5`.
+
+Las pruebas funcionales de autorización (matriz de 89 registros) están
+documentadas en `evidencias/actividad3/funcionales/`.
 
 ## Verificación de la aplicación
 

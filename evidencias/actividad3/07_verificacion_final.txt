@@ -1,0 +1,114 @@
+========================================================================
+EVIDENCIA 07 - VERIFICACION FINAL
+Actividad 3 - FinTrack-5: Roles y control de acceso
+========================================================================
+Fecha y hora: 2026-10-09T18:30 (UTC-6)
+Resultado: todas las verificaciones obligatorias satisfactorias.
+La BD de pruebas conserva los datos de la SEGUNDA preparación.
+
+------------------------------------------------------------------------
+1. CONTEOS FINALES DE LA BD DE PRUEBAS (fintrack5_test)
+------------------------------------------------------------------------
+Comando: docker compose -p fintrack5_test --env-file .env.test -f compose.yaml -f compose.test.yaml ^
+  exec -T postgres psql -U fintrack5_test_user -d fintrack5_test -tAc "<conteos>"
+Resultado:
+users|7
+companies|2
+company_users|5
+company_user_roles|5
+roles|4
+permissions|10
+role_permissions|26
+accounts|2
+concepts|3
+account_concepts|3
+transactions|3
+alembic|3b9f41c7d2ae
+Código de salida: 0
+
+------------------------------------------------------------------------
+2. RELACIONES Y ROLES
+------------------------------------------------------------------------
+Comando: psql ... "SELECT r.code, count(*) FROM role_permissions rp JOIN roles r ... WHERE rp.is_active GROUP BY r.code ORDER BY r.code"
+Resultado (matriz oficial activa 10/8/4/4 = 26):
+ADMINISTRADOR|10
+CAPTURISTA|4
+CONSULTA|4
+CONTADOR|8
+
+Comando: psql ... "SELECT u.email, c.name, r.code, cur.is_active FROM company_user_roles cur ... ORDER BY u.email"
+Resultado (membresías y roles de la segunda preparación):
+admin_a@test.local|Pruebas Alpha SA|ADMINISTRADOR|t
+admin_b@test.local|Pruebas Beta SA|ADMINISTRADOR|t
+capturista_a@test.local|Pruebas Alpha SA|CAPTURISTA|t
+consulta_a@test.local|Pruebas Alpha SA|CONSULTA|t
+contador_a@test.local|Pruebas Alpha SA|CONTADOR|t
+
+Comando: psql ... consulta de duplicados
+Resultado: emails_duplicados|0 ; tax_ids_duplicados|0 ;
+roles_por_codigo_duplicados|0 ; membresias_activas_por_usuario_duplicadas|0
+
+------------------------------------------------------------------------
+3. REVISION DE ALEMBIC
+------------------------------------------------------------------------
+Fintrack5_test: 3b9f41c7d2ae (head esperado; sin cambios durante la fase).
+
+------------------------------------------------------------------------
+4. COMPARACION DEL ENTORNO DE DESARROLLO (antes vs despues)
+------------------------------------------------------------------------
+Comando: docker exec postgres-actividad5 psql -U actividad5_user -d actividad5 -tAc "<conteos>"
+Resultado tras la fase:
+users|1
+companies|1
+company_users|1
+company_user_roles|0
+roles|4
+permissions|10
+role_permissions|26
+accounts|3
+concepts|10
+account_concepts|10
+transactions|21
+alembic|3b9f41c7d2ae
+
+Comparación con el baseline de la evidencia 01: IDENTICO en los 12 renglones.
+Los contenedores de desarrollo siguen "Up 29 hours" (no se reiniciaron ni
+se tocaron). Ningún comando de esta fase se ejecutó contra actividad5
+salvo la lectura de conteos antes y después.
+
+------------------------------------------------------------------------
+5. ESTADO DE LOS SERVICIOS
+------------------------------------------------------------------------
+Comando: docker compose -p fintrack5_test ... ps
+Resultado:
+fintrack5-test-api        Up 3 hours
+fintrack5-test-postgres   Up 3 hours
+Ambos servicios de pruebas siguen activos y sanos; no se eliminó ningún
+contenedor, volumen ni red (verificado también con los IDs/uptime).
+
+------------------------------------------------------------------------
+6. MANIFIESTOS
+------------------------------------------------------------------------
+manifiesto_pruebas.json            -> JSON válido, estado=OK, sin secretos (evidencia 03).
+manifiesto_pruebas_repetido.json   -> JSON válido, estado=OK, sin secretos (evidencia 06).
+Ambos conservados en la raíz del repositorio como resultados de las dos
+ejecuciones exitosas.
+
+------------------------------------------------------------------------
+7. VALIDACIONES NO REALIZADAS / LIMITACIONES
+------------------------------------------------------------------------
+- No se produjeron capturas de pantalla reales de la terminal: las
+  herramientas disponibles registran texto; no se simularon imágenes.
+  Se conservan las evidencias textuales para obtener capturas manuales.
+- El aislamiento de red del entorno de pruebas (sin puertos publicados)
+  se verificó en la fase B-1 previa; en esta fase solo se revalidaron
+  servicio, configuración y volumen.
+
+------------------------------------------------------------------------
+CONCLUSION EVIDENCIA 07
+------------------------------------------------------------------------
+Verificación final completa: pruebas ejecutadas correctamente
+(setup inicial con reintento autorizado, dry-run, limpieza confirmada,
+re-setup), sin pruebas fallidas pendientes, con la BD de desarrollo
+intacta y los datos de pruebas de la segunda preparación conservados
+para la etapa funcional.

@@ -1,0 +1,18 @@
+{"caso": "A01", "actor": "admin_a", "rol": "ADMINISTRADOR", "operacion": "login", "permiso_esperado": "-", "resultado_observado": "token_type=bearer", "http": 200, "estado": "APROBADO", "efecto_datos": "sin cambio", "resultado_esperado": "token bearer"}
+
+{"caso": "A02", "actor": "-", "rol": "-", "operacion": "login password mala", "permiso_esperado": "-", "resultado_esperado": "Credenciales invalidas", "resultado_observado": "Credenciales inválidas", "http": 200, "estado": "APROBADO", "efecto_datos": "sin cambio"}
+
+{"caso": "A03", "actor": "inactivo_a", "rol": "-", "operacion": "login usuario inactivo", "permiso_esperado": "-", "resultado_esperado": "El usuario esta inactivo", "resultado_observado": "El usuario está inactivo", "http": 200, "estado": "APROBADO", "efecto_datos": "sin cambio"}
+
+{"caso": "A04", "actor": "-", "rol": "-", "operacion": "accounts(company 3)", "permiso_esperado": "-", "resultado_esperado": "Usuario no autenticado", "resultado_observado": "Usuario no autenticado", "http": 200, "estado": "APROBADO", "efecto_datos": "sin cambio (sin header Authorization)"}
+
+{"caso": "A05", "actor": "-", "rol": "-", "operacion": "accounts(company 3)", "permiso_esperado": "-", "resultado_esperado": "Usuario no autenticado", "resultado_observado": "Usuario no autenticado", "http": 200, "estado": "APROBADO", "efecto_datos": "sin cambio (Bearer corrupto)"}
+
+{"caso": "A06", "actor": "-", "rol": "-", "operacion": "accounts(company 3)", "permiso_esperado": "-", "resultado_esperado": "Usuario no autenticado", "resultado_observado": "Usuario no autenticado", "http": 200, "estado": "APROBADO", "efecto_datos": "sin cambio (token vencido (exp -10min))"}
+
+{"caso": "A07", "actor": "-", "rol": "-", "operacion": "accounts(company 3)", "permiso_esperado": "-", "resultado_esperado": "Usuario no autenticado", "resultado_observado": "Usuario no autenticado", "http": 200, "estado": "APROBADO", "efecto_datos": "sin cambio (token sub=999 inexistente)"}
+
+{"caso": "A08", "actor": "-", "rol": "-", "operacion": "accounts(company 3)", "permiso_esperado": "-", "resultado_esperado": "Usuario no autenticado", "resultado_observado": "Usuario no autenticado", "http": 200, "estado": "APROBADO", "efecto_datos": "sin cambio (token de usuario inactivo (user 14))"}
+
+{"resumen_bloque": "A", "aprobados": 8, "fallos": []}
+
