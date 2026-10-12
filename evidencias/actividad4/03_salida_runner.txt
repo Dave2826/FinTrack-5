@@ -1,0 +1,8 @@
+﻿=== stdout de la corrida oficial ===
+{"TOTAL": 34, "APROBADOS": 34, "FALLIDOS": 0, "salida": "/tmp/actividad4_resultados.jsonl"}
+
+=== log (stderr del runner, lineas [setup]/[a4]) ===
+[a4] usuarios Actividad 4: {'ana_a': 29, 'luis_a': 30, 'maria_a': 31, 'jose_a': 32, 'pedro_a': 33}
+[a4] baseline: conteos={'role_permissions': 28, 'accounts': 6, 'transactions': 6}
+
+=== exit code: 0 ===

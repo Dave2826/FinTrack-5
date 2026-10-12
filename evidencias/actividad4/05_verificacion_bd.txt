@@ -1,0 +1,57 @@
+﻿      base      |   alembic    
+----------------+--------------
+ fintrack5_test | 3b9f41c7d2ae
+(1 row)
+
+ users | company_users | company_user_roles | companies 
+-------+---------------+--------------------+-----------
+    12 |            10 |                 11 |         2
+(1 row)
+
+      email       |      rol      
+------------------+---------------
+ ana@test.local   | ADMINISTRADOR
+ luis@test.local  | CONTADOR
+ maria@test.local | CAPTURISTA
+ jose@test.local  | CAPTURISTA
+ pedro@test.local | CONSULTA
+(5 rows)
+
+
+=== residuos (borrado logico, sin DELETE) ===
+ id |          email          |     code      | is_active 
+----+-------------------------+---------------+-----------
+ 24 | admin_a@test.local      | ADMINISTRADOR | t
+ 25 | admin_b@test.local      | ADMINISTRADOR | t
+ 26 | contador_a@test.local   | CONTADOR      | t
+ 27 | capturista_a@test.local | CAPTURISTA    | t
+ 28 | consulta_a@test.local   | CONSULTA      | t
+ 29 | ana@test.local          | ADMINISTRADOR | t
+ 30 | luis@test.local         | CONTADOR      | t
+ 31 | maria@test.local        | CAPTURISTA    | t
+ 32 | jose@test.local         | CAPTURISTA    | t
+ 33 | pedro@test.local        | CONSULTA      | t
+ 34 | pedro@test.local        | CAPTURISTA    | f
+(11 rows)
+
+ activas | total 
+---------+-------
+      10 |    11
+(1 row)
+
+ id | company_id |                 name                 
+----+------------+--------------------------------------
+  5 |          5 | Cuenta Alpha Pruebas
+  7 |          5 | Cuenta A4 Maria
+  8 |          5 | Cuenta A4 Jose
+  9 |          5 | Cuenta A4 Maria 20261012231545906321
+ 10 |          5 | Cuenta A4 Jose 20261012231545906321
+ 11 |          5 | Cuenta A4 Maria 20261012231613413366
+ 12 |          5 | Cuenta A4 Jose 20261012231613413366
+(7 rows)
+
+ transactions 
+--------------
+            7
+(1 row)
+

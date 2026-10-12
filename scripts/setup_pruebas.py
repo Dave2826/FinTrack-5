@@ -18,13 +18,16 @@ from models.role import Role
 from models.transaction import TransactionType
 from models.user import User
 from repositories.company_repository import create_company
+from repositories.company_user_repository import (
+    get_company_user_by_company_and_user,
+)
 from repositories.company_user_role_repository import (
     get_active_company_user_role,
     get_company_user_role_by_company_user_and_role,
 )
 from repositories.permission_repository import get_permission_by_code
 from repositories.role_repository import get_role_by_code
-from repositories.user_repository import create_user
+from repositories.user_repository import create_user, get_user_by_email
 from security.password import hash_password
 from services.account_concept_service import assign_concept_to_account
 from services.account_service import create_account_service
@@ -65,6 +68,16 @@ PERMISOS_OFICIALES = [
     "transactions.write",
     "roles.read",
     "roles.write",
+]
+
+# Usuarios nombrados del guion de la Actividad 4 (empresa Alpha).
+# Clave, nombre, correo y rol oficial inicial.
+USUARIOS_ACTIVIDAD4 = [
+    ("ana_a", "Ana Pruebas Alpha", "ana@test.local", "ADMINISTRADOR"),
+    ("luis_a", "Luis Pruebas Alpha", "luis@test.local", "CONTADOR"),
+    ("maria_a", "María Pruebas Alpha", "maria@test.local", "CAPTURISTA"),
+    ("jose_a", "José Pruebas Alpha", "jose@test.local", "CAPTURISTA"),
+    ("pedro_a", "Pedro Pruebas Alpha", "pedro@test.local", "CONSULTA"),
 ]
 
 # Contrasena ficticia exclusiva de pruebas locales. Nunca se imprime ni
@@ -264,6 +277,74 @@ def _fase_roles_operativos(
     return membresias
 
 
+def preparar_usuarios_actividad4(db: Session) -> dict[str, int]:
+    """Alta idempotente de los usuarios nombrados de la Actividad 4.
+
+    Ana (ADMINISTRADOR), Luis (CONTADOR), María y José (CAPTURISTA) y
+    Pedro (CONSULTA), todos en Pruebas Alpha SA. Reutiliza usuario,
+    membresía y rol existentes: repetir la llamada no duplica registros
+    ni modifica un rol ya activo (el escenario puede haberlo rotado).
+    No escribe fuera de la base de pruebas.
+
+    Ninguno se crea con is_admin=True: la regla de negocio admite un
+    solo administrador principal por empresa (admin_a lo es) y la
+    autorización solo exige el rol activo, no la bandera is_admin.
+    """
+
+    alpha = (
+        db.query(Company)
+        .filter(Company.name == "Pruebas Alpha SA")
+        .one_or_none()
+    )
+    if alpha is None:
+        _abortar("empresa Pruebas Alpha SA inexistente")
+
+    admin_user = get_user_by_email(db, "admin_a@test.local")
+    if admin_user is None:
+        _abortar("usuario admin_a@test.local inexistente")
+
+    actor = get_company_user_by_company_and_user(db, alpha.id, admin_user.id)
+    if actor is None or not actor.is_active:
+        _abortar("membresia de admin_a inexistente o inactiva")
+
+    creados: dict[str, int] = {}
+    for clave, nombre, correo, codigo_rol in USUARIOS_ACTIVIDAD4:
+        usuario = get_user_by_email(db, correo)
+        if usuario is None:
+            usuario = _crear_usuario(db, nombre, correo)
+
+        membresia = get_company_user_by_company_and_user(
+            db, alpha.id, usuario.id
+        )
+        if membresia is None:
+            membresia = create_company_user_service(
+                db,
+                actor.id,
+                alpha.id,
+                usuario.id,
+                is_admin=False,
+            )
+
+        rol = get_role_by_code(db, codigo_rol)
+        if rol is None:
+            _abortar(f"rol {codigo_rol} inexistente")
+
+        activo = get_active_company_user_role(db, membresia.id)
+        if activo is None:
+            assign_role_service(db, actor.id, membresia.id, rol.id)
+        elif activo.role_id != rol.id:
+            _log(
+                f"{clave}: rol activo distinto al inicial "
+                f"(role_id={activo.role_id}); se conserva sin duplicar"
+            )
+
+        creados[clave] = membresia.id
+
+    db.commit()
+    _log(f"usuarios Actividad 4: {creados}")
+    return creados
+
+
 def _fase_recursos(
     db: Session,
     alpha: Company,
@@ -377,6 +458,7 @@ def _verificacion_final(
     admin_a_id: int,
     admin_b_id: int,
     membresias: dict[str, int],
+    membresias_a4: dict[str, int],
 ) -> None:
     rol_admin = get_role_by_code(db, "ADMINISTRADOR")
     for clave, cu_id in membresias.items():
@@ -384,10 +466,20 @@ def _verificacion_final(
         if activa is None:
             _abortar(f"membresia {clave} ({cu_id}) sin rol activo")
 
-    esperados = {"contador_a": "CONTADOR", "capturista_a": "CAPTURISTA", "consulta_a": "CONSULTA"}
+    esperados = {
+        "contador_a": "CONTADOR",
+        "capturista_a": "CAPTURISTA",
+        "consulta_a": "CONSULTA",
+        "ana_a": "ADMINISTRADOR",
+        "luis_a": "CONTADOR",
+        "maria_a": "CAPTURISTA",
+        "jose_a": "CAPTURISTA",
+        "pedro_a": "CONSULTA",
+    }
+    todas = {**membresias, **membresias_a4}
     for clave, codigo in esperados.items():
         rol = get_role_by_code(db, codigo)
-        activa = get_active_company_user_role(db, membresias[clave])
+        activa = get_active_company_user_role(db, todas[clave])
         if activa is None or activa.role_id != rol.id:
             _abortar(f"membresia {clave} no conserva el rol {codigo}")
 
@@ -397,10 +489,10 @@ def _verificacion_final(
         _verificar_admin(db, cu_id, rol_admin.id)
 
     for tabla, esperado in (
-        ("users", 7),
+        ("users", 12),
         ("companies", 2),
-        ("company_users", 5),
-        ("company_user_roles", 5),
+        ("company_users", 10),
+        ("company_user_roles", 10),
         ("accounts", 2),
         ("concepts", 3),
         ("account_concepts", 3),
@@ -422,9 +514,19 @@ def _manifiesto(
     admin_b_id: int,
     membresias: dict[str, int],
     recursos: dict,
+    membresias_a4: dict[str, int],
 ) -> dict:
     roles = {
         code: get_role_by_code(db, code).id for code in ROLES_OFICIALES
+    }
+    actividad4 = {
+        clave: {
+            "id": get_user_by_email(db, correo).id,
+            "email": correo,
+            "membresia_id": membresias_a4[clave],
+            "rol": codigo,
+        }
+        for clave, _nombre, correo, codigo in USUARIOS_ACTIVIDAD4
     }
     return {
         "estado": "OK",
@@ -433,6 +535,7 @@ def _manifiesto(
             "alpha": {"id": alpha.id, "nombre": alpha.name},
             "beta": {"id": beta.id, "nombre": beta.name},
         },
+        "actividad4": actividad4,
         "usuarios": {
             "admin_a": {
                 "id": usuarios["admin_a"].id,
@@ -508,11 +611,14 @@ def main() -> None:
         _log("fase 5: membresias CONTADOR/CAPTURISTA/CONSULTA")
         membresias = _fase_roles_operativos(db, alpha, usuarios, admin_a_id)
 
+        _log("fase 5b: usuarios nombrados Actividad 4 (idempotente)")
+        membresias_a4 = preparar_usuarios_actividad4(db)
+
         _log("fase 6: recursos financieros ficticios")
         recursos = _fase_recursos(db, alpha, beta, usuarios, admin_a_id, admin_b_id)
 
         _log("fase 7: verificacion final")
-        _verificacion_final(db, admin_a_id, admin_b_id, membresias)
+        _verificacion_final(db, admin_a_id, admin_b_id, membresias, membresias_a4)
 
         manifiesto = _manifiesto(
             db,
@@ -524,6 +630,7 @@ def main() -> None:
             admin_b_id,
             membresias,
             recursos,
+            membresias_a4,
         )
         print(json.dumps(manifiesto, ensure_ascii=False, indent=2))
         _log("SETUP COMPLETADO")

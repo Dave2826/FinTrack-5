@@ -425,6 +425,68 @@ def _validar_actor(
     return company_user
 
 
+def _resolver_list_roles(
+    info: Info,
+    actor_company_user_id: int,
+) -> list[Role]:
+
+    _validar_actor(info, actor_company_user_id)
+
+    db = info.context["db"]
+
+    roles = list_roles_service(
+        db,
+        actor_company_user_id,
+    )
+
+    return [
+        Role.from_model(role)
+        for role in roles
+    ]
+
+
+def _resolver_list_permissions(
+    info: Info,
+    actor_company_user_id: int,
+) -> list[Permission]:
+
+    _validar_actor(info, actor_company_user_id)
+
+    db = info.context["db"]
+
+    permissions = list_permissions_service(
+        db,
+        actor_company_user_id,
+    )
+
+    return [
+        Permission.from_model(permission)
+        for permission in permissions
+    ]
+
+
+def _resolver_list_role_permissions(
+    info: Info,
+    actor_company_user_id: int,
+    role_id: int,
+) -> list[RolePermission]:
+
+    _validar_actor(info, actor_company_user_id)
+
+    db = info.context["db"]
+
+    relations = list_role_permissions_service(
+        db,
+        actor_company_user_id,
+        role_id,
+    )
+
+    return [
+        RolePermission.from_model(relation)
+        for relation in relations
+    ]
+
+
 @strawberry.type
 class Query:
 
@@ -618,19 +680,17 @@ class Query:
         actor_company_user_id: int,
     ) -> list[Role]:
 
-        _validar_actor(info, actor_company_user_id)
+        return _resolver_list_roles(info, actor_company_user_id)
 
-        db = info.context["db"]
+    @strawberry.field
+    def roles(
+        self,
+        info: Info,
+        actor_company_user_id: int,
+    ) -> list[Role]:
+        """Alias (Actividad 4) de listRoles; delega en la misma logica."""
 
-        roles = list_roles_service(
-            db,
-            actor_company_user_id,
-        )
-
-        return [
-            Role.from_model(role)
-            for role in roles
-        ]
+        return _resolver_list_roles(info, actor_company_user_id)
 
     @strawberry.field
     def list_permissions(
@@ -639,19 +699,17 @@ class Query:
         actor_company_user_id: int,
     ) -> list[Permission]:
 
-        _validar_actor(info, actor_company_user_id)
+        return _resolver_list_permissions(info, actor_company_user_id)
 
-        db = info.context["db"]
+    @strawberry.field
+    def permissions(
+        self,
+        info: Info,
+        actor_company_user_id: int,
+    ) -> list[Permission]:
+        """Alias (Actividad 4) de listPermissions; delega en la misma logica."""
 
-        permissions = list_permissions_service(
-            db,
-            actor_company_user_id,
-        )
-
-        return [
-            Permission.from_model(permission)
-            for permission in permissions
-        ]
+        return _resolver_list_permissions(info, actor_company_user_id)
 
     @strawberry.field
     def list_role_permissions(
@@ -661,20 +719,27 @@ class Query:
         role_id: int,
     ) -> list[RolePermission]:
 
-        _validar_actor(info, actor_company_user_id)
-
-        db = info.context["db"]
-
-        relations = list_role_permissions_service(
-            db,
+        return _resolver_list_role_permissions(
+            info,
             actor_company_user_id,
             role_id,
         )
 
-        return [
-            RolePermission.from_model(relation)
-            for relation in relations
-        ]
+    @strawberry.field
+    def role_permissions(
+        self,
+        info: Info,
+        actor_company_user_id: int,
+        role_id: int,
+    ) -> list[RolePermission]:
+        """Alias (Actividad 4) de listRolePermissions(roleId:); delega en
+        la misma logica."""
+
+        return _resolver_list_role_permissions(
+            info,
+            actor_company_user_id,
+            role_id,
+        )
 
 
 @strawberry.type

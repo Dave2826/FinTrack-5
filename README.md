@@ -28,6 +28,7 @@ El proyecto integra autenticación mediante JWT para identificar al usuario resp
 - [Ejecución con Docker](#ejecución-con-docker)
 - [Migraciones](#migraciones)
 - [Actividad 3 — Autorización con roles y control de acceso](#actividad-3--autorización-con-roles-y-control-de-acceso)
+- [Actividad 4 — Configuración de permisos por roles](#actividad-4--configuración-de-permisos-por-roles)
 - [Verificación de la aplicación](#verificación-de-la-aplicación)
 - [Control de versiones](#control-de-versiones)
 - [Seguridad](#seguridad)
@@ -558,6 +559,94 @@ ADVERTENCIAS:
 
 Las pruebas funcionales de autorización (matriz de 89 registros) están
 documentadas en `evidencias/actividad3/funcionales/`.
+
+## Actividad 4 - Configuración de permisos por roles
+
+### Queries añadidas (aliases)
+
+Se añaden tres queries sin eliminar las existentes (decisión acordada):
+
+| Query nueva | equivalente existente | argumentos |
+|---|---|---|
+| `roles` | `listRoles` | `actorCompanyUserId: Int!` |
+| `permissions` | `listPermissions` | `actorCompanyUserId: Int!` |
+| `rolePermissions` | `listRolePermissions` | `actorCompanyUserId: Int!`, `roleId: Int!` |
+
+Ambas rutas delegan en los mismos helpers de módulo
+(`_resolver_list_roles`, `_resolver_list_permissions`,
+`_resolver_list_role_permissions`) y en los mismos servicios con exigencia
+de permiso: una sola fuente de verdad. El SDL resultante expone
+13 queries y 15 mutations.
+
+### Usuarios del guion (fixtures)
+
+`scripts/setup_pruebas.py` crea en la fase 5b (función idempotente
+`preparar_usuarios_actividad4`) los usuarios nombrados del guion, todos
+en Pruebas Alpha SA:
+
+| usuario | correo | rol inicial |
+|---|---|---|
+| Ana | ana@test.local | ADMINISTRADOR |
+| Luis | luis@test.local | CONTADOR |
+| María | maria@test.local | CAPTURISTA |
+| José | jose@test.local | CAPTURISTA |
+| Pedro | pedro@test.local | CONSULTA |
+
+Ninguno se crea con `is_admin=True`: la regla de negocio admite un solo
+administrador principal por empresa (admin_a lo es) y la autorización
+depende del rol activo, no de esa bandera. Con esto la base de pruebas
+queda en users=12, company_users=10, company_user_roles=10 activas.
+
+### Escenarios (`scripts/pruebas_actividad4.py`)
+
+Runner con 34 casos (grupos V1–V10) que solo se ejecuta contra
+`fintrack5_test` (mismas guardas que los demás scripts). Restaura la
+matriz oficial y el rol inicial de Pedro incluso ante errores (bloque
+`finally`), siempre con bajas lógicas (`is_active=false`), nunca con
+DELETE. Escribe el detalle en JSONL dentro del contenedor
+(`/tmp/actividad4_resultados.jsonl`).
+
+Corrida oficial (12-oct-2026, exit code 0): **34/34 APROBADOS**.
+
+| grupo | casos | cobertura |
+|---|---|---|
+| V1 | 6/6 | aliases `roles`/`permissions`/`rolePermissions` iguales a sus `list*` |
+| V2 | 2/2 | catálogo de 4 roles y 10 permisos sin duplicados |
+| V3 | 6/6 | creación de cuentas denegada/concedida según `accounts.write` |
+| V4 | 3/3 | concesión y retiro de permiso (fila histórica conservada) |
+| V5 | 5/5 | rotación de rol de Pedro (CONSULTA→CAPTURISTA→CONSULTA) y transacción |
+| V6 | 2/2 | permisos de CONTADOR y CONSULTA intactos durante la prueba |
+| V7 | 4/4 | concesión/retiro de `roles.write` por parte de Ana |
+| V8 | 2/2 | sin escrituras en la base tras cada denegación |
+| V9 | 3/3 | matriz final 10/8/4/4 idéntica al baseline |
+| V10 | 1/1 | SELECT final de `role_permissions` (26 filas activas) |
+
+### Matriz oficial verificada (10/8/4/4)
+
+| rol | permisos activos |
+|---|---|
+| ADMINISTRADOR | 10 |
+| CONTADOR | 8 |
+| CAPTURISTA | 4 |
+| CONSULTA | 4 |
+| **total** | **26** |
+
+### Evidencias
+
+Todo el material de la corrida está en `evidencias/actividad4/`:
+SDL del esquema (`01`), JSONL de los 34 casos (`02`), salida del runner
+(`03`), SELECT final de `role_permissions` (`04`), verificación de la
+base y residuos (`05`), validaciones estáticas (`06`) y estado de git
+(`07`).
+
+### Discrepancias conocidas
+
+- El catálogo `roles`/`permissions`/`rolePermissions` no aplica scope
+  por empresa: los servicios de catálogo son globales (decisión Q1
+  aceptada en la fase de planificación), mientras el enunciado habla de
+  catálogo "por empresa".
+- El enunciado del profesor menciona MySQL; este repositorio usa
+  PostgreSQL 16 con Alembic y Docker Compose (se conserva el stack).
 
 ## Verificación de la aplicación
 

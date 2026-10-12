@@ -1,0 +1,1 @@
+﻿=== git status --short === M graphql_api/schema.py  M scripts/setup_pruebas.py ?? evidencias/actividad4/ ?? scripts/pruebas_actividad4.py=== git diff --stat === graphql_api/schema.py    | 127 +++++++++++++++++++++++++++++++++++------------  scripts/setup_pruebas.py | 121 +++++++++++++++++++++++++++++++++++++++++---  2 files changed, 210 insertions(+), 38 deletions(-)

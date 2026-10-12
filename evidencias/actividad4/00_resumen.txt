@@ -1,0 +1,81 @@
+ACTIVIDAD 4 - RESUMEN DE EVIDENCIAS
+Fecha de la corrida oficial: 2026-10-12
+Repo: actividad5_david_morales, rama main, HEAD 28d65f3
+(esta fase NO crea commits ni push; ver 07_estado_git.txt)
+
+ENTORNO
+- Docker Desktop estaba apagado; se inicio y el daemon respondio.
+- Stack: docker compose -p fintrack5_test --env-file .env.test
+  -f compose.yaml -f compose.test.yaml (build api + up -d).
+- Imagen fintrack5_test-api reconstruida con los cambios de schema.py.
+- BD fintrack5_test en el volumen fintrack5_test_pgdata (persistente),
+  alembic 3b9f41c7d2ae (ver 05_verificacion_bd.txt).
+
+ARCHIVOS TOCADOS (solo los permitidos)
+- graphql_api/schema.py: aliases roles, permissions, rolePermissions
+  delegando en helpers de modulo _resolver_list_*; se conservan
+  listRoles/listPermissions/listRolePermissions.
+- scripts/setup_pruebas.py: USUARIOS_ACTIVIDAD4,
+  preparar_usuarios_actividad4() idempotente, fase 5b, conteos
+  12/10/10 y bloque "actividad4" en el manifiesto.
+- scripts/pruebas_actividad4.py: runner nuevo (34 casos).
+- evidencias/actividad4/: esta carpeta.
+- README.md: seccion "Actividad 4 - Configuracion de permisos por roles".
+
+CORRECCIONES HECHAS DURANTE LAS PRUEBAS DINAMICAS (bugs reales)
+1. Los wrappers usaban self._resolver_* y Strawberry invoca los campos
+   de Query sin instancia (self=None): todos los aliases y list*
+   devolvia errores "'NoneType' object has no attribute ...". Corregido
+   moviendo los helpers a funciones de modulo.
+2. createAccount fallaba en re-ejecuciones con
+   "Ya existe una cuenta activa con ese nombre"
+   (services/account_service.py:59). Corregido con sufijo unico por
+   ejecucion en los nombres de cuenta de los escenarios.
+3. create_company_user_service(is_admin=True) rechaza
+   "La empresa ya tiene un administrador principal". Corregido: los
+   usuarios de la Actividad 4 se crean con is_admin=False y el rol se
+   asigna explicitamente (la autorizacion no depende de is_admin).
+
+VALIDACIONES OBLIGATORIAS (corrida oficial, exit code 0)
+V1  6/6  aliases == list* con datos reales (4 roles, 10 permisos)
+V2  2/2  catalogo 4 roles y 10 permisos sin duplicados
+V3  6/6  createAccount denegado/concedido segun accounts.write
+V4  3/3  concesion y retiro de accounts.write (is_active=false)
+V5  5/5  CONSULTA->CAPTURISTA->CONSULTA con un solo rol activo
+V6  2/2  CONTADOR y CONSULTA intactos durante la prueba
+V7  4/4  concesion/retiro de roles.write por Ana
+V8  2/2  sin escrituras tras cada denegacion
+V9  3/3  matriz final 10/8/4/4 identica al baseline
+V10 1/1  SELECT final de role_permissions
+TOTAL: 34/34 APROBADOS, 0 FALLIDOS.
+
+VALIDACIONES ESTATICAS
+- AST/importes de los 3 scripts: OK.
+- matriz runner == matriz seed == tabla del profesor: 10/8/4/4 = 26,
+  sin duplicados (ver 06_validaciones_estaticas.txt).
+- SDL: 13 queries (6 aliases + 6 list* + companyUsers) y 15 mutations.
+
+ESTADO FINAL DE LA BASE
+- role_permissions: 26 filas activas = 10/8/4/4; 28 filas totales
+  (2 historicas inactivas de concesiones que el escenario retiro).
+- users=12, company_users=10, company_user_roles=11 filas
+  (10 activas; la fila 34 es el historico de la rotacion de Pedro,
+  conservada con is_active=false - borrado logico).
+- Pedro restaurado a CONSULTA con exactamente 1 rol activo.
+- Residuos legitimos de escenario: cuentas creadas por V3b/V3c con
+  nombre unico por corrida y transacciones de V5c. No se borro ningun
+  registro (ver 05_verificacion_bd.txt).
+
+DISCREPANCIAS (no corregidas, por alcance acordado)
+- El catalogo roles/permissions/rolePermissions es global, sin scope
+  por empresa (servicios de catalogo existentes; decision Q1).
+- El enunciado menciona MySQL; el repo usa PostgreSQL 16 + Alembic
+  (regla: no migrar el stack).
+
+COMANDOS CLAVE EJECUTADOS
+docker compose -p fintrack5_test --env-file .env.test -f compose.yaml -f compose.test.yaml build api
+docker compose -p fintrack5_test --env-file .env.test -f compose.yaml -f compose.test.yaml up -d
+docker exec -e PYTHONPATH=/app fintrack5-test-api python -c "... preparar_usuarios_actividad4(db) ..."
+docker cp scripts/pruebas_actividad4.py fintrack5-test-api:/app/scripts/
+docker exec -e PYTHONPATH=/app fintrack5-test-api python /app/scripts/pruebas_actividad4.py
+psql: SELECT ... FROM role_permissions JOIN roles JOIN permissions ...
