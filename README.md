@@ -560,7 +560,7 @@ ADVERTENCIAS:
 Las pruebas funcionales de autorización (matriz de 89 registros) están
 documentadas en `evidencias/actividad3/funcionales/`.
 
-## Actividad 4 - Configuración de permisos por roles
+## Actividad 4 — Configuración de permisos por roles
 
 ### Queries añadidas (aliases)
 
@@ -633,11 +633,23 @@ Corrida oficial (12-oct-2026, exit code 0): **34/34 APROBADOS**.
 
 ### Evidencias
 
-Todo el material de la corrida está en `evidencias/actividad4/`:
-SDL del esquema (`01`), JSONL de los 34 casos (`02`), salida del runner
-(`03`), SELECT final de `role_permissions` (`04`), verificación de la
-base y residuos (`05`), validaciones estáticas (`06`) y estado de git
-(`07`).
+Los archivos de `evidencias/actividad4/` documentan las pruebas automatizadas, el esquema y la matriz final:
+
+| Archivo | Contenido |
+|---|---|
+| [`00_resumen.txt`](evidencias/actividad4/00_resumen.txt) | Resumen de ejecución y validaciones |
+| [`01_esquema_graphql_sdl.txt`](evidencias/actividad4/01_esquema_graphql_sdl.txt) | Esquema GraphQL generado |
+| [`02_resultados_runner.jsonl`](evidencias/actividad4/02_resultados_runner.jsonl) | Resultado individual de los 34 casos |
+| [`03_salida_runner.txt`](evidencias/actividad4/03_salida_runner.txt) | Salida de consola del runner |
+| [`04_role_permissions_final.txt`](evidencias/actividad4/04_role_permissions_final.txt) | Consulta SQL y matriz final de permisos |
+| [`05_verificacion_bd.txt`](evidencias/actividad4/05_verificacion_bd.txt) | Estado de la base de pruebas y registros históricos |
+| [`06_validaciones_estaticas.txt`](evidencias/actividad4/06_validaciones_estaticas.txt) | Validaciones estáticas |
+| [`07_estado_git.txt`](evidencias/actividad4/07_estado_git.txt) | Estado de Git registrado durante la ejecución |
+| [`08_resultados_graphql.json`](evidencias/actividad4/08_resultados_graphql.json) | Respuestas reales de `roles`, `permissions` y `rolePermissions` |
+
+Las consultas GraphQL se ejecutaron con autenticación. El archivo JSON no incluye el token de acceso. Los resultados confirman cuatro roles, diez permisos y 26 asignaciones activas en la matriz oficial.
+
+La evidencia SQL conserva además dos relaciones históricas inactivas, que no forman parte de las 26 asignaciones activas.
 
 ### Discrepancias conocidas
 
@@ -672,7 +684,7 @@ El commit correspondiente a la implementación de autenticación y gestión de m
 
     18a2d75 feat: add authentication and transaction management
 
-El proyecto se encuentra sincronizado con la rama principal del repositorio remoto.
+Comprueba la sincronización con `git status` antes de cada entrega.
 
 ## Seguridad
 
