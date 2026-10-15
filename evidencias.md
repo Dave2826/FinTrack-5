@@ -33,6 +33,7 @@ dentro del contenedor.
 | E08 | Aplicar `permissionIds: []` + reinicio de la API | `changed=true`, 0 activas; tras reinicio persisten 0 | `E08_pre_lista_vacia.json`, `E08_post_reinicio.json`, `E08_reinicio_contenedor.json` |
 | E09 | Restauración de la matriz oficial | `matriz_oficial_cumplida=true`, 10/8/4/4, 0 duplicados | `E09_restauracion.json` |
 | E10 | Consulta de cuentas + movimiento real (cuenta 5, concepto 7 INCOME) | 9 cuentas (cuenta 5 visible); transacción id 18 amount 123.45 persistida | `E10_cuentas_y_movimiento.json` |
+| E11 | Publicación del commit en GitHub (cierre documental) | `HEAD` = `origin/main` = `d33c5aa558d4ab87ce0293b1e11c0da87d3caae0`; `status` limpio; `diff --check HEAD` exit 0 | `11_publicacion_git.txt` |
 
 Estado final verificado también en la raíz:
 `configuracion_inicial.json` y `configuracion_final.json` (ambos con la
@@ -126,6 +127,16 @@ vuelve a ser exactamente la oficial (10/8/4/4) sin duplicados.
 Como Ana: consulta `accounts(companyId=5)` devuelve 9 cuentas incluida
 la cuenta 5; `createTransaction(cuenta 5, concepto 7, INCOME, 123.45)`
 crea la transacción **id 18**, confirmada por SQL en `transactions`.
+
+### E11 — Publicación del commit (cierre documental)
+A diferencia de E01–E10, esta evidencia no se ejecutó contra la base
+de pruebas: registra la verificación de Git del cierre (15-oct-2026,
+sin pruebas ni escrituras en base de datos). `git ls-remote` y
+`git fetch` confirman que `origin/main` =
+`d33c5aa558d4ab87ce0293b1e11c0da87d3caae0`, idéntico a `HEAD`;
+`git status --short --branch` limpio (`## main...origin/main`) y
+`git diff --check HEAD` exit 0. Registro completo en
+`11_publicacion_git.txt`.
 
 ## Reproducción
 

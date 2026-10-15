@@ -735,6 +735,10 @@ crudas en `evidencias/actividad5_configuracion_permisos/`:
 | E09 | Restauración de la matriz oficial |
 | E10 | Consulta de cuentas + movimiento real (cuenta 5, concepto 7, id 18) |
 
+Cierre documental: la publicación del commit en GitHub y las
+verificaciones de Git (15-oct-2026) se registran en
+[`11_publicacion_git.txt`](evidencias/actividad5_configuracion_permisos/11_publicacion_git.txt).
+
 ### Entregables
 
 | Archivo | Contenido |
@@ -744,16 +748,26 @@ crudas en `evidencias/actividad5_configuracion_permisos/`:
 | `configuracion_inicial.json` / `configuracion_final.json` | Matriz por códigos antes y después |
 | `comprobaciones.sql` | Consultas C1–C12 con resultados documentados |
 | `investigacion.md` | Investigación con ≥3 fuentes oficiales verificadas (14-oct-2026) |
-| `evidencias.md` | Índice y detalle de E01–E10 |
+| `evidencias.md` | Índice y detalle de E01–E11 (incluye cierre de publicación) |
 | `scripts/evidencias_actividad5.py` | Reproductor de las fases E01–E10 |
 
 ### Verificación final
+
+Pruebas funcionales (ya registradas; sin re-ejecución en el cierre):
 
 - Suite Actividad 5: **18/18 OK**.
 - Regresión Actividad 4 (`scripts/pruebas_actividad4.py`): **34/34
   APROBADOS**.
 - Matriz final oficial 10/8/4/4, sin duplicados y sin permisos fuera
   del catálogo (`comprobaciones.sql`).
+
+Verificaciones de Git del cierre (15-oct-2026, detalle en
+[`11_publicacion_git.txt`](evidencias/actividad5_configuracion_permisos/11_publicacion_git.txt)):
+
+- `HEAD` = `origin/main` = `d33c5aa558d4ab87ce0293b1e11c0da87d3caae0`
+  (commit publicado en GitHub; `git ls-remote` y `git fetch` exit 0).
+- `git status --short --branch`: `## main...origin/main` limpio.
+- `git diff --check HEAD`: exit 0, sin errores.
 
 ## Verificación de la aplicación
 

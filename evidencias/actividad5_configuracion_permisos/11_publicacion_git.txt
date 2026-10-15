@@ -1,0 +1,64 @@
+EVIDENCIA 11 — Publicación del commit de la Actividad 5 en GitHub
+=========================================================================
+
+Propósito: verificar que el commit de la Actividad 5 está publicado en
+el remoto origin (GitHub, https://github.com/Dave2826/FinTrack-5.git) y
+registrar el estado real de Git en el cierre documental.
+
+Fecha de la verificación (local):  2026-10-15 08:24:05 -06:00
+Fecha de la verificación (UTC):    2026-10-15 14:24:05Z
+
+Rama actual: main (upstream: origin/main)
+
+Commit esperado y observado
+---------------------------
+Hash completo: d33c5aa558d4ab87ce0293b1e11c0da87d3caae0
+Mensaje: feat: implement GraphQL role permission configuration for activity 5
+Autor: Dave2826
+Fecha del commit: 2026-10-14T21:04:17-06:00
+
+Verificación remota (git ls-remote origin refs/heads/main)
+----------------------------------------------------------
+d33c5aa558d4ab87ce0293b1e11c0da87d3caae0	refs/heads/main
+(exit 0)
+
+Verificación tras git fetch origin
+----------------------------------
+origin/main = d33c5aa558d4ab87ce0293b1e11c0da87d3caae0
+(fetch exit 0)
+
+Comparación HEAD vs origin/main
+-------------------------------
+HEAD       = d33c5aa558d4ab87ce0293b1e11c0da87d3caae0
+origin/main= d33c5aa558d4ab87ce0293b1e11c0da87d3caae0
+Resultado: IDÉNTICOS — el commit de la Actividad 5 está publicado en
+GitHub; la rama local main está sincronizada con el remoto (sin
+adelantos ni retrasos).
+
+git status --short --branch
+---------------------------
+## main...origin/main
+(sin archivos modificados ni sin seguimiento; sin [ahead]/[behind])
+
+git diff --check HEAD
+---------------------
+(exit 0; sin salida: sin errores de whitespace reportados)
+
+Pruebas funcionales previas (resultados ya registrados; NO se
+ejecutaron en esta verificación)
+---------------------------------------------------------------
+- Actividad 5 (tests/test_configuracion_permisos.py): 18/18 OK.
+  Respaldo: E07_pruebas_completas.txt ("Ran 18 tests ... OK").
+- Actividad 4 (scripts/pruebas_actividad4.py): 34/34 APROBADOS,
+  0 fallidas. Respaldo: README.md (corrida oficial 12-oct-2026 y
+  re-verificación 14-oct-2026, exit code 0).
+
+Limitaciones y verificaciones no realizadas
+-------------------------------------------
+- La comprobación remota se hizo mediante el protocolo Git
+  (git ls-remote y git fetch sobre HTTPS); no se capturó la interfaz
+  web de GitHub.
+- No se ejecutaron pruebas, seeds ni scripts con escritura en bases
+  de datos durante esta verificación.
+- No se modificó el historial de Git ni se ejecutó git push en esta
+  operación.
