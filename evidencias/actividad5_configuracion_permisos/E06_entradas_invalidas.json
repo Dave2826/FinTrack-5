@@ -1,0 +1,348 @@
+{
+  "fase": "E06",
+  "concepto": "seis entradas inválidas + denegación de autorización",
+  "utc": "2026-10-15T02:23:14.600023+00:00",
+  "intentos": [
+    {
+      "variante": "rol inexistente",
+      "esperado": "El rol no existe",
+      "observado": "El rol no existe",
+      "variables": {
+        "actorCompanyUserId": "29",
+        "input": {
+          "roleId": "999999",
+          "permissionIds": [
+            "3",
+            "4",
+            "5",
+            "7",
+            "8"
+          ]
+        }
+      },
+      "respuesta": {
+        "data": {
+          "setRolePermissions": null
+        },
+        "errors": [
+          {
+            "message": "El rol no existe",
+            "locations": [
+              {
+                "line": 64,
+                "column": 3
+              }
+            ],
+            "path": [
+              "setRolePermissions"
+            ]
+          }
+        ]
+      },
+      "aprobado": true
+    },
+    {
+      "variante": "rol inactivo",
+      "esperado": "El rol no está activo",
+      "observado": "El rol no está activo",
+      "variables": {
+        "actorCompanyUserId": "29",
+        "input": {
+          "roleId": "4",
+          "permissionIds": [
+            "3"
+          ]
+        }
+      },
+      "respuesta": {
+        "data": {
+          "setRolePermissions": null
+        },
+        "errors": [
+          {
+            "message": "El rol no está activo",
+            "locations": [
+              {
+                "line": 64,
+                "column": 3
+              }
+            ],
+            "path": [
+              "setRolePermissions"
+            ]
+          }
+        ]
+      },
+      "aprobado": true
+    },
+    {
+      "variante": "propuesta sobre ADMINISTRADOR",
+      "esperado": "ADMINISTRADOR",
+      "observado": "No se puede modificar la configuración de permisos del rol ADMINISTRADOR",
+      "variables": {
+        "actorCompanyUserId": "29",
+        "input": {
+          "roleId": "1",
+          "permissionIds": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10"
+          ]
+        }
+      },
+      "respuesta": {
+        "data": {
+          "setRolePermissions": null
+        },
+        "errors": [
+          {
+            "message": "No se puede modificar la configuración de permisos del rol ADMINISTRADOR",
+            "locations": [
+              {
+                "line": 64,
+                "column": 3
+              }
+            ],
+            "path": [
+              "setRolePermissions"
+            ]
+          }
+        ]
+      },
+      "aprobado": true
+    },
+    {
+      "variante": "permiso inexistente mezclado",
+      "esperado": "El permiso con id 999999 no existe",
+      "observado": "El permiso con id 999999 no existe",
+      "variables": {
+        "actorCompanyUserId": "29",
+        "input": {
+          "roleId": "3",
+          "permissionIds": [
+            "3",
+            "4",
+            "5",
+            "7",
+            "8",
+            "999999"
+          ]
+        }
+      },
+      "respuesta": {
+        "data": {
+          "setRolePermissions": null
+        },
+        "errors": [
+          {
+            "message": "El permiso con id 999999 no existe",
+            "locations": [
+              {
+                "line": 64,
+                "column": 3
+              }
+            ],
+            "path": [
+              "setRolePermissions"
+            ]
+          }
+        ]
+      },
+      "aprobado": true
+    },
+    {
+      "variante": "permiso inactivo",
+      "esperado": "El permiso concepts.write no está activo",
+      "observado": "El permiso concepts.write no está activo",
+      "variables": {
+        "actorCompanyUserId": "29",
+        "input": {
+          "roleId": "3",
+          "permissionIds": [
+            "6"
+          ]
+        }
+      },
+      "respuesta": {
+        "data": {
+          "setRolePermissions": null
+        },
+        "errors": [
+          {
+            "message": "El permiso concepts.write no está activo",
+            "locations": [
+              {
+                "line": 64,
+                "column": 3
+              }
+            ],
+            "path": [
+              "setRolePermissions"
+            ]
+          }
+        ]
+      },
+      "aprobado": true
+    },
+    {
+      "variante": "IDs repetidos",
+      "esperado": "permissionIds contiene IDs repetidos",
+      "observado": "permissionIds contiene IDs repetidos: 3",
+      "variables": {
+        "actorCompanyUserId": "29",
+        "input": {
+          "roleId": "3",
+          "permissionIds": [
+            "3",
+            "3"
+          ]
+        }
+      },
+      "respuesta": {
+        "data": {
+          "setRolePermissions": null
+        },
+        "errors": [
+          {
+            "message": "permissionIds contiene IDs repetidos: 3",
+            "locations": [
+              {
+                "line": 64,
+                "column": 3
+              }
+            ],
+            "path": [
+              "setRolePermissions"
+            ]
+          }
+        ]
+      },
+      "aprobado": true
+    },
+    {
+      "variante": "actor sin roles.write (adición)",
+      "esperado": "El rol no tiene el permiso roles.write",
+      "observado": "El rol no tiene el permiso roles.write",
+      "variables": {
+        "actorCompanyUserId": "27",
+        "input": {
+          "roleId": "3",
+          "permissionIds": [
+            "3",
+            "4",
+            "5",
+            "7",
+            "8"
+          ]
+        }
+      },
+      "respuesta": {
+        "data": {
+          "setRolePermissions": null
+        },
+        "errors": [
+          {
+            "message": "El rol no tiene el permiso roles.write",
+            "locations": [
+              {
+                "line": 64,
+                "column": 3
+              }
+            ],
+            "path": [
+              "setRolePermissions"
+            ]
+          }
+        ]
+      },
+      "aprobado": true
+    }
+  ],
+  "todos_aprobados": true,
+  "configuracion_antes": {
+    "ADMINISTRADOR": [
+      "accounts.read",
+      "accounts.write",
+      "company.users.read",
+      "company.users.write",
+      "concepts.read",
+      "concepts.write",
+      "roles.read",
+      "roles.write",
+      "transactions.read",
+      "transactions.write"
+    ],
+    "CAPTURISTA": [
+      "accounts.read",
+      "accounts.write",
+      "concepts.read",
+      "transactions.read",
+      "transactions.write"
+    ],
+    "CONSULTA": [
+      "accounts.read",
+      "company.users.read",
+      "concepts.read",
+      "transactions.read"
+    ],
+    "CONTADOR": [
+      "accounts.read",
+      "accounts.write",
+      "company.users.read",
+      "concepts.read",
+      "concepts.write",
+      "roles.read",
+      "transactions.read",
+      "transactions.write"
+    ]
+  },
+  "configuracion_despues": {
+    "ADMINISTRADOR": [
+      "accounts.read",
+      "accounts.write",
+      "company.users.read",
+      "company.users.write",
+      "concepts.read",
+      "concepts.write",
+      "roles.read",
+      "roles.write",
+      "transactions.read",
+      "transactions.write"
+    ],
+    "CAPTURISTA": [
+      "accounts.read",
+      "accounts.write",
+      "concepts.read",
+      "transactions.read",
+      "transactions.write"
+    ],
+    "CONSULTA": [
+      "accounts.read",
+      "company.users.read",
+      "concepts.read",
+      "transactions.read"
+    ],
+    "CONTADOR": [
+      "accounts.read",
+      "accounts.write",
+      "company.users.read",
+      "concepts.read",
+      "concepts.write",
+      "roles.read",
+      "transactions.read",
+      "transactions.write"
+    ]
+  },
+  "estado_intacto": true,
+  "restauracion_estado": {
+    "consulta_activa": true,
+    "concepts_write_activo": true
+  }
+}

@@ -1,0 +1,164 @@
+{
+  "fase": "E03",
+  "concepto": "previsualización S0->S1 sin escrituras",
+  "utc": "2026-10-15T02:23:12.407885+00:00",
+  "actor": {
+    "email": "ana@test.local",
+    "companyUserId": 29
+  },
+  "operacion": "query RevisarConfiguracion (operaciones.graphql)",
+  "variables": {
+    "actorCompanyUserId": "29",
+    "input": {
+      "roleId": "3",
+      "permissionIds": [
+        "3",
+        "4",
+        "5",
+        "7",
+        "8"
+      ]
+    }
+  },
+  "respuesta": {
+    "data": {
+      "previewRolePermissions": {
+        "role": {
+          "id": 3,
+          "code": "CAPTURISTA",
+          "name": "CAPTURISTA"
+        },
+        "current": [
+          {
+            "id": 3,
+            "code": "accounts.read"
+          },
+          {
+            "id": 5,
+            "code": "concepts.read"
+          },
+          {
+            "id": 7,
+            "code": "transactions.read"
+          },
+          {
+            "id": 8,
+            "code": "transactions.write"
+          }
+        ],
+        "toActivate": [
+          {
+            "id": 4,
+            "code": "accounts.write"
+          }
+        ],
+        "toDeactivate": [],
+        "unchanged": [
+          {
+            "id": 3,
+            "code": "accounts.read"
+          },
+          {
+            "id": 5,
+            "code": "concepts.read"
+          },
+          {
+            "id": 7,
+            "code": "transactions.read"
+          },
+          {
+            "id": 8,
+            "code": "transactions.write"
+          }
+        ],
+        "finalCount": 5
+      }
+    }
+  },
+  "plan": {
+    "toActivate": [
+      "accounts.write"
+    ],
+    "toDeactivate": [],
+    "unchanged": [
+      "accounts.read",
+      "concepts.read",
+      "transactions.read",
+      "transactions.write"
+    ],
+    "finalCount": 5
+  },
+  "configuracion_antes": {
+    "ADMINISTRADOR": [
+      "accounts.read",
+      "accounts.write",
+      "company.users.read",
+      "company.users.write",
+      "concepts.read",
+      "concepts.write",
+      "roles.read",
+      "roles.write",
+      "transactions.read",
+      "transactions.write"
+    ],
+    "CAPTURISTA": [
+      "accounts.read",
+      "concepts.read",
+      "transactions.read",
+      "transactions.write"
+    ],
+    "CONSULTA": [
+      "accounts.read",
+      "company.users.read",
+      "concepts.read",
+      "transactions.read"
+    ],
+    "CONTADOR": [
+      "accounts.read",
+      "accounts.write",
+      "company.users.read",
+      "concepts.read",
+      "concepts.write",
+      "roles.read",
+      "transactions.read",
+      "transactions.write"
+    ]
+  },
+  "configuracion_despues": {
+    "ADMINISTRADOR": [
+      "accounts.read",
+      "accounts.write",
+      "company.users.read",
+      "company.users.write",
+      "concepts.read",
+      "concepts.write",
+      "roles.read",
+      "roles.write",
+      "transactions.read",
+      "transactions.write"
+    ],
+    "CAPTURISTA": [
+      "accounts.read",
+      "concepts.read",
+      "transactions.read",
+      "transactions.write"
+    ],
+    "CONSULTA": [
+      "accounts.read",
+      "company.users.read",
+      "concepts.read",
+      "transactions.read"
+    ],
+    "CONTADOR": [
+      "accounts.read",
+      "accounts.write",
+      "company.users.read",
+      "concepts.read",
+      "concepts.write",
+      "roles.read",
+      "transactions.read",
+      "transactions.write"
+    ]
+  },
+  "solo_lectura": true
+}

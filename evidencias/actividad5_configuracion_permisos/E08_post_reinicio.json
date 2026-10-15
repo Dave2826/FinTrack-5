@@ -1,0 +1,60 @@
+{
+  "fase": "E08-post",
+  "concepto": "persistencia de la lista vacía tras reiniciar la API",
+  "utc": "2026-10-15T02:26:12.055127+00:00",
+  "uptime_host_segundos": 2520.97,
+  "nota_uptime": "uptime del host (visto desde /proc/uptime dentro del contenedor); StartedAt real del contenedor está en E08_reinicio_contenedor.json",
+  "api_respondio": true,
+  "configuracion_tras_reinicio": {
+    "ADMINISTRADOR": [
+      "accounts.read",
+      "accounts.write",
+      "company.users.read",
+      "company.users.write",
+      "concepts.read",
+      "concepts.write",
+      "roles.read",
+      "roles.write",
+      "transactions.read",
+      "transactions.write"
+    ],
+    "CAPTURISTA": [],
+    "CONSULTA": [
+      "accounts.read",
+      "company.users.read",
+      "concepts.read",
+      "transactions.read"
+    ],
+    "CONTADOR": [
+      "accounts.read",
+      "accounts.write",
+      "company.users.read",
+      "concepts.read",
+      "concepts.write",
+      "roles.read",
+      "transactions.read",
+      "transactions.write"
+    ]
+  },
+  "capturista_activas": 0,
+  "actor_sin_roles_read": {
+    "companyUserId": 27,
+    "nota": "verificación de autorización post-reinicio"
+  },
+  "verificacion_preview": {
+    "data": {
+      "previewRolePermissions": {
+        "role": {
+          "id": 3,
+          "code": "CAPTURISTA",
+          "name": "CAPTURISTA"
+        },
+        "current": [],
+        "toActivate": [],
+        "toDeactivate": [],
+        "unchanged": [],
+        "finalCount": 0
+      }
+    }
+  }
+}

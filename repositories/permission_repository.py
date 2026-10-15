@@ -33,6 +33,22 @@ def list_permissions(
     return query.order_by(Permission.id).all()
 
 
+def list_permissions_by_prefix(
+    db: Session,
+    prefix: str | None = None,
+    active_only: bool = True
+) -> list[Permission]:
+    query = db.query(Permission)
+
+    if active_only:
+        query = query.filter(Permission.is_active.is_(True))
+
+    if prefix:
+        query = query.filter(Permission.code.like(f"{prefix}%"))
+
+    return query.order_by(Permission.code).all()
+
+
 def create_permission(
     db: Session,
     permission: Permission

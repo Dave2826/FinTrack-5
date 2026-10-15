@@ -9,7 +9,7 @@ from repositories.permission_repository import (
 )
 from repositories.role_permission_repository import (
     create_role_permission,
-    get_role_permission,
+    list_role_permissions,
 )
 from repositories.role_repository import (
     create_role,
@@ -137,34 +137,34 @@ def cargar_catalogo_inicial(db: Session) -> dict:
     for role_code, permiso_codes in MATRIZ_OFICIAL.items():
         role = roles[role_code]
 
+        existentes = list_role_permissions(
+            db,
+            role.id,
+            active_only=False,
+        )
+
+        if existentes:
+            # Rol ya inicializado: aunque todas sus relaciones esten
+            # inactivas (configuracion deliberadamente vacia) no se
+            # restauran ni se reactivan permisos retirados. El criterio
+            # es la existencia de filas historicas, no la ausencia de
+            # relaciones activas.
+            relaciones_reutilizadas += len(existentes)
+            continue
+
+        # Rol nunca inicializado: se crea la matriz oficial activa.
         for permission_code in permiso_codes:
             permission = permisos[permission_code]
 
-            relation = get_role_permission(
+            create_role_permission(
                 db,
-                role.id,
-                permission.id,
+                RolePermission(
+                    role_id=role.id,
+                    permission_id=permission.id,
+                    is_active=True,
+                ),
             )
-
-            if relation is None:
-                create_role_permission(
-                    db,
-                    RolePermission(
-                        role_id=role.id,
-                        permission_id=permission.id,
-                        is_active=True,
-                    ),
-                )
-                relaciones_creadas += 1
-            elif relation.is_active:
-                relaciones_reutilizadas += 1
-            else:
-                relation.is_active = True
-
-                db.commit()
-                db.refresh(relation)
-
-                relaciones_reactivadas += 1
+            relaciones_creadas += 1
 
     return {
         "roles_creados": roles_creados,

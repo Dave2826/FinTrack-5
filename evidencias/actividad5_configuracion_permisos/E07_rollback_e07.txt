@@ -1,0 +1,6 @@
+test_15_rollback_e07_tras_flush_sin_commit (tests.test_configuracion_permisos.ConfiguracionPermisosTests.test_15_rollback_e07_tras_flush_sin_commit) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.106s
+
+OK

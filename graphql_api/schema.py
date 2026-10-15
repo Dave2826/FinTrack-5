@@ -47,6 +47,9 @@ from services.role_permission_service import (
     assign_permission_to_role_service,
     remove_permission_from_role_service,
     list_role_permissions_service,
+    permission_catalog_service,
+    preview_role_permissions_service,
+    set_role_permissions_service,
 )
 
 from services.company_user_service import (
@@ -103,6 +106,24 @@ class ConceptType(Enum):
 class TransactionType(Enum):
     INCOME = "INCOME"
     EXPENSE = "EXPENSE"
+
+
+@strawberry.enum
+class PermissionResource(Enum):
+    COMPANY_USERS = "COMPANY_USERS"
+    ACCOUNTS = "ACCOUNTS"
+    CONCEPTS = "CONCEPTS"
+    TRANSACTIONS = "TRANSACTIONS"
+    ROLES = "ROLES"
+
+
+PREFIJOS_RECURSO: dict[PermissionResource, str] = {
+    PermissionResource.COMPANY_USERS: "company.users.",
+    PermissionResource.ACCOUNTS: "accounts.",
+    PermissionResource.CONCEPTS: "concepts.",
+    PermissionResource.TRANSACTIONS: "transactions.",
+    PermissionResource.ROLES: "roles.",
+}
 
 
 @strawberry.type
@@ -265,6 +286,26 @@ class RolePermission:
 
 
 @strawberry.type
+class RolePermissionPlan:
+    role: Role
+    current: list[Permission]
+    to_activate: list[Permission]
+    to_deactivate: list[Permission]
+    unchanged: list[Permission]
+    final_count: int
+
+
+@strawberry.type
+class RolePermissionUpdate:
+    role: Role
+    activated: list[Permission]
+    deactivated: list[Permission]
+    unchanged: list[Permission]
+    final_count: int
+    changed: bool
+
+
+@strawberry.type
 class CompanyUserRole:
     id: int
     company_user_id: int
@@ -393,6 +434,21 @@ class AssignRoleInput:
     actor_company_user_id: int
     company_user_id: int
     role_id: int
+
+
+@strawberry.input
+class SetRolePermissionsInput:
+    role_id: strawberry.ID
+    permission_ids: list[strawberry.ID]
+
+
+def _a_entero(valor, etiqueta: str) -> int:
+    try:
+        return int(valor)
+    except (TypeError, ValueError):
+        raise ValueError(
+            f"{etiqueta} no es un ID valido: {valor}"
+        )
 
 
 def _validar_actor(
@@ -741,6 +797,84 @@ class Query:
             role_id,
         )
 
+    @strawberry.field
+    def permission_catalog(
+        self,
+        info: Info,
+        actor_company_user_id: strawberry.ID,
+        resource: PermissionResource | None = None,
+    ) -> list[Permission]:
+        """Catalogo de permisos activos, filtrable por recurso."""
+
+        actor_id = _a_entero(actor_company_user_id, "actorCompanyUserId")
+
+        _validar_actor(info, actor_id)
+
+        prefijo = (
+            PREFIJOS_RECURSO.get(resource) if resource is not None else None
+        )
+
+        db = info.context["db"]
+
+        permisos = permission_catalog_service(
+            db,
+            actor_id,
+            prefix=prefijo,
+        )
+
+        return [
+            Permission.from_model(permission)
+            for permission in permisos
+        ]
+
+    @strawberry.field
+    def preview_role_permissions(
+        self,
+        info: Info,
+        input: SetRolePermissionsInput,
+        actor_company_user_id: strawberry.ID,
+    ) -> RolePermissionPlan | None:
+        """Previsualizacion de la lista completa de permisos de un rol.
+        Solo lectura: no modifica relaciones."""
+
+        actor_id = _a_entero(actor_company_user_id, "actorCompanyUserId")
+
+        _validar_actor(info, actor_id)
+
+        role_id = _a_entero(input.role_id, "roleId")
+
+        db = info.context["db"]
+
+        plan = preview_role_permissions_service(
+            db,
+            actor_id,
+            role_id,
+            input.permission_ids,
+        )
+
+        role = plan["role"]
+
+        return RolePermissionPlan(
+            role=Role.from_model(role),
+            current=[
+                Permission.from_model(permission)
+                for permission in plan["current"]
+            ],
+            to_activate=[
+                Permission.from_model(permission)
+                for permission in plan["to_activate"]
+            ],
+            to_deactivate=[
+                Permission.from_model(permission)
+                for permission in plan["to_deactivate"]
+            ],
+            unchanged=[
+                Permission.from_model(permission)
+                for permission in plan["unchanged"]
+            ],
+            final_count=plan["final_count"],
+        )
+
 
 @strawberry.type
 class Mutation:
@@ -1019,6 +1153,51 @@ class Mutation:
         )
 
         return RolePermission.from_model(relation)
+
+    @strawberry.mutation
+    def set_role_permissions(
+        self,
+        info: Info,
+        input: SetRolePermissionsInput,
+        actor_company_user_id: strawberry.ID,
+    ) -> RolePermissionUpdate | None:
+        """Establece exactamente la lista de permisos activos de un rol
+        en una unica transaccion con un unico commit."""
+
+        actor_id = _a_entero(actor_company_user_id, "actorCompanyUserId")
+
+        _validar_actor(info, actor_id)
+
+        role_id = _a_entero(input.role_id, "roleId")
+
+        db = info.context["db"]
+
+        resumen = set_role_permissions_service(
+            db,
+            actor_id,
+            role_id,
+            input.permission_ids,
+        )
+
+        role = resumen["role"]
+
+        return RolePermissionUpdate(
+            role=Role.from_model(role),
+            activated=[
+                Permission.from_model(permission)
+                for permission in resumen["activated"]
+            ],
+            deactivated=[
+                Permission.from_model(permission)
+                for permission in resumen["deactivated"]
+            ],
+            unchanged=[
+                Permission.from_model(permission)
+                for permission in resumen["unchanged"]
+            ],
+            final_count=resumen["final_count"],
+            changed=resumen["changed"],
+        )
 
     @strawberry.mutation
     def create_company_user(

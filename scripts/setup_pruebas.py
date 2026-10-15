@@ -37,7 +37,7 @@ from services.company_user_service import (
     create_company_user_service,
 )
 from services.concept_service import create_concept_service
-from services.seed_service import cargar_catalogo_inicial
+from services.seed_service import MATRIZ_OFICIAL, cargar_catalogo_inicial
 from services.transaction_service import create_transaction_service
 
 DB_ESPERADA = "fintrack5_test"
@@ -139,6 +139,13 @@ def _fase_catalogo(db: Session) -> dict:
 
     roles = db.query(Role).all()
     permisos = db.query(Permission).all()
+    filas = db.execute(
+        text(
+            "SELECT r.code, p.code FROM role_permissions rp "
+            "JOIN roles r ON r.id = rp.role_id "
+            "JOIN permissions p ON p.id = rp.permission_id"
+        )
+    ).fetchall()
     activas = db.execute(
         text("SELECT count(*) FROM role_permissions WHERE is_active")
     ).scalar()
@@ -147,8 +154,28 @@ def _fase_catalogo(db: Session) -> dict:
         _abortar("el seed no dejo los 4 roles activos")
     if len(permisos) != 10:
         _abortar("el seed no dejo los 10 permisos")
-    if activas != 26:
-        _abortar("el seed no dejo las 26 relaciones activas")
+
+    pares_oficiales = {
+        (codigo_rol, codigo_permiso)
+        for codigo_rol, permisos_rol in MATRIZ_OFICIAL.items()
+        for codigo_permiso in permisos_rol
+    }
+    for codigo_rol, codigo_permiso in filas:
+        if (codigo_rol, codigo_permiso) not in pares_oficiales:
+            _abortar(
+                "role_permissions contiene un par no oficial: "
+                f"{codigo_rol}/{codigo_permiso}"
+            )
+
+    if not filas:
+        # Rol nunca inicializado: el seed debio crear la matriz completa.
+        if activas != 26:
+            _abortar("el seed no dejo las 26 relaciones activas")
+    else:
+        # Configuracion ya inicializada (posiblemente vacia de forma
+        # deliberada): el seed no debe reactivar relaciones retiradas.
+        if resultado["relaciones_reactivadas"] != 0:
+            _abortar("el seed reactivo relaciones retiradas")
 
     _log(f"catalogo listo: {resultado}")
     return resultado

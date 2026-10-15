@@ -1,0 +1,10 @@
+{
+  "fase": "E08",
+  "concepto": "prueba de reinicio del contenedor de la API entre E08-pre y E08-post",
+  "comando_ejecutado": "docker restart fintrack5-test-api",
+  "container_started_at": "2026-10-15T02:25:53.899093666Z",
+  "estado": "running",
+  "e08_pre_utc": "2026-10-15T02:25:53.175472+00:00",
+  "e08_post_utc": "2026-10-15T02:26:12.055127+00:00",
+  "inferencia": "StartedAt es posterior a E08-pre y anterior a E08-post: el contenedor se reinició entre ambas fases y la configuración vacía persistió."
+}

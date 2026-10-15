@@ -1,0 +1,92 @@
+{
+  "fase": "E10",
+  "concepto": "continuidad: consulta de cuentas y movimiento real cuenta 5 / concepto 7 INCOME",
+  "utc": "2026-10-15T02:30:23.962804+00:00",
+  "actor": {
+    "email": "ana@test.local",
+    "companyUserId": 29
+  },
+  "consulta_cuentas": {
+    "data": {
+      "accounts": [
+        {
+          "id": 5,
+          "name": "Cuenta Alpha Pruebas",
+          "accountType": "DEBIT",
+          "isActive": true
+        },
+        {
+          "id": 7,
+          "name": "Cuenta A4 Maria",
+          "accountType": "DEBIT",
+          "isActive": true
+        },
+        {
+          "id": 8,
+          "name": "Cuenta A4 Jose",
+          "accountType": "DEBIT",
+          "isActive": true
+        },
+        {
+          "id": 9,
+          "name": "Cuenta A4 Maria 20261012231545906321",
+          "accountType": "DEBIT",
+          "isActive": true
+        },
+        {
+          "id": 10,
+          "name": "Cuenta A4 Jose 20261012231545906321",
+          "accountType": "DEBIT",
+          "isActive": true
+        },
+        {
+          "id": 11,
+          "name": "Cuenta A4 Maria 20261012231613413366",
+          "accountType": "DEBIT",
+          "isActive": true
+        },
+        {
+          "id": 12,
+          "name": "Cuenta A4 Jose 20261012231613413366",
+          "accountType": "DEBIT",
+          "isActive": true
+        },
+        {
+          "id": 13,
+          "name": "Cuenta A4 Maria 20261015020639721169",
+          "accountType": "DEBIT",
+          "isActive": true
+        },
+        {
+          "id": 14,
+          "name": "Cuenta A4 Jose 20261015020639721169",
+          "accountType": "DEBIT",
+          "isActive": true
+        }
+      ]
+    }
+  },
+  "cuenta_5_visible": true,
+  "movimiento": {
+    "data": {
+      "createTransaction": {
+        "id": 18,
+        "accountId": 5,
+        "conceptId": 7,
+        "amount": "123.45",
+        "transactionType": "INCOME",
+        "shortDescription": "A5 E10 movimiento real"
+      }
+    }
+  },
+  "persistido_en_postgres": [
+    {
+      "id": 18,
+      "account_id": 5,
+      "concept_id": 7,
+      "amount": 123.45,
+      "transaction_type": "INCOME",
+      "short_description": "A5 E10 movimiento real"
+    }
+  ]
+}

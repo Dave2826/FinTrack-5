@@ -1,0 +1,23 @@
+test_01_catalogo_sin_filtro (tests.test_configuracion_permisos.ConfiguracionPermisosTests.test_01_catalogo_sin_filtro) ... ok
+test_02_catalogo_por_recurso (tests.test_configuracion_permisos.ConfiguracionPermisosTests.test_02_catalogo_por_recurso) ... ok
+test_03_autorizacion_de_las_operaciones (tests.test_configuracion_permisos.ConfiguracionPermisosTests.test_03_autorizacion_de_las_operaciones) ... ok
+test_04_preview_no_modifica_filas (tests.test_configuracion_permisos.ConfiguracionPermisosTests.test_04_preview_no_modifica_filas) ... ok
+test_05_aplicar_s0_a_s1 (tests.test_configuracion_permisos.ConfiguracionPermisosTests.test_05_aplicar_s0_a_s1) ... ok
+test_06_repetir_s1_es_idempotente (tests.test_configuracion_permisos.ConfiguracionPermisosTests.test_06_repetir_s1_es_idempotente) ... ok
+test_07_desactivar_reactivar_conserva_el_id (tests.test_configuracion_permisos.ConfiguracionPermisosTests.test_07_desactivar_reactivar_conserva_el_id) ... ok
+test_08_rol_inexistente (tests.test_configuracion_permisos.ConfiguracionPermisosTests.test_08_rol_inexistente) ... ok
+test_09_rol_inactivo (tests.test_configuracion_permisos.ConfiguracionPermisosTests.test_09_rol_inactivo) ... ok
+test_10_propuesta_sobre_administrador (tests.test_configuracion_permisos.ConfiguracionPermisosTests.test_10_propuesta_sobre_administrador) ... ok
+test_11_permiso_inexistente (tests.test_configuracion_permisos.ConfiguracionPermisosTests.test_11_permiso_inexistente) ... ok
+test_12_permiso_inactivo (tests.test_configuracion_permisos.ConfiguracionPermisosTests.test_12_permiso_inactivo) ... ok
+test_13_ids_repetidos (tests.test_configuracion_permisos.ConfiguracionPermisosTests.test_13_ids_repetidos) ... ok
+test_14_lista_vacia_y_seed_no_reactiva (tests.test_configuracion_permisos.ConfiguracionPermisosTests.test_14_lista_vacia_y_seed_no_reactiva) ... ok
+test_15_rollback_e07_tras_flush_sin_commit (tests.test_configuracion_permisos.ConfiguracionPermisosTests.test_15_rollback_e07_tras_flush_sin_commit) ... ok
+test_16_continuidad_de_operaciones_previas (tests.test_configuracion_permisos.ConfiguracionPermisosTests.test_16_continuidad_de_operaciones_previas) ... ok
+test_17_matriz_oficial_sin_duplicados (tests.test_configuracion_permisos.ConfiguracionPermisosTests.test_17_matriz_oficial_sin_duplicados) ... ok
+test_18_preview_desactivaciones_current_es_estado_previo (tests.test_configuracion_permisos.ConfiguracionPermisosTests.test_18_preview_desactivaciones_current_es_estado_previo) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.483s
+
+OK

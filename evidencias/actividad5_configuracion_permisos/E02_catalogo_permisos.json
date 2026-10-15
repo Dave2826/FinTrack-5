@@ -1,0 +1,164 @@
+{
+  "fase": "E02",
+  "concepto": "catálogo de permisos activos con y sin filtro",
+  "utc": "2026-10-15T02:23:11.775237+00:00",
+  "actor": {
+    "email": "ana@test.local",
+    "companyUserId": 29
+  },
+  "operacion": "query ExplorarCatalogo (operaciones.graphql)",
+  "resultados": {
+    "explorar_catalogo_accounts.json": {
+      "todos": [
+        "accounts.read",
+        "accounts.write",
+        "company.users.read",
+        "company.users.write",
+        "concepts.read",
+        "concepts.write",
+        "roles.read",
+        "roles.write",
+        "transactions.read",
+        "transactions.write"
+      ],
+      "porRecurso": [
+        "accounts.read",
+        "accounts.write"
+      ],
+      "errores": null
+    },
+    "explorar_catalogo_company_users.json": {
+      "todos": [
+        "accounts.read",
+        "accounts.write",
+        "company.users.read",
+        "company.users.write",
+        "concepts.read",
+        "concepts.write",
+        "roles.read",
+        "roles.write",
+        "transactions.read",
+        "transactions.write"
+      ],
+      "porRecurso": [
+        "company.users.read",
+        "company.users.write"
+      ],
+      "errores": null
+    },
+    "explorar_catalogo_completo.json": {
+      "todos": [
+        "accounts.read",
+        "accounts.write",
+        "company.users.read",
+        "company.users.write",
+        "concepts.read",
+        "concepts.write",
+        "roles.read",
+        "roles.write",
+        "transactions.read",
+        "transactions.write"
+      ],
+      "porRecurso": [
+        "accounts.read",
+        "accounts.write",
+        "company.users.read",
+        "company.users.write",
+        "concepts.read",
+        "concepts.write",
+        "roles.read",
+        "roles.write",
+        "transactions.read",
+        "transactions.write"
+      ],
+      "errores": null
+    },
+    "explorar_catalogo_concepts.json": {
+      "todos": [
+        "accounts.read",
+        "accounts.write",
+        "company.users.read",
+        "company.users.write",
+        "concepts.read",
+        "concepts.write",
+        "roles.read",
+        "roles.write",
+        "transactions.read",
+        "transactions.write"
+      ],
+      "porRecurso": [
+        "concepts.read",
+        "concepts.write"
+      ],
+      "errores": null
+    },
+    "explorar_catalogo_roles.json": {
+      "todos": [
+        "accounts.read",
+        "accounts.write",
+        "company.users.read",
+        "company.users.write",
+        "concepts.read",
+        "concepts.write",
+        "roles.read",
+        "roles.write",
+        "transactions.read",
+        "transactions.write"
+      ],
+      "porRecurso": [
+        "roles.read",
+        "roles.write"
+      ],
+      "errores": null
+    },
+    "explorar_catalogo_transactions.json": {
+      "todos": [
+        "accounts.read",
+        "accounts.write",
+        "company.users.read",
+        "company.users.write",
+        "concepts.read",
+        "concepts.write",
+        "roles.read",
+        "roles.write",
+        "transactions.read",
+        "transactions.write"
+      ],
+      "porRecurso": [
+        "transactions.read",
+        "transactions.write"
+      ],
+      "errores": null
+    }
+  },
+  "autorizacion": {
+    "actor": "capturista_a@test.local (sin roles.read)",
+    "esperado": "El rol no tiene el permiso roles.read",
+    "observado": "El rol no tiene el permiso roles.read",
+    "respuesta": {
+      "data": null,
+      "errors": [
+        {
+          "message": "El rol no tiene el permiso roles.read",
+          "locations": [
+            {
+              "line": 1,
+              "column": 50
+            }
+          ],
+          "path": [
+            "permissionCatalog"
+          ]
+        }
+      ]
+    }
+  },
+  "usa_archivos": [
+    "explorar_catalogo_accounts.json",
+    "explorar_catalogo_company_users.json",
+    "explorar_catalogo_completo.json",
+    "explorar_catalogo_concepts.json",
+    "explorar_catalogo_roles.json",
+    "explorar_catalogo_transactions.json"
+  ]
+}

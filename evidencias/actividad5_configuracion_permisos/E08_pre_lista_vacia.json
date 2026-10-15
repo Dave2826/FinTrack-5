@@ -1,0 +1,82 @@
+{
+  "fase": "E08-pre",
+  "concepto": "aplicar permissionIds vacío a CAPTURISTA",
+  "utc": "2026-10-15T02:25:53.175472+00:00",
+  "actor": {
+    "email": "ana@test.local",
+    "companyUserId": 29
+  },
+  "operacion": "mutation AplicarConfiguracion (operaciones.graphql)",
+  "variables": {
+    "actorCompanyUserId": "29",
+    "input": {
+      "roleId": "3",
+      "permissionIds": []
+    }
+  },
+  "respuesta": {
+    "data": {
+      "setRolePermissions": {
+        "role": {
+          "id": 3,
+          "code": "CAPTURISTA",
+          "name": "CAPTURISTA"
+        },
+        "activated": [],
+        "deactivated": [
+          {
+            "id": 3,
+            "code": "accounts.read"
+          },
+          {
+            "id": 5,
+            "code": "concepts.read"
+          },
+          {
+            "id": 7,
+            "code": "transactions.read"
+          },
+          {
+            "id": 8,
+            "code": "transactions.write"
+          }
+        ],
+        "unchanged": [],
+        "finalCount": 0,
+        "changed": true
+      }
+    }
+  },
+  "configuracion_tras_aplicar": {
+    "ADMINISTRADOR": [
+      "accounts.read",
+      "accounts.write",
+      "company.users.read",
+      "company.users.write",
+      "concepts.read",
+      "concepts.write",
+      "roles.read",
+      "roles.write",
+      "transactions.read",
+      "transactions.write"
+    ],
+    "CAPTURISTA": [],
+    "CONSULTA": [
+      "accounts.read",
+      "company.users.read",
+      "concepts.read",
+      "transactions.read"
+    ],
+    "CONTADOR": [
+      "accounts.read",
+      "accounts.write",
+      "company.users.read",
+      "concepts.read",
+      "concepts.write",
+      "roles.read",
+      "transactions.read",
+      "transactions.write"
+    ]
+  },
+  "capturista_activas": 0
+}

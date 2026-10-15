@@ -1,0 +1,99 @@
+{
+  "fase": "E09",
+  "concepto": "restauración de la matriz oficial de permisos",
+  "utc": "2026-10-15T02:26:12.680753+00:00",
+  "actor": {
+    "email": "ana@test.local",
+    "companyUserId": 29
+  },
+  "operacion": "mutation AplicarConfiguracion (operaciones.graphql)",
+  "variables": {
+    "actorCompanyUserId": "29",
+    "input": {
+      "roleId": "3",
+      "permissionIds": [
+        "3",
+        "5",
+        "7",
+        "8"
+      ]
+    }
+  },
+  "respuesta": {
+    "data": {
+      "setRolePermissions": {
+        "role": {
+          "id": 3,
+          "code": "CAPTURISTA",
+          "name": "CAPTURISTA"
+        },
+        "activated": [
+          {
+            "id": 3,
+            "code": "accounts.read"
+          },
+          {
+            "id": 5,
+            "code": "concepts.read"
+          },
+          {
+            "id": 7,
+            "code": "transactions.read"
+          },
+          {
+            "id": 8,
+            "code": "transactions.write"
+          }
+        ],
+        "deactivated": [],
+        "unchanged": [],
+        "finalCount": 4,
+        "changed": true
+      }
+    }
+  },
+  "configuracion_final": {
+    "ADMINISTRADOR": [
+      "accounts.read",
+      "accounts.write",
+      "company.users.read",
+      "company.users.write",
+      "concepts.read",
+      "concepts.write",
+      "roles.read",
+      "roles.write",
+      "transactions.read",
+      "transactions.write"
+    ],
+    "CAPTURISTA": [
+      "accounts.read",
+      "concepts.read",
+      "transactions.read",
+      "transactions.write"
+    ],
+    "CONSULTA": [
+      "accounts.read",
+      "company.users.read",
+      "concepts.read",
+      "transactions.read"
+    ],
+    "CONTADOR": [
+      "accounts.read",
+      "accounts.write",
+      "company.users.read",
+      "concepts.read",
+      "concepts.write",
+      "roles.read",
+      "transactions.read",
+      "transactions.write"
+    ]
+  },
+  "conteos_activas_por_rol": {
+    "ADMINISTRADOR": 10,
+    "CAPTURISTA": 4,
+    "CONSULTA": 4,
+    "CONTADOR": 8
+  },
+  "matriz_oficial_cumplida": true,
+  "duplicados": []
+}

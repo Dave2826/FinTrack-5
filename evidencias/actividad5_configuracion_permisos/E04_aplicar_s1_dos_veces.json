@@ -1,0 +1,145 @@
+{
+  "fase": "E04",
+  "concepto": "aplicar S1 dos veces: cambio y luego idempotencia",
+  "utc": "2026-10-15T02:23:13.117093+00:00",
+  "actor": {
+    "email": "ana@test.local",
+    "companyUserId": 29
+  },
+  "operacion": "mutation AplicarConfiguracion (operaciones.graphql)",
+  "variables": {
+    "actorCompanyUserId": "29",
+    "input": {
+      "roleId": "3",
+      "permissionIds": [
+        "3",
+        "4",
+        "5",
+        "7",
+        "8"
+      ]
+    }
+  },
+  "primera_aplicacion": {
+    "data": {
+      "setRolePermissions": {
+        "role": {
+          "id": 3,
+          "code": "CAPTURISTA",
+          "name": "CAPTURISTA"
+        },
+        "activated": [
+          {
+            "id": 4,
+            "code": "accounts.write"
+          }
+        ],
+        "deactivated": [],
+        "unchanged": [
+          {
+            "id": 3,
+            "code": "accounts.read"
+          },
+          {
+            "id": 5,
+            "code": "concepts.read"
+          },
+          {
+            "id": 7,
+            "code": "transactions.read"
+          },
+          {
+            "id": 8,
+            "code": "transactions.write"
+          }
+        ],
+        "finalCount": 5,
+        "changed": true
+      }
+    }
+  },
+  "segunda_aplicacion": {
+    "data": {
+      "setRolePermissions": {
+        "role": {
+          "id": 3,
+          "code": "CAPTURISTA",
+          "name": "CAPTURISTA"
+        },
+        "activated": [],
+        "deactivated": [],
+        "unchanged": [
+          {
+            "id": 3,
+            "code": "accounts.read"
+          },
+          {
+            "id": 4,
+            "code": "accounts.write"
+          },
+          {
+            "id": 5,
+            "code": "concepts.read"
+          },
+          {
+            "id": 7,
+            "code": "transactions.read"
+          },
+          {
+            "id": 8,
+            "code": "transactions.write"
+          }
+        ],
+        "finalCount": 5,
+        "changed": false
+      }
+    }
+  },
+  "concesion_accounts_write": {
+    "tras_primera": {
+      "id": 31,
+      "is_active": true
+    },
+    "tras_segunda": {
+      "id": 31,
+      "is_active": true
+    }
+  },
+  "configuracion_final": {
+    "ADMINISTRADOR": [
+      "accounts.read",
+      "accounts.write",
+      "company.users.read",
+      "company.users.write",
+      "concepts.read",
+      "concepts.write",
+      "roles.read",
+      "roles.write",
+      "transactions.read",
+      "transactions.write"
+    ],
+    "CAPTURISTA": [
+      "accounts.read",
+      "accounts.write",
+      "concepts.read",
+      "transactions.read",
+      "transactions.write"
+    ],
+    "CONSULTA": [
+      "accounts.read",
+      "company.users.read",
+      "concepts.read",
+      "transactions.read"
+    ],
+    "CONTADOR": [
+      "accounts.read",
+      "accounts.write",
+      "company.users.read",
+      "concepts.read",
+      "concepts.write",
+      "roles.read",
+      "transactions.read",
+      "transactions.write"
+    ]
+  }
+}

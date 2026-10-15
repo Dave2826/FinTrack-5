@@ -29,6 +29,7 @@ El proyecto integra autenticación mediante JWT para identificar al usuario resp
 - [Migraciones](#migraciones)
 - [Actividad 3 — Autorización con roles y control de acceso](#actividad-3--autorización-con-roles-y-control-de-acceso)
 - [Actividad 4 — Configuración de permisos por roles](#actividad-4--configuración-de-permisos-por-roles)
+- [Actividad 5 — Configuración de permisos con GraphQL (Unidad II)](#actividad-5--configuración-de-permisos-con-graphql-unidad-ii)
 - [Verificación de la aplicación](#verificación-de-la-aplicación)
 - [Control de versiones](#control-de-versiones)
 - [Seguridad](#seguridad)
@@ -607,6 +608,8 @@ DELETE. Escribe el detalle en JSONL dentro del contenedor
 (`/tmp/actividad4_resultados.jsonl`).
 
 Corrida oficial (12-oct-2026, exit code 0): **34/34 APROBADOS**.
+Re-verificada tras los cambios de la Actividad 5 (14-oct-2026, exit
+code 0): **34/34 APROBADOS**.
 
 | grupo | casos | cobertura |
 |---|---|---|
@@ -659,6 +662,98 @@ La evidencia SQL conserva además dos relaciones históricas inactivas, que no f
   catálogo "por empresa".
 - El enunciado del profesor menciona MySQL; este repositorio usa
   PostgreSQL 16 con Alembic y Docker Compose (se conserva el stack).
+
+## Actividad 5 — Configuración de permisos con GraphQL (Unidad II)
+
+### Contrato añadido
+
+| Operación | Tipo | Argumentos |
+|---|---|---|
+| `permissionCatalog` | query | `actorCompanyUserId: ID!`, `resource: PermissionResource = null` |
+| `previewRolePermissions` | query | `input: SetRolePermissionsInput!`, `actorCompanyUserId: ID!` |
+| `setRolePermissions` | mutation | `input: SetRolePermissionsInput!`, `actorCompanyUserId: ID!` |
+
+Tipos nuevos: enum `PermissionResource` (`COMPANY_USERS`, `ACCOUNTS`,
+`CONCEPTS`, `TRANSACTIONS`, `ROLES`), input
+`SetRolePermissionsInput { roleId: ID!, permissionIds: [ID!] }`,
+`RolePermissionPlan` (`current` = configuración activa completa del rol
+previa a la propuesta, `toActivate`, `toDeactivate`,
+`unchanged`, `finalCount`) y `RolePermissionUpdate` (`activated`,
+`deactivated`, `unchanged`, `finalCount`, `changed`). El SDL resultante
+expone 15 queries y 16 mutations; las listas se ordenan por
+`Permission.code` y las operaciones exigen `roles.read` (queries) o
+`roles.write` (mutación) en el actor.
+
+### Reglas de negocio implementadas
+
+- `setRolePermissions` aplica la **lista exacta** de permisos en una
+  sola transacción con un único `commit`; todas las validaciones ocurren
+  antes de escribir; es idempotente (`changed=false` al repetir la misma
+  propuesta).
+- La reactivación reutiliza la fila existente conservando su `id`;
+  unicidad de `(role_id, permission_id)` garantizada por
+  `uq_role_permission` (sin migración).
+- Toda propuesta sobre el rol `ADMINISTRADOR` se deniega;
+  `permissionIds: []` es válido para los demás roles; los IDs repetidos
+  se rechazan (`"3"` y `3` equivalen, pero no pueden duplicarse);
+  permisos/roles inexistentes o inactivos se rechazan con mensajes
+  exactos.
+- La semilla (`services/seed_service.py`) distingue "nunca inicializado"
+  (cero filas → crea la matriz oficial) de "vacío deliberado" (ya existen
+  filas → nunca reactiva), por lo que `setup_pruebas.py` es idempotente
+  y no restaura listas vacías.
+
+### Pruebas automatizadas (`tests/`)
+
+    docker exec -e PYTHONPATH=/app fintrack5-test-api \
+      python -m unittest tests.test_configuracion_permisos -v
+
+Guardas: `DB_NAME=fintrack5_test`, `DB_HOST=postgres`, revisión de
+Alembic `3b9f41c7d2ae` (imposible ejecutarlas contra la base de
+desarrollo). Resultado: **18/18** — catálogo con y sin filtro,
+autorización, preview sin escrituras, aplicación S0→S1, idempotencia,
+conservación del identificador, seis entradas inválidas, lista vacía con
+no-restauración por el seed, rollback E07 (mock tras `flush`), matriz
+oficial sin duplicados y semántica de `current` en previews con
+desactivaciones.
+
+### Evidencias E01–E10
+
+Índice y detalle en [`evidencias.md`](evidencias.md); transcripciones
+crudas en `evidencias/actividad5_configuracion_permisos/`:
+
+| Evidencia | Contenido |
+|---|---|
+| E01 | Configuración inicial oficial (10/8/4/4) |
+| E02 | Catálogo completo/por recurso + denegación sin `roles.read` |
+| E03 | Preview S0→S1 sin escrituras |
+| E04 | Aplicar S1 dos veces (`true` → `false`, id 31) |
+| E05 | S0 → S1 conservando el mismo id de concesión |
+| E06 | Seis entradas inválidas + actor sin `roles.write` (7/7) |
+| E07 | Rollback controlado tras `flush` sin `commit` (OK) |
+| E08 | Lista vacía + reinicio del contenedor (persiste 0 activas) |
+| E09 | Restauración de la matriz oficial |
+| E10 | Consulta de cuentas + movimiento real (cuenta 5, concepto 7, id 18) |
+
+### Entregables
+
+| Archivo | Contenido |
+|---|---|
+| `operaciones.graphql` | `ExplorarCatalogo` (alias + fragmento `DatosPermiso`), `RevisarConfiguracion`, `AplicarConfiguracion` |
+| `variables/` | Variables reales (actor 29, roles/permisos) para cada operación |
+| `configuracion_inicial.json` / `configuracion_final.json` | Matriz por códigos antes y después |
+| `comprobaciones.sql` | Consultas C1–C12 con resultados documentados |
+| `investigacion.md` | Investigación con ≥3 fuentes oficiales verificadas (14-oct-2026) |
+| `evidencias.md` | Índice y detalle de E01–E10 |
+| `scripts/evidencias_actividad5.py` | Reproductor de las fases E01–E10 |
+
+### Verificación final
+
+- Suite Actividad 5: **18/18 OK**.
+- Regresión Actividad 4 (`scripts/pruebas_actividad4.py`): **34/34
+  APROBADOS**.
+- Matriz final oficial 10/8/4/4, sin duplicados y sin permisos fuera
+  del catálogo (`comprobaciones.sql`).
 
 ## Verificación de la aplicación
 
