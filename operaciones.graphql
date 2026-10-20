@@ -1,6 +1,8 @@
 # Operaciones GraphQL de la Actividad 5: configuración de permisos.
-# Todas usan el fragmento DatosPermiso y las variables de variables/*.json
-# (actor Ana Torres: company_user 29, empresa 5).
+# Todas usan el fragmento DatosPermiso y las variables de variables/*.json.
+# Contrato autenticado (Actividad 6): la identidad (Ana Torres, empresa 5)
+# viaja en el encabezado Authorization: Bearer <token>; las operaciones
+# ya no reciben actorCompanyUserId.
 
 fragment DatosPermiso on Permission {
   id
@@ -13,24 +15,18 @@ fragment DatosPermiso on Permission {
 # E02: catálogo completo (sin filtro) y por recurso (enum PermissionResource).
 # variables/explorar_catalogo_completo.json       -> recurso omitido (null)
 # variables/explorar_catalogo_<recurso>.json      -> uno de los 5 recursos
-query ExplorarCatalogo($actorCompanyUserId: ID!, $recurso: PermissionResource) {
-  todos: permissionCatalog(actorCompanyUserId: $actorCompanyUserId) {
+query ExplorarCatalogo($recurso: PermissionResource) {
+  todos: permissionCatalog {
     ...DatosPermiso
   }
-  porRecurso: permissionCatalog(
-    actorCompanyUserId: $actorCompanyUserId
-    resource: $recurso
-  ) {
+  porRecurso: permissionCatalog(resource: $recurso) {
     ...DatosPermiso
   }
 }
 
 # E03: previsualización de la propuesta completa; solo lectura.
-query RevisarConfiguracion(
-  $input: SetRolePermissionsInput!
-  $actorCompanyUserId: ID!
-) {
-  previewRolePermissions(input: $input, actorCompanyUserId: $actorCompanyUserId) {
+query RevisarConfiguracion($input: SetRolePermissionsInput!) {
+  previewRolePermissions(input: $input) {
     role {
       id
       code
@@ -57,11 +53,8 @@ query RevisarConfiguracion(
 }
 
 # E04/E05/E08/E09: aplicación exacta en una única transacción.
-mutation AplicarConfiguracion(
-  $input: SetRolePermissionsInput!
-  $actorCompanyUserId: ID!
-) {
-  setRolePermissions(input: $input, actorCompanyUserId: $actorCompanyUserId) {
+mutation AplicarConfiguracion($input: SetRolePermissionsInput!) {
+  setRolePermissions(input: $input) {
     role {
       id
       code

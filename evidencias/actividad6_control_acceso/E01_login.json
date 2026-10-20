@@ -1,0 +1,30 @@
+{
+  "fase": "E01",
+  "concepto": "login correcto (token, tokenType y datos minimos del usuario) y rechazos",
+  "utc": "2026-10-20T00:55:14.668034+00:00",
+  "actor": {
+    "email": "ana@test.local",
+    "companyUserId": 65
+  },
+  "correcto": {
+    "tokenType": "bearer",
+    "claims": {
+      "companyUserId": 65,
+      "companyId": 11,
+      "exp": 1792459514
+    },
+    "vigencia_minutos": 29.99,
+    "cabecera_autorizacion": "Authorization: Bearer <TOKEN_REDACTADO>",
+    "longitud_token": 151,
+    "nota": "no se almacena el token vigente, solo sus metadatos",
+    "usuario": {
+      "name": "Ana Pruebas Alpha",
+      "email": "ana@test.local"
+    },
+    "sin_hash_en_respuesta": true,
+    "login_rechazado_sin_token": true
+  },
+  "password_incorrecta": "Credenciales inválidas",
+  "sin_membresia_activa": "El usuario no tiene una membresía activa",
+  "usuario_inactivo": "El usuario está inactivo"
+}

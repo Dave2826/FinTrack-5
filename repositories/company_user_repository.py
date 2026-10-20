@@ -39,6 +39,28 @@ def get_active_company_user(
     )
 
 
+def get_active_company_user_by_user(
+    db: Session,
+    user_id: int
+) -> CompanyUser | None:
+    """Primera membresía activa del usuario, ordenada por id.
+
+    Supuesto D4: si el usuario tiene varias membresías activas se elige
+    de forma determinista la de menor `CompanyUser.id`. El cliente nunca
+    elige la empresa; el `companyId` del token sale de esta membresía.
+    """
+
+    return (
+        db.query(CompanyUser)
+        .filter(
+            CompanyUser.user_id == user_id,
+            CompanyUser.is_active.is_(True),
+        )
+        .order_by(CompanyUser.id)
+        .first()
+    )
+
+
 def get_active_company_admin(
     db: Session,
     company_id: int

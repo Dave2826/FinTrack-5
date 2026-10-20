@@ -1,0 +1,27 @@
+{
+  "fase": "E06",
+  "concepto": "caso 5: Pedro (CONSULTA) no puede registrar movimientos",
+  "utc": "2026-10-19T22:54:21.060674+00:00",
+  "autenticacion": "Bearer (Pedro, token previo al cambio de rol)",
+  "mensaje": "El rol no tiene el permiso transactions.write",
+  "respuesta": {
+    "data": null,
+    "errors": [
+      {
+        "message": "El rol no tiene el permiso transactions.write",
+        "locations": [
+          {
+            "line": 40,
+            "column": 3
+          }
+        ],
+        "path": [
+          "createTransaction"
+        ]
+      }
+    ]
+  },
+  "movimientos_antes": 4,
+  "movimientos_despues": 4,
+  "sin_escrituras": true
+}

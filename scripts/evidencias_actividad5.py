@@ -154,10 +154,10 @@ def _gql(query: str, variables: dict | None = None,
 def _login(email: str) -> str:
     query = (
         'mutation{login(input:{email:"%s",password:"%s"})'
-        "{accessToken tokenType}}" % (email, CONTRASENA_PRUEBAS)
+        "{token tokenType}}" % (email, CONTRASENA_PRUEBAS)
     )
     datos = _gql(query)
-    token = ((datos.get("data") or {}).get("login") or {}).get("accessToken")
+    token = ((datos.get("data") or {}).get("login") or {}).get("token")
     if not token:
         _abortar(f"login fallido para {email}: {datos}")
     return token
@@ -323,11 +323,10 @@ def fase_e02() -> None:
         resultados[archivo] = datos
 
     denegacion = _gql(
-        "query ExplorarCatalogo($actorCompanyUserId: ID!)"
-        "{permissionCatalog(actorCompanyUserId:$actorCompanyUserId){id}}",
-        variables={"actorCompanyUserId": str(capturista)},
+        "query ExplorarCatalogoDenegado"
+        "{permissionCatalog{id}}",
         token=token_capturista,
-        operation_name="ExplorarCatalogo",
+        operation_name="ExplorarCatalogoDenegado",
     )
 
     resumen = {}
@@ -519,8 +518,7 @@ def fase_e06() -> None:
     _intentar(
         "rol inexistente",
         "El rol no existe",
-        {"actorCompanyUserId": str(ana),
-         "input": {"roleId": "999999",
+        {"input": {"roleId": "999999",
                    "permissionIds": [str(v) for v in s1]}},
         token_ana,
     )
@@ -533,8 +531,7 @@ def fase_e06() -> None:
         _intentar(
             "rol inactivo",
             "El rol no está activo",
-            {"actorCompanyUserId": str(ana),
-             "input": {"roleId": str(ids["CONSULTA"]),
+            {"input": {"roleId": str(ids["CONSULTA"]),
                        "permissionIds": [str(permisos["accounts.read"])]}},
             token_ana,
         )
@@ -547,8 +544,7 @@ def fase_e06() -> None:
     _intentar(
         "propuesta sobre ADMINISTRADOR",
         "ADMINISTRADOR",
-        {"actorCompanyUserId": str(ana),
-         "input": {"roleId": str(ids["ADMINISTRADOR"]),
+        {"input": {"roleId": str(ids["ADMINISTRADOR"]),
                    "permissionIds": [str(v) for v in todos]}},
         token_ana,
     )
@@ -557,8 +553,7 @@ def fase_e06() -> None:
     _intentar(
         "permiso inexistente mezclado",
         "El permiso con id 999999 no existe",
-        {"actorCompanyUserId": str(ana),
-         "input": {"roleId": str(ids["CAPTURISTA"]),
+        {"input": {"roleId": str(ids["CAPTURISTA"]),
                    "permissionIds": [str(v) for v in s1] + ["999999"]}},
         token_ana,
     )
@@ -572,8 +567,7 @@ def fase_e06() -> None:
         _intentar(
             "permiso inactivo",
             "El permiso concepts.write no está activo",
-            {"actorCompanyUserId": str(ana),
-             "input": {"roleId": str(ids["CAPTURISTA"]),
+            {"input": {"roleId": str(ids["CAPTURISTA"]),
                        "permissionIds": [str(permisos["concepts.write"])]}},
             token_ana,
         )
@@ -587,8 +581,7 @@ def fase_e06() -> None:
     _intentar(
         "IDs repetidos",
         "permissionIds contiene IDs repetidos",
-        {"actorCompanyUserId": str(ana),
-         "input": {"roleId": str(ids["CAPTURISTA"]),
+        {"input": {"roleId": str(ids["CAPTURISTA"]),
                    "permissionIds": [str(permisos["accounts.read"]),
                                      str(permisos["accounts.read"])]}},
         token_ana,
@@ -598,8 +591,7 @@ def fase_e06() -> None:
     _intentar(
         "actor sin roles.write (adición)",
         "El rol no tiene el permiso roles.write",
-        {"actorCompanyUserId": str(capturista),
-         "input": {"roleId": str(ids["CAPTURISTA"]),
+        {"input": {"roleId": str(ids["CAPTURISTA"]),
                    "permissionIds": [str(v) for v in s1]}},
         token_capturista,
     )
@@ -669,8 +661,7 @@ def fase_e08post() -> None:
     capturista = _membresia("capturista_a@test.local")
     verificacion = _operacion(
         "RevisarConfiguracion",
-        {"actorCompanyUserId": "29",
-         "input": {"roleId": "3", "permissionIds": []}},
+        {"input": {"roleId": "3", "permissionIds": []}},
         token=token,
     )
 
@@ -735,10 +726,9 @@ def fase_e10() -> None:
     token = _login("ana@test.local")
 
     consulta_cuentas = _gql(
-        "query CuentasDeLaEmpresa($actorCompanyUserId: Int!,"
-        "$companyId: Int!){accounts(actorCompanyUserId:$actorCompanyUserId,"
-        "companyId:$companyId){id name accountType isActive}}",
-        variables={"actorCompanyUserId": ana, "companyId": 5},
+        "query CuentasDeLaEmpresa($companyId: Int!)"
+        "{accounts(companyId:$companyId){id name accountType isActive}}",
+        variables={"companyId": 5},
         token=token,
         operation_name="CuentasDeLaEmpresa",
     )
@@ -748,7 +738,6 @@ def fase_e10() -> None:
         "{createTransaction(input:$input){id accountId conceptId amount "
         "transactionType shortDescription}}",
         variables={"input": {
-            "actorCompanyUserId": ana,
             "accountId": 5,
             "conceptId": 7,
             "amount": 123.45,

@@ -120,10 +120,10 @@ def _gql(query: str, token: str | None = None) -> dict:
 def _login(email: str) -> str:
     query = (
         'mutation{login(input:{email:"%s",password:"%s"})'
-        "{accessToken tokenType}}" % (email, CONTRASENA_PRUEBAS)
+        "{token tokenType}}" % (email, CONTRASENA_PRUEBAS)
     )
     datos = _gql(query)
-    token = ((datos.get("data") or {}).get("login") or {}).get("accessToken")
+    token = ((datos.get("data") or {}).get("login") or {}).get("token")
     if not token:
         _abortar(f"login fallido para {email}: {datos}")
     return token
@@ -183,7 +183,6 @@ def _restaurar(db: Session, ctx: dict) -> list[str]:
 
     incidencias: list[str] = []
     token = ctx.get("ana_token")
-    ana_id = ctx.get("ana_cu")
     pedro_cu = ctx.get("pedro_cu")
     roles_ids = ctx.get("roles_ids", {})
     permisos_ids = ctx.get("permisos_ids", {})
@@ -209,17 +208,17 @@ def _restaurar(db: Session, ctx: dict) -> list[str]:
     if not ajustes and not necesita_pedro:
         return incidencias
 
-    if token and ana_id:
+    if token:
         for rol, codigo, activar in ajustes:
             mutacion = (
                 "mutation{assignPermissionToRole(input:{"
-                "actorCompanyUserId:%d,roleId:%d,permissionId:%d})"
+                "roleId:%d,permissionId:%d})"
                 "{id isActive}}"
                 if activar
                 else "mutation{removePermissionFromRole("
-                "actorCompanyUserId:%d,roleId:%d,permissionId:%d)"
+                "roleId:%d,permissionId:%d)"
                 "{id isActive}}"
-            ) % (ana_id, roles_ids[rol], permisos_ids[codigo])
+            ) % (roles_ids[rol], permisos_ids[codigo])
             try:
                 datos = _gql(mutacion, token)
                 ok = bool(
@@ -235,9 +234,9 @@ def _restaurar(db: Session, ctx: dict) -> list[str]:
 
         if necesita_pedro:
             mutacion = (
-                "mutation{assignRole(input:{actorCompanyUserId:%d,"
+                "mutation{assignRole(input:{"
                 "companyUserId:%d,roleId:%d}){id roleId isActive}}"
-                % (ana_id, pedro_cu, roles_ids["CONSULTA"])
+                % (pedro_cu, roles_ids["CONSULTA"])
             )
             try:
                 datos = _gql(mutacion, token)
@@ -420,13 +419,11 @@ def main() -> int:
 
         # ------------------------------------------------ V1: aliases
         d_alias = _gql(
-            "{roles(actorCompanyUserId:%d){id code name isActive}}"
-            % cu["ana"].id,
+            "{roles{id code name isActive}}",
             tok["ana"],
         )
         d_lista = _gql(
-            "{listRoles(actorCompanyUserId:%d){id code name isActive}}"
-            % cu["ana"].id,
+            "{listRoles{id code name isActive}}",
             tok["ana"],
         )
         roles_alias = [
@@ -453,13 +450,11 @@ def main() -> int:
         )
 
         d_alias = _gql(
-            "{permissions(actorCompanyUserId:%d){id code isActive}}"
-            % cu["ana"].id,
+            "{permissions{id code isActive}}",
             tok["ana"],
         )
         d_lista = _gql(
-            "{listPermissions(actorCompanyUserId:%d){id code isActive}}"
-            % cu["ana"].id,
+            "{listPermissions{id code isActive}}",
             tok["ana"],
         )
         perm_alias = [
@@ -488,15 +483,15 @@ def main() -> int:
 
         rol_capturista = roles["CAPTURISTA"].id
         d_alias = _gql(
-            "{rolePermissions(actorCompanyUserId:%d,roleId:%d)"
+            "{rolePermissions(roleId:%d)"
             "{id roleId permissionId isActive}}"
-            % (cu["ana"].id, rol_capturista),
+            % rol_capturista,
             tok["ana"],
         )
         d_lista = _gql(
-            "{listRolePermissions(actorCompanyUserId:%d,roleId:%d)"
+            "{listRolePermissions(roleId:%d)"
             "{id roleId permissionId isActive}}"
-            % (cu["ana"].id, rol_capturista),
+            % rol_capturista,
             tok["ana"],
         )
         rp_alias = [
@@ -560,9 +555,9 @@ def main() -> int:
         # ------------------------------------------------ V3a: antes
         def intento_cuenta(actor: str, nombre: str) -> tuple[bool, dict]:
             consulta = (
-                "mutation{createAccount(input:{actorCompanyUserId:%d,"
+                "mutation{createAccount(input:{"
                 "companyId:%d,accountType:DEBIT,name:\"%s\"}){id companyId name}}"
-                % (cu[actor].id, alpha.id, nombre)
+                % (alpha.id, nombre)
             )
             datos = _gql(consulta, tok[actor])
             ok = bool((datos.get("data") or {}).get("createAccount"))
@@ -603,9 +598,9 @@ def main() -> int:
 
         # ------------------------------------------------ V4: concesion
         datos = _gql(
-            "mutation{assignPermissionToRole(input:{actorCompanyUserId:%d,"
+            "mutation{assignPermissionToRole(input:{"
             "roleId:%d,permissionId:%d}){id roleId permissionId isActive}}"
-            % (cu["ana"].id, rol_capturista, permisos["accounts.write"].id),
+            % (rol_capturista, permisos["accounts.write"].id),
             tok["ana"],
         )
         concesion = (datos.get("data") or {}).get("assignPermissionToRole")
@@ -641,9 +636,9 @@ def main() -> int:
         # ------------------------------------------------ V4: retiro
         conteo_con_concesion = _conteos(db)
         datos = _gql(
-            "mutation{removePermissionFromRole(actorCompanyUserId:%d,"
+            "mutation{removePermissionFromRole("
             "roleId:%d,permissionId:%d){id roleId permissionId isActive}}"
-            % (cu["ana"].id, rol_capturista, permisos["accounts.write"].id),
+            % (rol_capturista, permisos["accounts.write"].id),
             tok["ana"],
         )
         retiro = (datos.get("data") or {}).get("removePermissionFromRole")
@@ -701,9 +696,9 @@ def main() -> int:
 
         # ------------------------------------------------ V7: Jose vs Ana
         datos = _gql(
-            "mutation{assignPermissionToRole(input:{actorCompanyUserId:%d,"
+            "mutation{assignPermissionToRole(input:{"
             "roleId:%d,permissionId:%d}){id isActive}}"
-            % (cu["jose"].id, rol_capturista, permisos["roles.read"].id),
+            % (rol_capturista, permisos["roles.read"].id),
             tok["jose"],
         )
         _registrar(
@@ -727,9 +722,9 @@ def main() -> int:
         )
 
         datos = _gql(
-            "mutation{assignPermissionToRole(input:{actorCompanyUserId:%d,"
+            "mutation{assignPermissionToRole(input:{"
             "roleId:%d,permissionId:%d}){id roleId permissionId isActive}}"
-            % (cu["ana"].id, rol_capturista, permisos["roles.read"].id),
+            % (rol_capturista, permisos["roles.read"].id),
             tok["ana"],
         )
         concesion = (datos.get("data") or {}).get("assignPermissionToRole")
@@ -742,9 +737,9 @@ def main() -> int:
             bool(concesion) and concesion.get("isActive") is True,
         )
         datos = _gql(
-            "mutation{removePermissionFromRole(actorCompanyUserId:%d,"
+            "mutation{removePermissionFromRole("
             "roleId:%d,permissionId:%d){id isActive}}"
-            % (cu["ana"].id, rol_capturista, permisos["roles.read"].id),
+            % (rol_capturista, permisos["roles.read"].id),
             tok["ana"],
         )
         retiro = (datos.get("data") or {}).get("removePermissionFromRole")
@@ -759,10 +754,10 @@ def main() -> int:
 
         # ------------------------------------------------ V5: Pedro
         datos = _gql(
-            "mutation{createTransaction(input:{actorCompanyUserId:%d,"
+            "mutation{createTransaction(input:{"
             "accountId:%d,conceptId:%d,amount:15.5,"
             "transactionType:INCOME,shortDescription:\"A4 Pedro\"}){id}}"
-            % (cu["pedro"].id, cuenta_alpha, concepto_alpha),
+            % (cuenta_alpha, concepto_alpha),
             tok["pedro"],
         )
         _registrar(
@@ -777,9 +772,9 @@ def main() -> int:
         )
 
         datos = _gql(
-            "mutation{assignRole(input:{actorCompanyUserId:%d,"
+            "mutation{assignRole(input:{"
             "companyUserId:%d,roleId:%d}){id companyUserId roleId isActive}}"
-            % (cu["ana"].id, cu["pedro"].id, rol_capturista),
+            % (cu["pedro"].id, rol_capturista),
             tok["ana"],
         )
         rotado = (datos.get("data") or {}).get("assignRole")
@@ -816,10 +811,10 @@ def main() -> int:
         )
 
         datos = _gql(
-            "mutation{createTransaction(input:{actorCompanyUserId:%d,"
+            "mutation{createTransaction(input:{"
             "accountId:%d,conceptId:%d,amount:15.5,"
             "transactionType:INCOME,shortDescription:\"A4 Pedro\"}){id}}"
-            % (cu["pedro"].id, cuenta_alpha, concepto_alpha),
+            % (cuenta_alpha, concepto_alpha),
             tok["pedro"],
         )
         creado = (datos.get("data") or {}).get("createTransaction")
@@ -833,9 +828,9 @@ def main() -> int:
         )
 
         datos = _gql(
-            "mutation{assignRole(input:{actorCompanyUserId:%d,"
+            "mutation{assignRole(input:{"
             "companyUserId:%d,roleId:%d}){id companyUserId roleId isActive}}"
-            % (cu["ana"].id, cu["pedro"].id, roles["CONSULTA"].id),
+            % (cu["pedro"].id, roles["CONSULTA"].id),
             tok["ana"],
         )
         restaurado = (datos.get("data") or {}).get("assignRole")

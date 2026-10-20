@@ -1,0 +1,62 @@
+{
+  "fase": "E10",
+  "concepto": "contrato sin actorCompanyUserId y permisos de A5 intactos",
+  "utc": "2026-10-19T22:54:23.887151+00:00",
+  "contrato": {
+    "actor_company_user_id_en_sdl": false,
+    "operaciones_protegidas": 30
+  },
+  "permisos_actividad5": {
+    "matriz": {
+      "ADMINISTRADOR": [
+        "accounts.read",
+        "accounts.write",
+        "company.users.read",
+        "company.users.write",
+        "concepts.read",
+        "concepts.write",
+        "roles.read",
+        "roles.write",
+        "transactions.read",
+        "transactions.write"
+      ],
+      "CAPTURISTA": [
+        "accounts.read",
+        "concepts.read",
+        "transactions.read",
+        "transactions.write"
+      ],
+      "CONSULTA": [
+        "accounts.read",
+        "company.users.read",
+        "concepts.read",
+        "transactions.read"
+      ],
+      "CONTADOR": [
+        "accounts.read",
+        "accounts.write",
+        "company.users.read",
+        "concepts.read",
+        "concepts.write",
+        "roles.read",
+        "transactions.read",
+        "transactions.write"
+      ]
+    },
+    "conteos": {
+      "ADMINISTRADOR": 10,
+      "CAPTURISTA": 4,
+      "CONSULTA": 4,
+      "CONTADOR": 8
+    },
+    "sin_cambios": true
+  },
+  "secretos": {
+    "JWT_SECRET_configurado": true,
+    "valor_expuesto": false
+  },
+  "limpieza": {
+    "cuentas_eliminadas": 1,
+    "movimientos_eliminados": 2
+  }
+}

@@ -1,0 +1,64 @@
+Registro de validacion final - Actividad 6 (Control de acceso segun el rol)
+Ejecucion nueva de cierre. No reutiliza cifras de ejecuciones anteriores.
+
+Fecha y hora local de ejecucion (UTC-6): 2026-10-19 17:57:49 a 17:58:09
+Equivalente UTC:                         2026-10-19 23:57:49 a 23:58:09
+
+
+Entorno aislado
+---------------
+Base de datos de pruebas : fintrack5_test (current_database() confirmado)
+Contenedores             : fintrack5-test-api / fintrack5-test-postgres (imagen postgres:16)
+Revision Alembic         : 3b9f41c7d2ae
+Guardas verificadas      : DB_NAME=fintrack5_test y DB_HOST=postgres en las suites,
+                           el runner y los scripts; las pruebas abortan si no coinciden.
+No se uso la base de desarrollo actividad5.
+
+
+Preparacion previa
+------------------
+No se ejecuto limpieza ni setup. Antes de las pruebas se verifico con consultas de
+solo lectura que el entorno ya estaba preparado:
+
+- role_permissions: 26 filas, 26 activas, matriz oficial 10/8/4/4, 0 residuo inactivo.
+- Fixtures del setup presentes: users=12, companies=2, company_users=10,
+  accounts=2, concepts=3, transactions=3, alembic=3b9f41c7d2ae.
+
+
+Resultados reales de esta ejecucion
+-----------------------------------
+| Suite        | Comando exacto                                                                                | Inicio local     | Exit | Total | Aprob. | Fall. | Resultado             |
+|--------------|-----------------------------------------------------------------------------------------------|------------------|------|-------|--------|-------|-----------------------|
+| A6 (nueva)   | docker exec -e PYTHONPATH=/app fintrack5-test-api python -m unittest tests.test_control_acceso_rol -v | 2026-10-19 17:57:49 | 0 | 20 | 20 | 0 | OK                    |
+| A5 (regres.) | docker exec -e PYTHONPATH=/app fintrack5-test-api python -m unittest tests.test_configuracion_permisos -v | 2026-10-19 17:57:58 | 0 | 18 | 18 | 0 | OK                    |
+| A4 (regres.) | docker exec -e PYTHONPATH=/app fintrack5-test-api python -m scripts.pruebas_actividad4      | 2026-10-19 17:58:07 | 0 | 34 | 34 | 0 | 34 APROBADOS, 0 FALLIDOS |
+
+Salidas resumen (literales):
+- A6: "Ran 20 tests in 2.160s" / "OK"
+- A5: "Ran 18 tests in 0.953s" / "OK"
+- A4: {"TOTAL": 34, "APROBADOS": 34, "FALLIDOS": 0, "salida": "/tmp/actividad4_resultados.jsonl"}
+      (el archivo vive dentro del contenedor; no se copia al repositorio)
+
+
+Efecto observado en la base de pruebas (consulta de solo lectura posterior)
+--------------------------------------------------------------------------
+- role_permissions: 28 filas, 26 activas. Residuo inactivo esperado de los escenarios:
+  CAPTURISTA/accounts.write (suite A5 y runner A4) y CAPTURISTA/roles.read (runner A4),
+  ambos fuera de la matriz oficial. Las 26 relaciones oficiales siguen activas.
+- accounts=4 y transactions=4: incluyen 2 cuentas creadas por el runner A4.
+- Ese residuo y esas cuentas los retira scripts/limpiar_pruebas.py segun el
+  procedimiento documentado en el README; en esta tarea no se elimino nada.
+
+
+Limites de este registro
+------------------------
+- No se incluyen secretos, valores de .env/.env.test, contrasenas, hashes ni tokens.
+- El runner A4 conserva su detalle dentro del contenedor; aqui solo se registra su resumen real.
+- No se regeneraron las evidencias E01-E10 en esta validacion: corresponden a su
+  ejecucion previa, ya registrada en este mismo directorio.
+
+
+Git
+---
+HEAD = e85d9ef (rama main). Los cambios de la Actividad 6 permanecen locales,
+sin commit ni push. No se cambio de rama.

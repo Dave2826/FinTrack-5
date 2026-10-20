@@ -524,8 +524,8 @@ La plantilla solo incluye nombres de variables y valores de ejemplo;
 no contiene credenciales reales.
 
 Variables requeridas por `compose.test.yaml` (interpolación):
-`POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`,
-`JWT_SECRET_KEY`, `JWT_ALGORITHM`, `JWT_EXPIRE_MINUTES`.
+`POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `JWT_SECRET`
+(Actividad 6; sustituye a `JWT_SECRET_KEY`).
 El servicio `pgadmin` (perfil `herramientas`) usa además
 `PGADMIN_EMAIL` y `PGADMIN_PASSWORD`; las variables `APP_PORT`,
 `POSTGRES_PORT` y `PGADMIN_PORT` se mantienen solo para la
@@ -556,6 +556,13 @@ ADVERTENCIAS:
 - `limpiar_pruebas.py` borra datos ficticios de `fintrack5_test` (las
   empresas "Pruebas Alpha SA" y "Pruebas Beta SA" y sus recursos);
   ejecuta primero sin `--confirm`.
+- `limpiar_pruebas.py` también retira el residuo de pruebas de
+  `role_permissions`: las relaciones fuera de la matriz oficial que los
+  escenarios dejan inactivas al conceder y retirar permisos (por ejemplo
+  `CAPTURISTA/accounts.write` de la Actividad 4 y de la suite A5). Las
+  26 relaciones oficiales del catálogo nunca se eliminan. Sin esta
+  limpieza, `setup_pruebas.py` abortaría con "par no oficial" en la
+  siguiente inicialización.
 - No ejecutes estos scripts contra la base de desarrollo `actividad5`.
 
 Las pruebas funcionales de autorización (matriz de 89 registros) están
@@ -673,6 +680,16 @@ La evidencia SQL conserva además dos relaciones históricas inactivas, que no f
 | `previewRolePermissions` | query | `input: SetRolePermissionsInput!`, `actorCompanyUserId: ID!` |
 | `setRolePermissions` | mutation | `input: SetRolePermissionsInput!`, `actorCompanyUserId: ID!` |
 
+> Nota D5 (Actividad 6): las tres filas anteriores documentan el
+> contrato **histórico** de la Actividad 5. A partir de la Actividad 6
+> las operaciones protegidas ya no reciben `actorCompanyUserId`: la
+> identidad procede del token JWT (véase
+> «Actividad 6 — Control de acceso según el rol»). Las evidencias
+> E01–E11 de esta sección se conservan tal como se capturaron con el
+> contrato histórico; `operaciones.graphql` y `variables/` sí se
+> actualizaron al contrato autenticado para que el reproductor siga
+> funcionando.
+
 Tipos nuevos: enum `PermissionResource` (`COMPANY_USERS`, `ACCOUNTS`,
 `CONCEPTS`, `TRANSACTIONS`, `ROLES`), input
 `SetRolePermissionsInput { roleId: ID!, permissionIds: [ID!] }`,
@@ -769,6 +786,125 @@ Verificaciones de Git del cierre (15-oct-2026, detalle en
 - `git status --short --branch`: `## main...origin/main` limpio.
 - `git diff --check HEAD`: exit 0, sin errores.
 
+> Nota: el hash `d33c5aa…` anterior corresponde al estado **histórico**
+> documentado al cerrar la Actividad 5 (15-oct-2026) y a su commit publicado;
+> **no es el `HEAD` actual del repositorio**. El `HEAD` actual es `e85d9ef`
+> (commit local que registra la verificación de esa publicación), y los cambios
+> de la Actividad 6 permanecen locales, sin commit ni push. El detalle de la
+> ejecución de cierre de A6 está en
+> [`validacion_final.txt`](evidencias/actividad6_control_acceso/validacion_final.txt).
+
+## Actividad 6 — Control de acceso según el rol (Unidad II)
+
+La identidad de cada petición ya no viaja en el cuerpo de la operación:
+se obtiene exclusivamente del token JWT enviado en el encabezado
+`Authorization: Bearer <token>`. Las 30 operaciones protegidas (15
+queries y 15 mutations) dejaron de exponer `actorCompanyUserId`;
+`login` permanece público.
+
+### Contrato de identidad
+
+- `login` es público y responde `AuthPayload { token, tokenType, user }`
+  (el ejemplo del documento: `tokenType`, `token` y `user { name }`).
+  `user` es el tipo `User` mínimo (`id`, `name`, `email`) y nunca expone
+  el hash; un login rechazado no entrega token.
+- `security/jwt.py` firma y valida con **HS256** fijo y una vigencia de
+  **30 minutos**; el payload contiene únicamente `companyUserId`,
+  `companyId` y `exp` (UTC).
+- El secreto se lee de la variable de entorno **`JWT_SECRET`**
+  (renombrada desde `JWT_SECRET_KEY`); no hay valor por defecto ni
+  fallback y su contenido nunca se registra.
+- `graphql_api/context.py` valida la firma, la expiración, la membresía
+  existente y activa, el usuario activo y la correspondencia
+  `companyId` del token con la empresa de la membresía. Los fallos se
+  reportan con mensajes tipificados: `Token inválido o expirado`,
+  `La membresía no existe o está inactiva` y `El token no corresponde a
+  la empresa de la membresía`.
+- `graphql_api/schema.py` expone `_identidad(info)` como único
+  mecanismo de identidad; `_validar_actor` fue eliminado.
+- Los permisos de la Actividad 5 no cambian: cada operación conserva su
+  llamada a `exigir_permiso` y el rol activo se consulta en la base de
+  datos en cada petición, por lo que un token anterior refleja de
+  inmediato el rol nuevo.
+
+### Decisión D4 — usuarios con varias membresías activas
+
+`get_active_company_user_by_user` selecciona la primera membresía activa
+mediante `order_by(CompanyUser.id).first()`. Es una elección
+determinista documentada; el cliente no elige empresa y el `companyId`
+del token siempre proviene de esa membresía. Si el usuario no tiene una
+membresía activa, el login se rechaza sin emitir token.
+
+### Operaciones afectadas
+
+Dejaron de recibir `actorCompanyUserId` las 30 operaciones protegidas:
+consultas `accounts`, `companyUsers`, `account`, `concepts`, `concept`,
+`accountConcepts`, `transactions`, `listRoles`/`roles`,
+`listPermissions`/`permissions`,
+`listRolePermissions`/`rolePermissions`, `permissionCatalog` y
+`previewRolePermissions`; mutaciones `createAccount`, `createConcept`,
+`assignConceptToAccount`, `removeConceptFromAccount`,
+`createTransaction`, `deleteTransaction`, `createRole`,
+`deactivateRole`, `createPermission`, `assignPermissionToRole`,
+`removePermissionFromRole`, `setRolePermissions`, `createCompanyUser`,
+`deactivateCompanyUser` y `assignRole`.
+
+`createCompany` y el primer `createCompanyAdmin` no están expuestos hoy
+como operaciones GraphQL; su alta sigue reservada a
+`scripts/setup_pruebas.py` (comportamiento existente, sin cambios).
+
+### Pruebas automatizadas (`tests/test_control_acceso_rol.py`)
+
+    docker exec -e PYTHONPATH=/app fintrack5-test-api \
+      python -m unittest tests.test_control_acceso_rol -v
+
+Guardas: `DB_NAME=fintrack5_test`, `DB_HOST=postgres`, revisión de
+Alembic y disponibilidad del endpoint. Resultado: **20/20 OK** —
+respuesta de login (`token`, `tokenType`, datos mínimos del usuario y
+ausencia de hash), claims con vigencia de 30 minutos, credenciales
+inválidas, sin membresía, usuario inactivo, selección de membresía
+múltiple, ausencia de `JWT_SECRET`, petición sin token, token alterado,
+token vencido, `companyId` cruzado, membresía inactiva, contrato
+GraphQL sin `actorCompanyUserId`, matriz de la Actividad 5 sin cambios y
+los nueve casos funcionales. Cada rechazo de escritura comprueba además
+que no se crearon registros.
+
+### Evidencias E01–E10
+
+Transcripciones en
+[`evidencias/actividad6_control_acceso/`](evidencias/actividad6_control_acceso/)
+(reproductor `scripts/evidencias_actividad6.py`; no se almacenan tokens
+vigentes ni valores de secretos):
+
+| Evidencia | Contenido |
+|---|---|
+| E01 | Login correcto (`token`, `tokenType` y datos mínimos del usuario) y rechazos |
+| E02 | Operación sin token rechazada sin escrituras |
+| E03 | María (CAPTURISTA) registra un movimiento válido |
+| E04 | María no puede crear cuentas; sin escrituras |
+| E05 | Luis (CONTADOR) crea una cuenta |
+| E06 | Pedro (CONSULTA) no puede registrar movimientos |
+| E07 | Ana cambia el rol de Pedro a CAPTURISTA |
+| E08 | El token previo de Pedro ya refleja CAPTURISTA |
+| E09 | Token de otra empresa, token vencido y token alterado |
+| E10 | Contrato sin `actorCompanyUserId` y matriz de A5 intacta |
+
+### Entregables
+
+| Archivo | Contenido |
+|---|---|
+| `operaciones_actividad6.graphql` | `IniciarSesion`, `ConsultarCuentas`, `CrearCuenta`, `CrearMovimiento`, `CambiarRol` |
+| `variables_actividad6/` | Variables reales del entorno de pruebas (empresa 7, cuenta 21, concepto 10) |
+| `tests/test_control_acceso_rol.py` | Suite de la Actividad 6 (20 pruebas) |
+| `scripts/evidencias_actividad6.py` | Reproductor de las fases E01–E10 |
+| `evidencias/actividad6_control_acceso/` | Evidencias E01–E10 y resumen |
+
+### Regresión
+
+- Suite Actividad 5: **18/18 OK** (los servicios no cambiaron).
+- Regresión Actividad 4 (`scripts/pruebas_actividad4.py`, adaptada al
+  encabezado `Authorization: Bearer`): **34/34 APROBADOS**.
+
 ## Verificación de la aplicación
 
 Para comprobar que FastAPI está funcionando:
@@ -803,7 +939,11 @@ Las variables sensibles se proporcionan mediante `.env`, mientras que `.env.exam
 
 Las contraseñas de usuario se almacenan mediante hash utilizando Argon2.
 
-Los tokens de autenticación se generan mediante JWT y utilizan la clave definida mediante la variable de entorno `JWT_SECRET_KEY`.
+Los tokens de autenticación se generan mediante JWT (HS256, vigencia de
+30 minutos) y utilizan la clave definida mediante la variable de entorno
+`JWT_SECRET`. El payload contiene únicamente `companyUserId`, `companyId`
+y `exp`; nunca incluye contraseña, hash, roles ni permisos, y el valor
+del secreto no se registra ni se expone en respuestas de la API.
 
 ## Referencias
 

@@ -1,0 +1,17 @@
+{
+  "fase": "E05",
+  "concepto": "caso 4: Luis (CONTADOR) crea una cuenta",
+  "utc": "2026-10-19T22:54:21.044498+00:00",
+  "autenticacion": "Bearer (Luis)",
+  "respuesta": {
+    "data": {
+      "createAccount": {
+        "id": 37,
+        "companyId": 11,
+        "name": "A6 Luis cuenta (evidencia)",
+        "accountType": "DEBIT"
+      }
+    }
+  },
+  "creada": true
+}

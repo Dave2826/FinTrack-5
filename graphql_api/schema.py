@@ -59,10 +59,6 @@ from services.company_user_service import (
     list_company_users_service,
 )
 
-from repositories.company_user_repository import (
-    get_active_company_user,
-)
-
 from models.account import Account as AccountModel
 from models.account import AccountType as AccountTypeModel
 
@@ -83,6 +79,8 @@ from models.role_permission import RolePermission as RolePermissionModel
 from models.company_user_role import CompanyUserRole as CompanyUserRoleModel
 
 from models.company_user import CompanyUser as CompanyUserModel
+
+from models.user import User as UserModel
 
 
 @strawberry.enum
@@ -345,7 +343,6 @@ class CompanyUser:
 
 @strawberry.input
 class CreateAccountInput:
-    actor_company_user_id: int
     company_id: int
     account_type: AccountType
     name: str
@@ -359,7 +356,6 @@ class CreateAccountInput:
 
 @strawberry.input
 class CreateConceptInput:
-    actor_company_user_id: int
     company_id: int
     concept_type: ConceptType
     name: str
@@ -369,14 +365,12 @@ class CreateConceptInput:
 
 @strawberry.input
 class AssignConceptToAccountInput:
-    actor_company_user_id: int
     account_id: int
     concept_id: int
 
 
 @strawberry.input
 class CreateTransactionInput:
-    actor_company_user_id: int
     account_id: int
     concept_id: int
     transaction_type: TransactionType
@@ -393,14 +387,29 @@ class LoginInput:
 
 
 @strawberry.type
-class LoginPayload:
-    access_token: str
+class User:
+    id: int
+    name: str
+    email: str
+
+    @staticmethod
+    def from_model(user: UserModel):
+        return User(
+            id=user.id,
+            name=user.name,
+            email=user.email,
+        )
+
+
+@strawberry.type
+class AuthPayload:
+    token: str
     token_type: str
+    user: User
 
 
 @strawberry.input
 class CreateRoleInput:
-    actor_company_user_id: int
     code: str
     name: str
     description: str | None = None
@@ -408,7 +417,6 @@ class CreateRoleInput:
 
 @strawberry.input
 class CreatePermissionInput:
-    actor_company_user_id: int
     code: str
     name: str
     description: str | None = None
@@ -416,14 +424,12 @@ class CreatePermissionInput:
 
 @strawberry.input
 class AssignPermissionToRoleInput:
-    actor_company_user_id: int
     role_id: int
     permission_id: int
 
 
 @strawberry.input
 class CreateCompanyUserInput:
-    actor_company_user_id: int
     company_id: int
     user_id: int
     is_admin: bool = False
@@ -431,7 +437,6 @@ class CreateCompanyUserInput:
 
 @strawberry.input
 class AssignRoleInput:
-    actor_company_user_id: int
     company_user_id: int
     role_id: int
 
@@ -451,48 +456,28 @@ def _a_entero(valor, etiqueta: str) -> int:
         )
 
 
-def _validar_actor(
-    info: Info,
-    actor_company_user_id: int,
-) -> CompanyUserModel:
+def _identidad(info: Info) -> CompanyUserModel:
+    """Identidad autenticada de la petición (membresía del token)."""
 
-    user = info.context.get("user")
-
-    if user is None:
-        raise ValueError("Usuario no autenticado")
-
-    db = info.context["db"]
-
-    company_user = get_active_company_user(
-        db,
-        actor_company_user_id,
-    )
+    company_user = info.context.get("company_user")
 
     if company_user is None:
         raise ValueError(
-            "La membresía no existe o está inactiva"
-        )
-
-    if company_user.user_id != user.id:
-        raise PermissionError(
-            "El actor no corresponde al usuario autenticado"
+            info.context.get("auth_error") or "Usuario no autenticado"
         )
 
     return company_user
 
 
-def _resolver_list_roles(
-    info: Info,
-    actor_company_user_id: int,
-) -> list[Role]:
+def _resolver_list_roles(info: Info) -> list[Role]:
 
-    _validar_actor(info, actor_company_user_id)
+    identidad = _identidad(info)
 
     db = info.context["db"]
 
     roles = list_roles_service(
         db,
-        actor_company_user_id,
+        identidad.id,
     )
 
     return [
@@ -501,18 +486,15 @@ def _resolver_list_roles(
     ]
 
 
-def _resolver_list_permissions(
-    info: Info,
-    actor_company_user_id: int,
-) -> list[Permission]:
+def _resolver_list_permissions(info: Info) -> list[Permission]:
 
-    _validar_actor(info, actor_company_user_id)
+    identidad = _identidad(info)
 
     db = info.context["db"]
 
     permissions = list_permissions_service(
         db,
-        actor_company_user_id,
+        identidad.id,
     )
 
     return [
@@ -523,17 +505,16 @@ def _resolver_list_permissions(
 
 def _resolver_list_role_permissions(
     info: Info,
-    actor_company_user_id: int,
     role_id: int,
 ) -> list[RolePermission]:
 
-    _validar_actor(info, actor_company_user_id)
+    identidad = _identidad(info)
 
     db = info.context["db"]
 
     relations = list_role_permissions_service(
         db,
-        actor_company_user_id,
+        identidad.id,
         role_id,
     )
 
@@ -550,19 +531,18 @@ class Query:
     def accounts(
         self,
         info: Info,
-        actor_company_user_id: int,
         company_id: int,
         account_type: AccountType | None = None,
         active_only: bool = True,
     ) -> list[Account]:
 
-        _validar_actor(info, actor_company_user_id)
+        identidad = _identidad(info)
 
         db = info.context["db"]
 
         accounts = list_accounts_service(
             db,
-            actor_company_user_id,
+            identidad.id,
             company_id=company_id,
             account_type=(
                 AccountTypeModel(account_type.value)
@@ -581,18 +561,17 @@ class Query:
     def company_users(
         self,
         info: Info,
-        actor_company_user_id: int,
         company_id: int,
         active_only: bool = True,
     ) -> list[CompanyUser]:
 
-        _validar_actor(info, actor_company_user_id)
+        identidad = _identidad(info)
 
         db = info.context["db"]
 
         memberships = list_company_users_service(
             db,
-            actor_company_user_id,
+            identidad.id,
             company_id=company_id,
             active_only=active_only,
         )
@@ -606,17 +585,16 @@ class Query:
     def account(
         self,
         info: Info,
-        actor_company_user_id: int,
         account_id: int,
     ) -> Account:
 
-        _validar_actor(info, actor_company_user_id)
+        identidad = _identidad(info)
 
         db = info.context["db"]
 
         account = get_account_service(
             db,
-            actor_company_user_id,
+            identidad.id,
             account_id,
         )
 
@@ -626,19 +604,18 @@ class Query:
     def concepts(
         self,
         info: Info,
-        actor_company_user_id: int,
         company_id: int,
         concept_type: ConceptType | None = None,
         active_only: bool = True,
     ) -> list[Concept]:
 
-        _validar_actor(info, actor_company_user_id)
+        identidad = _identidad(info)
 
         db = info.context["db"]
 
         concepts = list_concepts_service(
             db,
-            actor_company_user_id,
+            identidad.id,
             company_id=company_id,
             concept_type=(
                 ConceptTypeModel(concept_type.value)
@@ -657,17 +634,16 @@ class Query:
     def concept(
         self,
         info: Info,
-        actor_company_user_id: int,
         concept_id: int,
     ) -> Concept:
 
-        _validar_actor(info, actor_company_user_id)
+        identidad = _identidad(info)
 
         db = info.context["db"]
 
         concept = get_concept_service(
             db,
-            actor_company_user_id,
+            identidad.id,
             concept_id,
         )
 
@@ -677,17 +653,16 @@ class Query:
     def account_concepts(
         self,
         info: Info,
-        actor_company_user_id: int,
         account_id: int,
     ) -> list[AccountConcept]:
 
-        _validar_actor(info, actor_company_user_id)
+        identidad = _identidad(info)
 
         db = info.context["db"]
 
         relations = get_account_concepts_service(
             db,
-            actor_company_user_id,
+            identidad.id,
             account_id,
         )
 
@@ -700,20 +675,19 @@ class Query:
     def transactions(
         self,
         info: Info,
-        actor_company_user_id: int,
         account_id: int,
         transaction_type: TransactionType | None = None,
         limit: int = 50,
         offset: int = 0,
     ) -> list[Transaction]:
 
-        _validar_actor(info, actor_company_user_id)
+        identidad = _identidad(info)
 
         db = info.context["db"]
 
         transactions = list_transactions_service(
             db,
-            actor_company_user_id,
+            identidad.id,
             account_id=account_id,
             transaction_type=(
                 TransactionTypeModel(transaction_type.value)
@@ -733,51 +707,45 @@ class Query:
     def list_roles(
         self,
         info: Info,
-        actor_company_user_id: int,
     ) -> list[Role]:
 
-        return _resolver_list_roles(info, actor_company_user_id)
+        return _resolver_list_roles(info)
 
     @strawberry.field
     def roles(
         self,
         info: Info,
-        actor_company_user_id: int,
     ) -> list[Role]:
         """Alias (Actividad 4) de listRoles; delega en la misma logica."""
 
-        return _resolver_list_roles(info, actor_company_user_id)
+        return _resolver_list_roles(info)
 
     @strawberry.field
     def list_permissions(
         self,
         info: Info,
-        actor_company_user_id: int,
     ) -> list[Permission]:
 
-        return _resolver_list_permissions(info, actor_company_user_id)
+        return _resolver_list_permissions(info)
 
     @strawberry.field
     def permissions(
         self,
         info: Info,
-        actor_company_user_id: int,
     ) -> list[Permission]:
         """Alias (Actividad 4) de listPermissions; delega en la misma logica."""
 
-        return _resolver_list_permissions(info, actor_company_user_id)
+        return _resolver_list_permissions(info)
 
     @strawberry.field
     def list_role_permissions(
         self,
         info: Info,
-        actor_company_user_id: int,
         role_id: int,
     ) -> list[RolePermission]:
 
         return _resolver_list_role_permissions(
             info,
-            actor_company_user_id,
             role_id,
         )
 
@@ -785,7 +753,6 @@ class Query:
     def role_permissions(
         self,
         info: Info,
-        actor_company_user_id: int,
         role_id: int,
     ) -> list[RolePermission]:
         """Alias (Actividad 4) de listRolePermissions(roleId:); delega en
@@ -793,7 +760,6 @@ class Query:
 
         return _resolver_list_role_permissions(
             info,
-            actor_company_user_id,
             role_id,
         )
 
@@ -801,14 +767,11 @@ class Query:
     def permission_catalog(
         self,
         info: Info,
-        actor_company_user_id: strawberry.ID,
         resource: PermissionResource | None = None,
     ) -> list[Permission]:
         """Catalogo de permisos activos, filtrable por recurso."""
 
-        actor_id = _a_entero(actor_company_user_id, "actorCompanyUserId")
-
-        _validar_actor(info, actor_id)
+        identidad = _identidad(info)
 
         prefijo = (
             PREFIJOS_RECURSO.get(resource) if resource is not None else None
@@ -818,7 +781,7 @@ class Query:
 
         permisos = permission_catalog_service(
             db,
-            actor_id,
+            identidad.id,
             prefix=prefijo,
         )
 
@@ -832,14 +795,11 @@ class Query:
         self,
         info: Info,
         input: SetRolePermissionsInput,
-        actor_company_user_id: strawberry.ID,
     ) -> RolePermissionPlan | None:
         """Previsualizacion de la lista completa de permisos de un rol.
         Solo lectura: no modifica relaciones."""
 
-        actor_id = _a_entero(actor_company_user_id, "actorCompanyUserId")
-
-        _validar_actor(info, actor_id)
+        identidad = _identidad(info)
 
         role_id = _a_entero(input.role_id, "roleId")
 
@@ -847,7 +807,7 @@ class Query:
 
         plan = preview_role_permissions_service(
             db,
-            actor_id,
+            identidad.id,
             role_id,
             input.permission_ids,
         )
@@ -884,19 +844,20 @@ class Mutation:
         self,
         info: Info,
         input: LoginInput,
-    ) -> LoginPayload:
+    ) -> AuthPayload:
 
         db = info.context["db"]
 
-        token = authenticate_user(
+        token, usuario = authenticate_user(
             db,
             input.email,
             input.password,
         )
 
-        return LoginPayload(
-            access_token=token,
+        return AuthPayload(
+            token=token,
             token_type="bearer",
+            user=User.from_model(usuario),
         )
 
     @strawberry.mutation
@@ -906,13 +867,13 @@ class Mutation:
         input: CreateAccountInput,
     ) -> Account:
 
-        _validar_actor(info, input.actor_company_user_id)
+        identidad = _identidad(info)
 
         db = info.context["db"]
 
         account = create_account_service(
             db,
-            input.actor_company_user_id,
+            identidad.id,
             company_id=input.company_id,
             account_type=AccountTypeModel(
                 input.account_type.value
@@ -935,13 +896,13 @@ class Mutation:
         input: CreateConceptInput,
     ) -> Concept:
 
-        _validar_actor(info, input.actor_company_user_id)
+        identidad = _identidad(info)
 
         db = info.context["db"]
 
         concept = create_concept_service(
             db,
-            input.actor_company_user_id,
+            identidad.id,
             company_id=input.company_id,
             concept_type=ConceptTypeModel(
                 input.concept_type.value
@@ -960,13 +921,13 @@ class Mutation:
         input: AssignConceptToAccountInput,
     ) -> AccountConcept:
 
-        _validar_actor(info, input.actor_company_user_id)
+        identidad = _identidad(info)
 
         db = info.context["db"]
 
         relation = assign_concept_to_account(
             db,
-            input.actor_company_user_id,
+            identidad.id,
             account_id=input.account_id,
             concept_id=input.concept_id,
         )
@@ -977,18 +938,17 @@ class Mutation:
     def remove_concept_from_account(
         self,
         info: Info,
-        actor_company_user_id: int,
         account_id: int,
         concept_id: int,
     ) -> AccountConcept:
 
-        _validar_actor(info, actor_company_user_id)
+        identidad = _identidad(info)
 
         db = info.context["db"]
 
         relation = remove_concept_from_account(
             db,
-            actor_company_user_id,
+            identidad.id,
             account_id=account_id,
             concept_id=concept_id,
         )
@@ -1002,27 +962,20 @@ class Mutation:
         input: CreateTransactionInput,
     ) -> Transaction:
 
-        _validar_actor(info, input.actor_company_user_id)
+        identidad = _identidad(info)
 
         db = info.context["db"]
 
-        user = info.context.get("user")
-
-        if user is None:
-            raise ValueError(
-                "Usuario no autenticado"
-            )
-
         transaction = create_transaction_service(
             db,
-            input.actor_company_user_id,
+            identidad.id,
             account_id=input.account_id,
             concept_id=input.concept_id,
             transaction_type=TransactionTypeModel(
                 input.transaction_type.value
             ),
             amount=input.amount,
-            captured_by=user.id,
+            captured_by=identidad.user_id,
             transaction_date=input.transaction_date,
             short_description=input.short_description,
             long_description=input.long_description,
@@ -1034,17 +987,16 @@ class Mutation:
     def delete_transaction(
         self,
         info: Info,
-        actor_company_user_id: int,
         transaction_id: int,
     ) -> Transaction:
 
-        _validar_actor(info, actor_company_user_id)
+        identidad = _identidad(info)
 
         db = info.context["db"]
 
         transaction = delete_transaction_service(
             db,
-            actor_company_user_id,
+            identidad.id,
             transaction_id,
         )
 
@@ -1057,13 +1009,13 @@ class Mutation:
         input: CreateRoleInput,
     ) -> Role:
 
-        _validar_actor(info, input.actor_company_user_id)
+        identidad = _identidad(info)
 
         db = info.context["db"]
 
         role = create_role_service(
             db,
-            input.actor_company_user_id,
+            identidad.id,
             code=input.code,
             name=input.name,
             description=input.description,
@@ -1075,17 +1027,16 @@ class Mutation:
     def deactivate_role(
         self,
         info: Info,
-        actor_company_user_id: int,
         role_id: int,
     ) -> Role:
 
-        _validar_actor(info, actor_company_user_id)
+        identidad = _identidad(info)
 
         db = info.context["db"]
 
         role = deactivate_role_service(
             db,
-            actor_company_user_id,
+            identidad.id,
             role_id,
         )
 
@@ -1098,13 +1049,13 @@ class Mutation:
         input: CreatePermissionInput,
     ) -> Permission:
 
-        _validar_actor(info, input.actor_company_user_id)
+        identidad = _identidad(info)
 
         db = info.context["db"]
 
         permission = create_permission_service(
             db,
-            input.actor_company_user_id,
+            identidad.id,
             code=input.code,
             name=input.name,
             description=input.description,
@@ -1119,13 +1070,13 @@ class Mutation:
         input: AssignPermissionToRoleInput,
     ) -> RolePermission:
 
-        _validar_actor(info, input.actor_company_user_id)
+        identidad = _identidad(info)
 
         db = info.context["db"]
 
         relation = assign_permission_to_role_service(
             db,
-            input.actor_company_user_id,
+            identidad.id,
             role_id=input.role_id,
             permission_id=input.permission_id,
         )
@@ -1136,18 +1087,17 @@ class Mutation:
     def remove_permission_from_role(
         self,
         info: Info,
-        actor_company_user_id: int,
         role_id: int,
         permission_id: int,
     ) -> RolePermission:
 
-        _validar_actor(info, actor_company_user_id)
+        identidad = _identidad(info)
 
         db = info.context["db"]
 
         relation = remove_permission_from_role_service(
             db,
-            actor_company_user_id,
+            identidad.id,
             role_id,
             permission_id,
         )
@@ -1159,14 +1109,11 @@ class Mutation:
         self,
         info: Info,
         input: SetRolePermissionsInput,
-        actor_company_user_id: strawberry.ID,
     ) -> RolePermissionUpdate | None:
         """Establece exactamente la lista de permisos activos de un rol
         en una unica transaccion con un unico commit."""
 
-        actor_id = _a_entero(actor_company_user_id, "actorCompanyUserId")
-
-        _validar_actor(info, actor_id)
+        identidad = _identidad(info)
 
         role_id = _a_entero(input.role_id, "roleId")
 
@@ -1174,7 +1121,7 @@ class Mutation:
 
         resumen = set_role_permissions_service(
             db,
-            actor_id,
+            identidad.id,
             role_id,
             input.permission_ids,
         )
@@ -1206,13 +1153,13 @@ class Mutation:
         input: CreateCompanyUserInput,
     ) -> CompanyUser:
 
-        _validar_actor(info, input.actor_company_user_id)
+        identidad = _identidad(info)
 
         db = info.context["db"]
 
         company_user = create_company_user_service(
             db,
-            input.actor_company_user_id,
+            identidad.id,
             company_id=input.company_id,
             user_id=input.user_id,
             is_admin=input.is_admin,
@@ -1224,17 +1171,16 @@ class Mutation:
     def deactivate_company_user(
         self,
         info: Info,
-        actor_company_user_id: int,
         company_user_id: int,
     ) -> CompanyUser:
 
-        _validar_actor(info, actor_company_user_id)
+        identidad = _identidad(info)
 
         db = info.context["db"]
 
         company_user = deactivate_company_user_service(
             db,
-            actor_company_user_id,
+            identidad.id,
             company_user_id,
         )
 
@@ -1247,13 +1193,13 @@ class Mutation:
         input: AssignRoleInput,
     ) -> CompanyUserRole:
 
-        _validar_actor(info, input.actor_company_user_id)
+        identidad = _identidad(info)
 
         db = info.context["db"]
 
         relation = assign_role_service(
             db,
-            input.actor_company_user_id,
+            identidad.id,
             company_user_id=input.company_user_id,
             role_id=input.role_id,
         )

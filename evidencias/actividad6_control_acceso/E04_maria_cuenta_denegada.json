@@ -1,0 +1,27 @@
+{
+  "fase": "E04",
+  "concepto": "caso 3: Maria (CAPTURISTA) no puede crear cuentas",
+  "utc": "2026-10-19T22:54:20.844668+00:00",
+  "autenticacion": "Bearer (Maria)",
+  "mensaje": "El rol no tiene el permiso accounts.write",
+  "respuesta": {
+    "data": null,
+    "errors": [
+      {
+        "message": "El rol no tiene el permiso accounts.write",
+        "locations": [
+          {
+            "line": 30,
+            "column": 3
+          }
+        ],
+        "path": [
+          "createAccount"
+        ]
+      }
+    ]
+  },
+  "cuentas_antes": 2,
+  "cuentas_despues": 2,
+  "sin_escrituras": true
+}

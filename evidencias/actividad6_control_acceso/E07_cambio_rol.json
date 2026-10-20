@@ -1,0 +1,25 @@
+{
+  "fase": "E07",
+  "concepto": "caso 6: Ana cambia el rol de Pedro a CAPTURISTA",
+  "utc": "2026-10-19T22:54:21.253956+00:00",
+  "autenticacion": "Bearer (Ana, ADMINISTRADOR)",
+  "variables": {
+    "companyUserId": 69,
+    "roleId": 3
+  },
+  "respuesta": {
+    "data": {
+      "assignRole": {
+        "id": 67,
+        "companyUserId": 69,
+        "roleId": 3,
+        "isActive": true
+      }
+    }
+  },
+  "rol_activo_en_bd": [
+    {
+      "role_id": 3
+    }
+  ]
+}

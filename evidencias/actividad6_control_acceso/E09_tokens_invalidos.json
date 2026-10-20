@@ -1,0 +1,69 @@
+{
+  "fase": "E09",
+  "concepto": "casos 8 y 9: token de otra empresa, vencido y alterado",
+  "utc": "2026-10-19T22:54:21.486639+00:00",
+  "token_otra_empresa": {
+    "autenticacion": "Bearer (admin_b, empresa Beta)",
+    "mensaje": "El actor no pertenece a la empresa del recurso",
+    "respuesta": {
+      "data": null,
+      "errors": [
+        {
+          "message": "El actor no pertenece a la empresa del recurso",
+          "locations": [
+            {
+              "line": 20,
+              "column": 3
+            }
+          ],
+          "path": [
+            "accounts"
+          ]
+        }
+      ]
+    }
+  },
+  "token_vencido": {
+    "mensaje": "Token inválido o expirado",
+    "respuesta": {
+      "data": null,
+      "errors": [
+        {
+          "message": "Token inválido o expirado",
+          "locations": [
+            {
+              "line": 30,
+              "column": 3
+            }
+          ],
+          "path": [
+            "createAccount"
+          ]
+        }
+      ]
+    }
+  },
+  "token_alterado": {
+    "mensaje": "Token inválido o expirado",
+    "respuesta": {
+      "data": null,
+      "errors": [
+        {
+          "message": "Token inválido o expirado",
+          "locations": [
+            {
+              "line": 30,
+              "column": 3
+            }
+          ],
+          "path": [
+            "createAccount"
+          ]
+        }
+      ]
+    }
+  },
+  "cuentas_antes": 3,
+  "cuentas_despues": 3,
+  "sin_escrituras": true
+}

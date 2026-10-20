@@ -9,9 +9,7 @@ services:
       DB_NAME: ${POSTGRES_DB}
       DB_USER: ${POSTGRES_USER}
       DB_PASSWORD: ${POSTGRES_PASSWORD}
-      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
-      JWT_ALGORITHM: ${JWT_ALGORITHM}
-      JWT_EXPIRE_MINUTES: ${JWT_EXPIRE_MINUTES}
+      JWT_SECRET: ${JWT_SECRET}
 
   postgres:
     container_name: fintrack5-test-postgres

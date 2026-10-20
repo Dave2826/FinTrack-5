@@ -1,4 +1,11 @@
-"""Limpieza de datos de pruebas. Solo sobre fintrack5_test. Dry-run por defecto."""
+"""Limpieza de datos de pruebas. Solo sobre fintrack5_test. Dry-run por defecto.
+
+Ademas de los datos de negocio del setup, retira el residuo de pruebas de
+``role_permissions``: relaciones fuera de la matriz oficial que dejaron los
+escenarios al conceder y luego retirar permisos (por ejemplo
+CAPTURISTA/accounts.write). El catalogo oficial (roles, permisos y las 26
+relaciones de MATRIZ_OFICIAL) nunca se elimina.
+"""
 
 import os
 import sys
@@ -15,8 +22,10 @@ from models.company_user_role import CompanyUserRole
 from models.concept import Concept
 from models.permission import Permission
 from models.role import Role
+from models.role_permission import RolePermission
 from models.transaction import Transaction
 from models.user import User
+from services.seed_service import MATRIZ_OFICIAL
 
 DB_ESPERADA = "fintrack5_test"
 HOST_ESPERADO = "postgres"
@@ -179,8 +188,54 @@ def _identificar(db: Session) -> dict:
         "asociaciones": asociaciones,
         "movimientos": movimientos,
         "usuarios_seguros": usuarios_seguros,
+        "residuo": _residuo_role_permissions(db),
         "excluidos": excluidos,
     }
+
+
+def _residuo_role_permissions(db: Session) -> list[dict]:
+    """Relaciones de role_permissions ajenas a la matriz oficial.
+
+    Los escenarios de pruebas conceden permisos que no pertenecen al rol
+    (por ejemplo CAPTURISTA/accounts.write) y al retirarlos dejan la fila
+    inactiva. Esas filas no forman parte del catalogo oficial y, si
+    permanecen, hacen que setup_pruebas.py aborte por "par no oficial".
+    Solo se informan relaciones; las oficiales nunca se tocan.
+    """
+
+    pares_oficiales: set[tuple[int, int]] = set()
+    for codigo_rol, codigos_permiso in MATRIZ_OFICIAL.items():
+        rol = db.query(Role).filter(Role.code == codigo_rol).one_or_none()
+        if rol is None:
+            continue
+        for codigo_permiso in codigos_permiso:
+            permiso = (
+                db.query(Permission)
+                .filter(Permission.code == codigo_permiso)
+                .one_or_none()
+            )
+            if permiso is not None:
+                pares_oficiales.add((rol.id, permiso.id))
+
+    residuo = []
+    for fila in db.query(RolePermission).all():
+        if (fila.role_id, fila.permission_id) in pares_oficiales:
+            continue
+        rol = db.query(Role).filter(Role.id == fila.role_id).one_or_none()
+        permiso = (
+            db.query(Permission)
+            .filter(Permission.id == fila.permission_id)
+            .one_or_none()
+        )
+        residuo.append(
+            {
+                "id": fila.id,
+                "rol": rol.code if rol else fila.role_id,
+                "permiso": permiso.code if permiso else fila.permission_id,
+                "is_active": fila.is_active,
+            }
+        )
+    return residuo
 
 
 def _imprimir_plan(db: Session, datos: dict) -> None:
@@ -196,7 +251,19 @@ def _imprimir_plan(db: Session, datos: dict) -> None:
     _log(f"account_concepts: {[r.id for r in datos['asociaciones']]}")
     _log(f"transactions: {[t.id for t in datos['movimientos']]}")
     _log(f"users: {[(u.id, u.email) for u in datos['usuarios_seguros']]}")
-    _log("roles/permissions/role_permissions: NO se eliminan (catalogo oficial)")
+    _log(
+        "roles/permissions: NO se eliminan (catalogo oficial)"
+    )
+    _log(
+        "role_permissions: se conservan las 26 relaciones oficiales; "
+        "residuo de pruebas a eliminar: "
+        + str(
+            [
+                (r["id"], r["rol"], r["permiso"], r["is_active"])
+                for r in datos["residuo"]
+            ]
+        )
+    )
     for motivo in datos["excluidos"]:
         _log(f"EXCLUIDO (no se eliminara): {motivo}")
 
@@ -214,10 +281,20 @@ def _eliminar(db: Session, datos: dict) -> None:
     ids_cu = [m.id for m in datos["membresias"]]
     ids_emp = [c.id for c in datos["empresas"]]
     ids_usu = [u.id for u in datos["usuarios_seguros"]]
+    ids_res = [r["id"] for r in datos["residuo"]]
 
     total = sum(
         len(x)
-        for x in (ids_mov, ids_rel, ids_cue, ids_con, ids_mru, ids_emp, ids_usu)
+        for x in (
+            ids_mov,
+            ids_rel,
+            ids_cue,
+            ids_con,
+            ids_mru,
+            ids_emp,
+            ids_usu,
+            ids_res,
+        )
     )
     if total == 0:
         _log("nada que limpiar")
@@ -232,6 +309,7 @@ def _eliminar(db: Session, datos: dict) -> None:
         ("company_users", CompanyUser, ids_cu),
         ("companies", Company, ids_emp),
         ("users", User, ids_usu),
+        ("role_permissions(residuo)", RolePermission, ids_res),
     ]
 
     borrados = {}

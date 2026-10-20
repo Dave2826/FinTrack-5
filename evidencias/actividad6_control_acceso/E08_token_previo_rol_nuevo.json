@@ -1,0 +1,19 @@
+{
+  "fase": "E08",
+  "concepto": "caso 7: el token anterior de Pedro ya refleja CAPTURISTA",
+  "utc": "2026-10-19T22:54:21.461536+00:00",
+  "autenticacion": "Bearer (Pedro, mismo token emitido antes del cambio)",
+  "respuesta": {
+    "data": {
+      "createTransaction": {
+        "id": 46,
+        "accountId": 34,
+        "conceptId": 16,
+        "capturedBy": 65,
+        "amount": "22.50",
+        "transactionType": "INCOME"
+      }
+    }
+  },
+  "guardado": true
+}

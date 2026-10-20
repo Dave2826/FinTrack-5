@@ -1,0 +1,27 @@
+{
+  "fase": "E02",
+  "concepto": "operacion protegida sin token: rechazo sin escrituras",
+  "utc": "2026-10-19T22:54:20.661295+00:00",
+  "operacion": "createAccount sin Authorization",
+  "mensaje": "Usuario no autenticado",
+  "respuesta": {
+    "data": null,
+    "errors": [
+      {
+        "message": "Usuario no autenticado",
+        "locations": [
+          {
+            "line": 30,
+            "column": 3
+          }
+        ],
+        "path": [
+          "createAccount"
+        ]
+      }
+    ]
+  },
+  "cuentas_antes": 2,
+  "cuentas_despues": 2,
+  "sin_escrituras": true
+}

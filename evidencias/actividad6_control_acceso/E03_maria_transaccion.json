@@ -1,0 +1,32 @@
+{
+  "fase": "E03",
+  "concepto": "caso 2: Maria (CAPTURISTA) registra un movimiento valido",
+  "utc": "2026-10-19T22:54:20.832525+00:00",
+  "autenticacion": "Bearer (Maria)",
+  "variables": {
+    "accountId": 34,
+    "conceptId": 16,
+    "transactionType": "INCOME",
+    "amount": 15.5
+  },
+  "respuesta": {
+    "data": {
+      "createTransaction": {
+        "id": 45,
+        "accountId": 34,
+        "conceptId": 16,
+        "capturedBy": 63,
+        "amount": "15.50",
+        "transactionType": "INCOME"
+      }
+    }
+  },
+  "persistido": [
+    {
+      "id": 45,
+      "account_id": 34,
+      "captured_by": 63
+    }
+  ],
+  "guardado": true
+}
