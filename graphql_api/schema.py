@@ -2,9 +2,14 @@ import strawberry
 
 from enum import Enum
 from decimal import Decimal
-from datetime import datetime
+from datetime import date, datetime
 
 from strawberry.types import Info
+
+from services.balance_service import (
+    account_balance_service,
+    general_balance_service,
+)
 
 from services.account_service import (
     create_account_service,
@@ -225,6 +230,71 @@ class Transaction:
             short_description=transaction.short_description,
             long_description=transaction.long_description,
             is_active=transaction.is_active,
+        )
+
+
+@strawberry.type
+class AccountBalance:
+    account_id: strawberry.ID
+    account_name: str
+    is_active: bool
+    opening_balance: Decimal
+    total_income: Decimal
+    total_expense: Decimal
+    profit: Decimal
+    closing_balance: Decimal
+    is_in_red: bool
+    currency: str
+
+    @staticmethod
+    def from_result(balance):
+        return AccountBalance(
+            account_id=strawberry.ID(str(balance.account_id)),
+            account_name=balance.account_name,
+            is_active=balance.is_active,
+            opening_balance=balance.opening_balance,
+            total_income=balance.total_income,
+            total_expense=balance.total_expense,
+            profit=balance.profit,
+            closing_balance=balance.closing_balance,
+            is_in_red=balance.is_in_red,
+            currency=balance.currency,
+        )
+
+
+@strawberry.type
+class GeneralBalance:
+    company_id: strawberry.ID
+    from_date: date
+    to_date: date
+    opening_balance: Decimal
+    total_income: Decimal
+    total_expense: Decimal
+    profit: Decimal
+    closing_balance: Decimal
+    accounts_in_red: int
+    is_in_red: bool
+    currency: str
+    accounts: list[AccountBalance]
+
+    @staticmethod
+    def from_result(balance):
+        return GeneralBalance(
+            company_id=strawberry.ID(str(balance.company_id)),
+            from_date=balance.from_date,
+            to_date=balance.to_date,
+            opening_balance=balance.opening_balance,
+            total_income=balance.total_income,
+            total_expense=balance.total_expense,
+            profit=balance.profit,
+            closing_balance=balance.closing_balance,
+            accounts_in_red=balance.accounts_in_red,
+            is_in_red=balance.is_in_red,
+            currency=balance.currency,
+            accounts=[
+                AccountBalance.from_result(cuenta)
+                for cuenta in balance.accounts
+            ],
         )
 
 
@@ -702,6 +772,51 @@ class Query:
             Transaction.from_model(transaction)
             for transaction in transactions
         ]
+
+    @strawberry.field
+    def account_balance(
+        self,
+        info: Info,
+        account_id: strawberry.ID,
+        from_date: date,
+        to_date: date,
+    ) -> AccountBalance:
+
+        identidad = _identidad(info)
+
+        db = info.context["db"]
+
+        balance = account_balance_service(
+            db,
+            identidad.id,
+            _a_entero(account_id, "accountId"),
+            from_date,
+            to_date,
+        )
+
+        return AccountBalance.from_result(balance)
+
+    @strawberry.field
+    def general_balance(
+        self,
+        info: Info,
+        from_date: date,
+        to_date: date,
+    ) -> GeneralBalance:
+
+        identidad = _identidad(info)
+
+        db = info.context["db"]
+
+        balance = general_balance_service(
+            db,
+            identidad.id,
+            identidad.company_id,
+            from_date,
+            to_date,
+        )
+
+        return GeneralBalance.from_result(balance)
 
     @strawberry.field
     def list_roles(

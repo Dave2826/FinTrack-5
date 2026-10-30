@@ -1,0 +1,123 @@
+# Operaciones GraphQL de la Actividad 7: balances por cuenta y general.
+# La identidad viaja en el encabezado Authorization: Bearer <token>.
+# Ninguna operacion recibe companyId como argumento: la empresa se obtiene
+# del token. En generalBalance, companyId es un campo de salida (ID!).
+# Las variables de ejemplo estan en variables_actividad7/.
+
+# Login publico contra la base de pruebas.
+mutation IniciarSesion($input: LoginInput!) {
+  login(input: $input) {
+    token
+    tokenType
+    user {
+      id
+      name
+    }
+  }
+}
+
+# Balance de una cuenta para un periodo de dias completos UTC.
+# Variables de ejemplo:
+# {
+#   "accountId": "1",
+#   "fromDate": "2026-10-26",
+#   "toDate": "2026-10-30"
+# }
+query BalanceCuenta(
+  $accountId: ID!
+  $fromDate: Date!
+  $toDate: Date!
+) {
+  accountBalance(
+    accountId: $accountId
+    fromDate: $fromDate
+    toDate: $toDate
+  ) {
+    accountId
+    accountName
+    isActive
+    openingBalance
+    totalIncome
+    totalExpense
+    profit
+    closingBalance
+    isInRed
+    currency
+  }
+}
+
+# Balance general de todas las cuentas de la empresa autenticada.
+# Variables de ejemplo:
+# {
+#   "fromDate": "2026-10-26",
+#   "toDate": "2026-10-30"
+# }
+query BalanceGeneral(
+  $fromDate: Date!
+  $toDate: Date!
+) {
+  generalBalance(fromDate: $fromDate, toDate: $toDate) {
+    companyId
+    fromDate
+    toDate
+    openingBalance
+    totalIncome
+    totalExpense
+    profit
+    closingBalance
+    accountsInRed
+    isInRed
+    currency
+    accounts {
+      accountId
+      accountName
+      isActive
+      openingBalance
+      totalIncome
+      totalExpense
+      profit
+      closingBalance
+      isInRed
+      currency
+    }
+  }
+}
+
+# Movimiento con fecha de operacion distinta de la fecha de captura.
+# capturedAt lo asigna el servidor y no se envia en la entrada.
+# Variables de ejemplo:
+# {
+#   "input": {
+#     "accountId": 1,
+#     "conceptId": 1,
+#     "transactionType": "INCOME",
+#     "amount": "30.00",
+#     "transactionDate": "2026-01-15T12:00:00Z"
+#   }
+# }
+mutation RegistrarMovimientoConFecha($input: CreateTransactionInput!) {
+  createTransaction(input: $input) {
+    id
+    accountId
+    conceptId
+    transactionType
+    amount
+    transactionDate
+    capturedAt
+    isActive
+  }
+}
+
+# Baja logica de un movimiento (usada por el caso B07).
+# El movimiento deja de participar en los balances, pero conserva su
+# historial con isActive=false.
+# Variables de ejemplo:
+# {
+#   "transactionId": 1
+# }
+mutation EliminarMovimiento($transactionId: Int!) {
+  deleteTransaction(transactionId: $transactionId) {
+    id
+    isActive
+  }
+}

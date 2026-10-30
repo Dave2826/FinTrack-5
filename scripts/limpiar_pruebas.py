@@ -33,8 +33,10 @@ ALEMBIC_ESPERADO = "3b9f41c7d2ae"
 
 MARCADORES_EMPRESA = ("Pruebas Alpha SA", "Pruebas Beta SA")
 
-# Marcadores inequívocos del setup: la lista exacta de usuarios creados.
-# Un correo @test.local fuera de esta lista NUNCA se elimina.
+# Marcadores inequívocos del setup: la lista exacta de usuarios creados,
+# incluidos los cinco usuarios nombrados de la Actividad 4. Un correo
+# @test.local fuera de esta lista no se elimina por el correo: solo si
+# sus membresías lo vinculan exclusivamente a las empresas de prueba.
 EMAILS_SETUP = (
     "admin_a@test.local",
     "admin_b@test.local",
@@ -43,6 +45,11 @@ EMAILS_SETUP = (
     "consulta_a@test.local",
     "sin_membresia_a@test.local",
     "inactivo_a@test.local",
+    "ana@test.local",
+    "luis@test.local",
+    "maria@test.local",
+    "jose@test.local",
+    "pedro@test.local",
 )
 
 
@@ -143,6 +150,7 @@ def _identificar(db: Session) -> dict:
 
     usuarios_seguros: list[User] = []
     excluidos: list[str] = []
+    ids_excluidos: set[int] = set()
     for usuario in candidatos:
         ajenas = (
             db.query(CompanyUser)
@@ -155,6 +163,7 @@ def _identificar(db: Session) -> dict:
             .count()
         )
         if ajenas > 0:
+            ids_excluidos.add(usuario.id)
             excluidos.append(
                 f"user_id={usuario.id} pertenece a una empresa ajena"
             )
@@ -162,10 +171,15 @@ def _identificar(db: Session) -> dict:
         en_membresia = usuario.id in ids_membresia_rel
         en_emails = usuario.email in EMAILS_SETUP
         if not (en_membresia or en_emails):
+            ids_excluidos.add(usuario.id)
             excluidos.append(f"user_id={usuario.id} sin marcador inequivoco")
             continue
         usuarios_seguros.append(usuario)
 
+    # Un usuario ya identificado como seguro no debe aparecer también como
+    # excluido solo por su dominio. Los usuarios con membresías ajenas ya
+    # se informaron arriba y no se duplican aquí.
+    ids_seguros = {usuario.id for usuario in usuarios_seguros}
     ajenos_test = (
         db.query(User)
         .filter(
@@ -175,6 +189,8 @@ def _identificar(db: Session) -> dict:
         .all()
     )
     for usuario in ajenos_test:
+        if usuario.id in ids_seguros or usuario.id in ids_excluidos:
+            continue
         excluidos.append(
             f"user_id={usuario.id} correo @test.local fuera de la lista del setup"
         )

@@ -76,3 +76,64 @@ mutation AplicarConfiguracion($input: SetRolePermissionsInput!) {
     changed
   }
 }
+
+# ---------------------------------------------------------------------------
+# Actividad 7: balances por cuenta y balance general (solo lectura).
+# La empresa se obtiene del token; companyId es un campo de salida de
+# generalBalance, nunca un argumento. Las variables de ejemplo estan en
+# variables_actividad7/balance_cuenta.json y balance_general.json.
+# ---------------------------------------------------------------------------
+
+query BalanceCuenta(
+  $accountId: ID!
+  $fromDate: Date!
+  $toDate: Date!
+) {
+  accountBalance(
+    accountId: $accountId
+    fromDate: $fromDate
+    toDate: $toDate
+  ) {
+    accountId
+    accountName
+    isActive
+    openingBalance
+    totalIncome
+    totalExpense
+    profit
+    closingBalance
+    isInRed
+    currency
+  }
+}
+
+query BalanceGeneral(
+  $fromDate: Date!
+  $toDate: Date!
+) {
+  generalBalance(fromDate: $fromDate, toDate: $toDate) {
+    companyId
+    fromDate
+    toDate
+    openingBalance
+    totalIncome
+    totalExpense
+    profit
+    closingBalance
+    accountsInRed
+    isInRed
+    currency
+    accounts {
+      accountId
+      accountName
+      isActive
+      openingBalance
+      totalIncome
+      totalExpense
+      profit
+      closingBalance
+      isInRed
+      currency
+    }
+  }
+}

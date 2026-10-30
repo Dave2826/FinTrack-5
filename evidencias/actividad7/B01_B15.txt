@@ -1,0 +1,20 @@
+test_01_b01_referencia_y_sin_mutaciones (tests.test_balances.BalancesTests.test_01_b01_referencia_y_sin_mutaciones) ... ok
+test_02_b02_banco_un_solo_dia (tests.test_balances.BalancesTests.test_02_b02_banco_un_solo_dia) ... ok
+test_03_b03_empresa_sin_cuentas (tests.test_balances.BalancesTests.test_03_b03_empresa_sin_cuentas) ... ok
+test_04_b04_limites_utc (tests.test_balances.BalancesTests.test_04_b04_limites_utc) ... ok
+test_05_b05_fecha_operacion_manda_sobre_captura (tests.test_balances.BalancesTests.test_05_b05_fecha_operacion_manda_sobre_captura) ... ok
+test_06_b06_precision_decimal (tests.test_balances.BalancesTests.test_06_b06_precision_decimal) ... ok
+test_07_b07_movimiento_inactivo (tests.test_balances.BalancesTests.test_07_b07_movimiento_inactivo) ... ok
+test_08_b08_cuenta_inactiva_conserva_historial (tests.test_balances.BalancesTests.test_08_b08_cuenta_inactiva_conserva_historial) ... ok
+test_09_b09_conceptos_adicionales_no_duplican (tests.test_balances.BalancesTests.test_09_b09_conceptos_adicionales_no_duplican) ... ok
+test_10_b10_validacion_de_fechas (tests.test_balances.BalancesTests.test_10_b10_validacion_de_fechas) ... ok
+test_11_b11_autenticacion_obligatoria (tests.test_balances.BalancesTests.test_11_b11_autenticacion_obligatoria) ... ok
+test_12_b12_aislamiento_multiempresa (tests.test_balances.BalancesTests.test_12_b12_aislamiento_multiempresa) ... ok
+test_13_b13_rol_consulta_lee_pero_no_escribe (tests.test_balances.BalancesTests.test_13_b13_rol_consulta_lee_pero_no_escribe) ... ok
+test_14_b14_retiro_temporal_de_transactions_read (tests.test_balances.BalancesTests.test_14_b14_retiro_temporal_de_transactions_read) ... ok
+test_15_b15_saldo_negativo (tests.test_balances.BalancesTests.test_15_b15_saldo_negativo) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 2.532s
+
+OK

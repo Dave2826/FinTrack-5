@@ -1,5 +1,5 @@
-from datetime import datetime
-from decimal import Decimal
+from datetime import datetime, timezone
+from decimal import Decimal, InvalidOperation
 
 from sqlalchemy.orm import Session
 
@@ -17,6 +17,68 @@ from repositories.user_repository import get_user
 from services.authorization_service import exigir_permiso
 
 
+CENTAVO = Decimal("0.01")
+MONTO_MAXIMO = Decimal("9999999999999.99")
+
+
+def _normalizar_monto(amount) -> Decimal:
+    """Valida y normaliza el importe sin redondear silenciosamente."""
+
+    try:
+        if isinstance(amount, Decimal):
+            valor = amount
+        elif isinstance(amount, bool):
+            raise ValueError
+        else:
+            valor = Decimal(str(amount))
+    except (InvalidOperation, TypeError, ValueError):
+        raise ValueError("El monto de la transacción no es válido")
+
+    if not valor.is_finite():
+        raise ValueError(
+            "El monto de la transacción debe ser un número finito"
+        )
+
+    if valor <= Decimal("0"):
+        raise ValueError(
+            "El monto de la transacción debe ser mayor que cero"
+        )
+
+    try:
+        cuantizado = valor.quantize(CENTAVO)
+    except InvalidOperation:
+        raise ValueError(
+            "El monto de la transacción excede la precisión permitida"
+        )
+
+    if valor != cuantizado:
+        raise ValueError(
+            "El monto de la transacción no puede tener más de dos decimales"
+        )
+
+    if cuantizado > MONTO_MAXIMO:
+        raise ValueError(
+            "El monto de la transacción excede el máximo permitido"
+        )
+
+    return cuantizado
+
+
+def _normalizar_fecha_operacion(valor: datetime | None) -> datetime:
+    """Devuelve la fecha de operación como UTC sin zona horaria."""
+
+    if valor is None:
+        return datetime.now(timezone.utc).replace(tzinfo=None)
+
+    if not isinstance(valor, datetime):
+        raise ValueError("La fecha de operación no es válida")
+
+    if valor.tzinfo is not None and valor.utcoffset() is not None:
+        return valor.astimezone(timezone.utc).replace(tzinfo=None)
+
+    return valor
+
+
 def create_transaction_service(
     db: Session,
     actor_company_user_id: int,
@@ -30,10 +92,8 @@ def create_transaction_service(
     long_description: str | None = None,
 ) -> Transaction:
 
-    if amount <= Decimal("0"):
-        raise ValueError(
-            "El monto de la transacción debe ser mayor que cero"
-        )
+    monto = _normalizar_monto(amount)
+    fecha_operacion = _normalizar_fecha_operacion(transaction_date)
 
     account = get_account(db, account_id)
 
@@ -106,9 +166,9 @@ def create_transaction_service(
         account_id=account_id,
         concept_id=concept_id,
         transaction_type=transaction_type,
-        amount=amount,
-        transaction_date=transaction_date or datetime.utcnow(),
-        captured_at=datetime.utcnow(),
+        amount=monto,
+        transaction_date=fecha_operacion,
+        captured_at=datetime.now(timezone.utc).replace(tzinfo=None),
         captured_by=captured_by,
         short_description=short_description,
         long_description=long_description,
