@@ -1,0 +1,752 @@
+/*
+ * Estilos exclusivos del dashboard financiero.
+ *
+ * Se mantienen separados de `global.css` para no alterar el login. Los
+ * nombres llevan el prefijo `dashboard-` y el modificador
+ * `app-shell--dashboard` para evitar colisiones.
+ */
+
+/*
+ * El dashboard ocupa todo el ancho: no usa las dos columnas del login.
+ * Se repite la clase del shell para superar la especificidad de `.app-shell`
+ * de `global.css`, que se carga después y, con igual especificidad, ganaba
+ * la cascada y dejaba el panel atrapado en la primera columna del grid.
+ */
+.app-shell.app-shell--dashboard {
+  display: block;
+}
+
+.dashboard-shell {
+  display: block;
+  min-height: 100vh;
+  padding: 0;
+  background: var(--color-bg);
+}
+
+.dashboard-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.dashboard-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) clamp(1.25rem, 4vw, 3rem);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dashboard-header__brand {
+  flex: 0 0 auto;
+}
+
+.dashboard-header__brand .brand-mark {
+  color: var(--color-ink);
+}
+
+.dashboard-header__brand .brand-mark svg {
+  color: var(--color-brand);
+}
+
+.dashboard-header__identity {
+  flex: 1 1 18rem;
+  min-width: 0;
+}
+
+.dashboard-header__identity .eyebrow {
+  margin-bottom: var(--space-1);
+}
+
+.dashboard-header__title {
+  margin: 0;
+  font-size: clamp(1.25rem, 2vw, 1.6rem);
+  letter-spacing: -0.03em;
+}
+
+.dashboard-header__company {
+  margin: var(--space-1) 0 0;
+  font-weight: 700;
+  color: var(--color-brand-strong);
+}
+
+.dashboard-header__session {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-4);
+}
+
+.dashboard-header__user {
+  min-width: 0;
+  text-align: right;
+}
+
+.dashboard-header__status {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-brand);
+}
+
+.dashboard-header__name {
+  margin: var(--space-1) 0 0;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.dashboard-header__email,
+.dashboard-header__expiry {
+  margin: var(--space-1) 0 0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--color-muted);
+  overflow-wrap: anywhere;
+}
+
+.dashboard-header .dashboard-header__logout {
+  width: auto;
+  padding: 0.65rem 1.1rem;
+  white-space: nowrap;
+}
+
+.dashboard-main {
+  flex: 1;
+  width: 100%;
+  padding: clamp(1.25rem, 4vw, 3rem);
+}
+
+.dashboard-content {
+  display: grid;
+  gap: var(--space-5);
+  width: min(100%, 1280px);
+  margin: 0 auto;
+}
+
+.dashboard-content__header h2 {
+  margin: 0;
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  letter-spacing: -0.03em;
+}
+
+.dashboard-content__lead {
+  max-width: 62ch;
+  margin: var(--space-2) 0 0;
+  line-height: 1.6;
+  color: var(--color-muted);
+}
+
+.dashboard-workspace {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.dashboard-slot {
+  display: grid;
+  align-content: start;
+  gap: var(--space-2);
+  min-height: 10rem;
+  padding: var(--space-5);
+  background: var(--color-surface-muted);
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-md);
+}
+
+.dashboard-slot--accounts {
+  grid-column: 1 / -1;
+  min-height: 14rem;
+}
+
+.dashboard-slot h3 {
+  margin: 0;
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+}
+
+.dashboard-slot p {
+  margin: 0;
+  line-height: 1.5;
+  color: var(--color-muted);
+}
+
+/* Filtro de fechas ------------------------------------------------------- */
+
+.dashboard-filter {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 20px 44px -42px rgba(15, 35, 31, 0.6);
+}
+
+.dashboard-filter__heading h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+}
+
+.dashboard-filter__hint {
+  margin: var(--space-2) 0 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--color-muted);
+}
+
+.dashboard-filter__fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
+  align-items: end;
+  gap: var(--space-4);
+}
+
+.dashboard-filter__submit {
+  width: auto;
+  min-width: 9rem;
+  white-space: nowrap;
+}
+
+.dashboard-filter__error {
+  margin: 0;
+}
+
+/* Panel del resumen ------------------------------------------------------ */
+
+.dashboard-panel {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 20px 44px -42px rgba(15, 35, 31, 0.6);
+}
+
+.dashboard-panel__heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.dashboard-panel__heading h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+}
+
+/* El foco llega aquí tras reintentar; debe ser visible para teclado. */
+.dashboard-panel__heading h3:focus {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
+}
+
+.dashboard-panel__body {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.dashboard-panel__body[aria-busy="true"],
+.dashboard-panel[aria-busy="true"] {
+  cursor: progress;
+}
+
+.dashboard-panel .dashboard-panel__refresh {
+  width: auto;
+  padding: 0.6rem 1.1rem;
+  white-space: nowrap;
+}
+
+.dashboard-status {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-brand-strong);
+}
+
+.dashboard-alert {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.dashboard-alert p {
+  margin: 0;
+}
+
+.dashboard-page .dashboard-alert__action {
+  width: auto;
+  padding: 0.55rem 1rem;
+  white-space: nowrap;
+}
+
+/* Controles del dashboard con objetivo táctil mínimo y foco sólido. */
+.dashboard-page .button {
+  width: auto;
+  min-height: 2.75rem;
+}
+
+.dashboard-page .button:focus-visible {
+  outline: 3px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+.dashboard-page .field__input:focus-visible {
+  border-color: var(--color-brand);
+  box-shadow:
+    0 0 0 2px #ffffff,
+    0 0 0 5px var(--color-brand);
+}
+
+.dashboard-empty {
+  margin: 0;
+  line-height: 1.5;
+  color: var(--color-muted);
+}
+
+.dashboard-panel__meta {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
+.dashboard-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Tabla de cuentas ------------------------------------------------------- */
+
+.accounts-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.accounts-table {
+  width: 100%;
+  min-width: 52rem;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.accounts-table th,
+.accounts-table td {
+  padding: var(--space-3);
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.accounts-table thead th {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--color-muted);
+  background: var(--color-surface-muted);
+}
+
+.accounts-table tbody tr:last-child th,
+.accounts-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.accounts-table tbody tr:hover {
+  background: var(--color-surface-muted);
+}
+
+.accounts-table__account {
+  min-width: 12rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  overflow-wrap: anywhere;
+}
+
+.accounts-table__statuses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.accounts-table__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+}
+
+.accounts-table__badge--active {
+  color: #0b5f58;
+  background: var(--color-brand-soft);
+  border-color: #99f6e4;
+}
+
+.accounts-table__badge--inactive {
+  color: var(--color-ink-soft);
+  background: #eef2f1;
+  border-color: var(--color-border);
+}
+
+.accounts-table__badge--risk {
+  color: #b42318;
+  background: #fef3f2;
+  border-color: #fecdca;
+}
+
+.accounts-table__badge--safe {
+  color: #0b5f58;
+  background: #ecfdf3;
+  border-color: #d1fadf;
+}
+
+.accounts-table th.accounts-table__amount,
+.accounts-table td.accounts-table__amount {
+  text-align: right;
+}
+
+.accounts-table__amount {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.accounts-table__amount--negative {
+  color: #b42318;
+}
+
+.accounts-table__closing {
+  font-weight: 700;
+  color: var(--color-brand-strong);
+}
+
+.accounts-table__closing--risk {
+  color: #b42318;
+}
+
+.accounts-empty {
+  margin: 0;
+  padding: var(--space-4);
+  line-height: 1.5;
+  color: var(--color-muted);
+  background: var(--color-surface-muted);
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-sm);
+}
+
+/* Resumen financiero ----------------------------------------------------- */
+
+.dashboard-summary {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.dashboard-summary__period {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--color-muted);
+}
+
+.dashboard-summary__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.dashboard-summary__item {
+  display: grid;
+  align-content: start;
+  gap: var(--space-2);
+  min-width: 0;
+  padding: var(--space-4);
+  background: var(--color-surface-muted);
+  border: 1px solid var(--color-border);
+  border-top: 3px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+}
+
+.dashboard-summary__item dt {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.dashboard-summary__item dd {
+  margin: 0;
+  font-size: clamp(1.15rem, 1.6vw, 1.45rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.dashboard-summary__item--income {
+  border-top-color: var(--color-brand);
+}
+
+.dashboard-summary__item--income dd {
+  color: var(--color-brand-strong);
+}
+
+.dashboard-summary__item--expense {
+  border-top-color: #b42318;
+}
+
+.dashboard-summary__item--expense dd {
+  color: #b42318;
+}
+
+.dashboard-summary__item--primary {
+  background: linear-gradient(
+    135deg,
+    var(--color-brand) 0%,
+    var(--color-brand-strong) 100%
+  );
+  border-color: transparent;
+  border-top-color: transparent;
+  box-shadow: var(--shadow-button);
+  color: #f0fdfa;
+}
+
+.dashboard-summary__item--primary dt {
+  color: #ccfbf1;
+}
+
+.dashboard-summary__item--primary dd {
+  font-size: clamp(1.35rem, 2vw, 1.75rem);
+}
+
+.dashboard-summary__item--risk {
+  background: #fef3f2;
+  border-color: #fecdca;
+  border-top-color: #b42318;
+}
+
+.dashboard-summary__item--risk dt {
+  color: #912018;
+}
+
+.dashboard-summary__item--risk dd {
+  color: #7a271a;
+}
+
+.dashboard-summary__skeleton {
+  min-height: 6.5rem;
+  background:
+    linear-gradient(
+      90deg,
+      #eef4f1 25%,
+      #f8fbfa 37%,
+      #eef4f1 63%
+    );
+  background-size: 400% 100%;
+  animation: dashboard-skeleton 1.4s ease infinite;
+}
+
+@keyframes dashboard-skeleton {
+  from {
+    background-position: 100% 50%;
+  }
+
+  to {
+    background-position: 0 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-summary__skeleton {
+    animation: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .dashboard-header__session {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .dashboard-header__user {
+    text-align: left;
+  }
+
+  .accounts-table-wrapper {
+    overflow: visible;
+  }
+
+  .accounts-table {
+    min-width: 0;
+    font-size: 0.95rem;
+  }
+
+  .accounts-table,
+  .accounts-table tbody,
+  .accounts-table tr,
+  .accounts-table th,
+  .accounts-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .accounts-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .accounts-table tbody {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .accounts-table tbody tr {
+    padding: var(--space-4);
+    background: var(--color-surface-muted);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+  }
+
+  .accounts-table tbody tr:hover {
+    background: var(--color-surface-muted);
+  }
+
+  .accounts-table tbody th,
+  .accounts-table tbody td {
+    padding: var(--space-2) 0;
+    border-bottom: 0;
+  }
+
+  .accounts-table tbody th[scope="row"] {
+    padding-top: 0;
+    padding-bottom: var(--space-3);
+    margin-bottom: var(--space-2);
+    font-size: 1.05rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .accounts-table tbody td {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+    text-align: right;
+  }
+
+  .accounts-table tbody td::before {
+    content: attr(data-label);
+    content: attr(data-label) / '';
+    flex: 0 0 auto;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .accounts-table__statuses {
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 760px) {
+  .dashboard-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-slot--accounts {
+    grid-column: auto;
+  }
+
+  .dashboard-filter__fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-page .dashboard-filter__submit {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  /*
+   * En columna, `flex-basis: 18rem` se interpreta como altura y dejaba un
+   * hueco de ~288 px entre la marca y la identidad. La identidad debe medir
+   * solo lo que ocupa su contenido.
+   */
+  .dashboard-header__identity {
+    flex: 0 0 auto;
+  }
+
+  .dashboard-header__session {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+
+  .dashboard-page .dashboard-header__logout {
+    width: 100%;
+  }
+
+  .dashboard-filter,
+  .dashboard-panel {
+    padding: var(--space-4);
+  }
+
+  .dashboard-filter__fields {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-page .dashboard-filter__submit {
+    grid-column: auto;
+  }
+
+  .dashboard-page .dashboard-panel__refresh,
+  .dashboard-page .dashboard-alert__action {
+    width: 100%;
+  }
+
+  .accounts-table tbody tr {
+    padding: var(--space-3);
+  }
+}
