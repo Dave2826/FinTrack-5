@@ -1,4 +1,4 @@
-import { useId, useState } from 'react'
+import { useId, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import {
   AuthError,
@@ -19,6 +19,8 @@ export function LoginForm() {
   const emailId = useId()
   const passwordId = useId()
   const formErrorId = useId()
+  const emailRef = useRef<HTMLInputElement>(null)
+  const passwordRef = useRef<HTMLInputElement>(null)
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -55,6 +57,10 @@ export function LoginForm() {
 
     if (Object.keys(errors).length > 0) {
       setFormError(null)
+
+      // Llevar el foco al primer campo que el usuario debe corregir.
+      const target = errors.email ? emailRef : passwordRef
+      target.current?.focus()
       return
     }
 
@@ -92,6 +98,7 @@ export function LoginForm() {
         </label>
         <input
           id={emailId}
+          ref={emailRef}
           className="field__input"
           type="email"
           name="email"
@@ -107,7 +114,7 @@ export function LoginForm() {
           }
         />
         {fieldErrors.email ? (
-          <p className="field__error" id={`${emailId}-error`}>
+          <p className="field__error" id={`${emailId}-error`} role="alert">
             {fieldErrors.email}
           </p>
         ) : null}
@@ -119,6 +126,7 @@ export function LoginForm() {
         </label>
         <input
           id={passwordId}
+          ref={passwordRef}
           className="field__input"
           type="password"
           name="password"
@@ -134,7 +142,7 @@ export function LoginForm() {
           }
         />
         {fieldErrors.password ? (
-          <p className="field__error" id={`${passwordId}-error`}>
+          <p className="field__error" id={`${passwordId}-error`} role="alert">
             {fieldErrors.password}
           </p>
         ) : null}

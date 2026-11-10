@@ -112,4 +112,52 @@ describe('login', () => {
     expect(screen.getByText('La contraseña es obligatoria.')).toBeInTheDocument()
     expect(tokenStore.get()).toBeNull()
   })
+
+  it('anuncia los errores de validación y enfoca el primer campo inválido', async () => {
+    const user = userEvent.setup()
+    renderApp([])
+
+    await user.click(screen.getByRole('button', { name: 'Entrar' }))
+
+    const alerts = screen.getAllByRole('alert')
+    expect(alerts).toHaveLength(2)
+    expect(alerts[0]).toHaveTextContent('El correo electrónico es obligatorio.')
+    expect(alerts[1]).toHaveTextContent('La contraseña es obligatoria.')
+
+    const emailInput = screen.getByLabelText('Correo electrónico')
+    expect(emailInput).toHaveFocus()
+    expect(emailInput).toHaveAttribute('aria-invalid', 'true')
+    expect(emailInput).toHaveAccessibleDescription(
+      'El correo electrónico es obligatorio.',
+    )
+  })
+
+  it('enfoca el correo cuando el formato es inválido', async () => {
+    const user = userEvent.setup()
+    renderApp([])
+
+    await user.type(screen.getByLabelText('Correo electrónico'), 'sin-arroba')
+    await user.type(screen.getByLabelText('Contraseña'), 'clave-correcta')
+    await user.click(screen.getByRole('button', { name: 'Entrar' }))
+
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'Escribe un correo electrónico válido.',
+    )
+    expect(screen.getByLabelText('Correo electrónico')).toHaveFocus()
+    expect(tokenStore.get()).toBeNull()
+  })
+
+  it('enfoca la contraseña cuando está vacía y el correo es válido', async () => {
+    const user = userEvent.setup()
+    renderApp([])
+
+    await user.type(screen.getByLabelText('Correo electrónico'), EMAIL)
+    await user.click(screen.getByRole('button', { name: 'Entrar' }))
+
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'La contraseña es obligatoria.',
+    )
+    expect(screen.getByLabelText('Contraseña')).toHaveFocus()
+    expect(tokenStore.get()).toBeNull()
+  })
 })
