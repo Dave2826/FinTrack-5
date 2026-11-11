@@ -1,9 +1,16 @@
 import type { MockedResponse } from '@apollo/client/testing'
-import { fireEvent, render, screen } from '@testing-library/react'
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { GraphQLError } from 'graphql'
 import { describe, expect, it, vi } from 'vitest'
 import { GENERAL_BALANCE_QUERY } from '../src/api/operations/generalBalance'
+import { BalanceSummary } from '../src/features/dashboard/components/BalanceSummary'
 import { DateRangeFilter } from '../src/features/dashboard/components/DateRangeFilter'
 import { getDefaultUtcMonthRange } from '../src/lib/dateRange'
 import type { DateRange } from '../src/lib/dateRange'
@@ -121,6 +128,10 @@ describe('dashboard: filtro de fechas y resumen financiero', () => {
     expect(screen.getByText('Egresos')).toBeInTheDocument()
     expect(screen.getByText('Utilidad')).toBeInTheDocument()
     expect(screen.getByText('Saldo final')).toBeInTheDocument()
+    expect(
+      screen.getByRole('region', { name: 'Sin riesgo global' }),
+    ).toBeInTheDocument()
+    expect(screen.getByText('0 cuentas en números rojos')).toBeInTheDocument()
   })
 
   it('presenta los importes en MXN con dos decimales', async () => {
@@ -484,5 +495,100 @@ describe('dashboard: filtro de fechas y resumen financiero', () => {
     expect(screen.queryByText('Saldo final')).not.toBeInTheDocument()
 
     expect(await screen.findByText('Saldo inicial')).toBeInTheDocument()
+  })
+})
+
+describe('dashboard: indicador global de riesgo', () => {
+  const range: DateRange = {
+    fromDate: '2026-01-01',
+    toDate: '2026-01-31',
+  }
+
+  function renderRisk(
+    overrides: Partial<GeneralBalance>,
+  ): HTMLElement {
+    render(<BalanceSummary balance={makeBalance(range, overrides)} />)
+
+    return screen.getByRole('region', { name: /global/i })
+  }
+
+  it('presenta sin riesgo global cuando isInRed es falso y no hay cuentas en rojo', () => {
+    const region = renderRisk({ isInRed: false, accountsInRed: 0 })
+
+    expect(region).toHaveClass('dashboard-summary__risk--safe')
+    expect(
+      within(region).getByRole('heading', { name: 'Sin riesgo global' }),
+    ).toBeInTheDocument()
+    expect(
+      within(region).getByText('0 cuentas en números rojos'),
+    ).toBeInTheDocument()
+    expect(
+      within(region).getByText(
+        'El saldo final global no es negativo y ninguna cuenta tiene saldo negativo.',
+      ),
+    ).toBeInTheDocument()
+  })
+
+  it('presenta riesgo global y una cuenta en rojo cuando isInRed es verdadero', () => {
+    const region = renderRisk({ isInRed: true, accountsInRed: 1 })
+
+    expect(region).toHaveClass('dashboard-summary__risk--global')
+    expect(
+      within(region).getByRole('heading', {
+        name: 'Riesgo financiero global',
+      }),
+    ).toBeInTheDocument()
+    expect(
+      within(region).getByText('1 cuenta en números rojos'),
+    ).toBeInTheDocument()
+    expect(
+      within(region).getByText('El saldo final global es negativo.'),
+    ).toBeInTheDocument()
+  })
+
+  it('usa el plural cuando hay más de una cuenta en rojo', () => {
+    const region = renderRisk({ isInRed: true, accountsInRed: 3 })
+
+    expect(region).toHaveClass('dashboard-summary__risk--global')
+    expect(
+      within(region).getByText('3 cuentas en números rojos'),
+    ).toBeInTheDocument()
+    expect(
+      within(region).queryByText('1 cuenta en números rojos'),
+    ).not.toBeInTheDocument()
+  })
+
+  it('no contradice el caso válido sin riesgo global con una cuenta en rojo', () => {
+    const region = renderRisk({ isInRed: false, accountsInRed: 1 })
+
+    expect(region).toHaveClass('dashboard-summary__risk--accounts')
+    expect(
+      within(region).getByRole('heading', { name: 'Sin riesgo global' }),
+    ).toBeInTheDocument()
+    expect(
+      within(region).getByText('1 cuenta en números rojos'),
+    ).toBeInTheDocument()
+    expect(
+      within(region).getByText(
+        'El saldo final global no es negativo, pero hay cuentas individuales con saldo negativo.',
+      ),
+    ).toBeInTheDocument()
+    expect(
+      within(region).queryByText('Riesgo financiero global'),
+    ).not.toBeInTheDocument()
+  })
+
+  it('mantiene el singular y el plural diferenciados', () => {
+    const singular = renderRisk({ isInRed: false, accountsInRed: 1 })
+    expect(
+      within(singular).getByText('1 cuenta en números rojos'),
+    ).toBeInTheDocument()
+
+    cleanup()
+
+    const plural = renderRisk({ isInRed: false, accountsInRed: 2 })
+    expect(
+      within(plural).getByText('2 cuentas en números rojos'),
+    ).toBeInTheDocument()
   })
 })

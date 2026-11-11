@@ -1,3 +1,6 @@
+/// <reference types="node" />
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import type { MockedResponse } from '@apollo/client/testing'
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -5,6 +8,7 @@ import { GraphQLError } from 'graphql'
 import { describe, expect, it, vi } from 'vitest'
 import { GENERAL_BALANCE_QUERY } from '../src/api/operations/generalBalance'
 import { AccountsTable } from '../src/features/dashboard/components/AccountsTable'
+import { BalanceSummary } from '../src/features/dashboard/components/BalanceSummary'
 import { DateRangeFilter } from '../src/features/dashboard/components/DateRangeFilter'
 import { getDefaultUtcMonthRange } from '../src/lib/dateRange'
 import type { DateRange } from '../src/lib/dateRange'
@@ -16,6 +20,10 @@ const EMAIL = 'admin_a@test.local'
 const PASSWORD = 'clave-correcta'
 const TABLE_NAME = 'Cuentas del balance del periodo'
 const DATE_ERROR_ID = 'dashboard-date-range-error'
+const DASHBOARD_CSS = readFileSync(
+  join(process.cwd(), 'src', 'features', 'dashboard', 'dashboard.css'),
+  'utf8',
+)
 
 type UserEventApi = ReturnType<typeof userEvent.setup>
 
@@ -95,6 +103,32 @@ function graphQLErrorMock(range: DateRange, message: string): MockedResponse {
 
 function loginOnly(): MockedResponse[] {
   return [loginMock({ email: EMAIL, password: PASSWORD, token: makeJwt(1800) })]
+}
+
+/** Extrae el contenido de un bloque `@media` mediante llaves balanceadas. */
+function mediaBlock(css: string, query: string): string {
+  const start = css.indexOf(query)
+  const open = start === -1 ? -1 : css.indexOf('{', start)
+
+  if (open === -1) {
+    return ''
+  }
+
+  let depth = 0
+
+  for (let index = open; index < css.length; index += 1) {
+    if (css[index] === '{') {
+      depth += 1
+    } else if (css[index] === '}') {
+      depth -= 1
+
+      if (depth === 0) {
+        return css.slice(open + 1, index)
+      }
+    }
+  }
+
+  return ''
 }
 
 async function signIn(user: UserEventApi) {
@@ -289,5 +323,71 @@ describe('dashboard: accesibilidad y mensajes de estado', () => {
     expect(within(table).getAllByRole('cell')).toHaveLength(12)
     expect(within(table).getByRole('rowheader', { name: 'Cuenta Alpha' }))
       .toBeInTheDocument()
+  })
+
+  it('expone el indicador global con nombre accesible y textos explícitos', () => {
+    const range = getDefaultUtcMonthRange()
+
+    render(
+      <BalanceSummary
+        balance={makeBalance(range, { isInRed: true, accountsInRed: 2 })}
+      />,
+    )
+
+    const region = screen.getByRole('region', {
+      name: 'Riesgo financiero global',
+    })
+
+    expect(region).toHaveAttribute(
+      'aria-labelledby',
+      'dashboard-global-risk-title',
+    )
+    expect(
+      within(region).getByRole('heading', {
+        level: 4,
+        name: 'Riesgo financiero global',
+      }),
+    ).toBeInTheDocument()
+    expect(
+      within(region).getByText('2 cuentas en números rojos'),
+    ).toBeInTheDocument()
+    expect(
+      within(region).getByText('El saldo final global es negativo.'),
+    ).toBeInTheDocument()
+  })
+
+  it('no depende solo del color para comunicar el estado global', () => {
+    const range = getDefaultUtcMonthRange()
+
+    render(
+      <BalanceSummary
+        balance={makeBalance(range, { isInRed: false, accountsInRed: 1 })}
+      />,
+    )
+
+    const region = screen.getByRole('region', { name: 'Sin riesgo global' })
+
+    expect(region).toHaveClass('dashboard-summary__risk--accounts')
+    expect(region).toHaveTextContent('Sin riesgo global')
+    expect(region).toHaveTextContent('1 cuenta en números rojos')
+    expect(region).toHaveTextContent(
+      'El saldo final global no es negativo, pero hay cuentas individuales con saldo negativo.',
+    )
+  })
+
+  it('adapta el indicador global a una columna en pantallas pequeñas', () => {
+    expect(DASHBOARD_CSS).toMatch(
+      /\.dashboard-summary__risk\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)\s+auto;/,
+    )
+
+    const smallScreen = mediaBlock(DASHBOARD_CSS, '@media (max-width: 480px)')
+
+    expect(smallScreen).not.toBe('')
+    expect(smallScreen).toMatch(
+      /\.dashboard-summary__risk\s*\{[^}]*grid-template-columns:\s*1fr;/,
+    )
+    expect(smallScreen).toMatch(
+      /\.dashboard-summary__risk-count\s*\{[^}]*justify-self:\s*start;/,
+    )
   })
 })
