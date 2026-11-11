@@ -1,0 +1,79 @@
+{
+  "data": {
+    "generalBalance": {
+      "companyId": "11",
+      "fromDate": "2026-01-01",
+      "toDate": "2026-01-31",
+      "openingBalance": "0.00",
+      "totalIncome": "1500.00",
+      "totalExpense": "300.00",
+      "profit": "1200.00",
+      "closingBalance": "1200.00",
+      "accountsInRed": 0,
+      "isInRed": false,
+      "currency": "MXN",
+      "accounts": [
+        {
+          "accountId": "34",
+          "accountName": "Cuenta Alpha Pruebas",
+          "isActive": true,
+          "openingBalance": "0.00",
+          "totalIncome": "1500.00",
+          "totalExpense": "300.00",
+          "profit": "1200.00",
+          "closingBalance": "1200.00",
+          "isInRed": false,
+          "currency": "MXN"
+        },
+        {
+          "accountId": "39",
+          "accountName": "Cuenta A4 Maria 20261019235808655112",
+          "isActive": true,
+          "openingBalance": "0.00",
+          "totalIncome": "0.00",
+          "totalExpense": "0.00",
+          "profit": "0.00",
+          "closingBalance": "0.00",
+          "isInRed": false,
+          "currency": "MXN"
+        },
+        {
+          "accountId": "40",
+          "accountName": "Cuenta A4 Jose 20261019235808655112",
+          "isActive": true,
+          "openingBalance": "0.00",
+          "totalIncome": "0.00",
+          "totalExpense": "0.00",
+          "profit": "0.00",
+          "closingBalance": "0.00",
+          "isInRed": false,
+          "currency": "MXN"
+        },
+        {
+          "accountId": "42",
+          "accountName": "Cuenta A4 Maria 20261020150555042259",
+          "isActive": true,
+          "openingBalance": "0.00",
+          "totalIncome": "0.00",
+          "totalExpense": "0.00",
+          "profit": "0.00",
+          "closingBalance": "0.00",
+          "isInRed": false,
+          "currency": "MXN"
+        },
+        {
+          "accountId": "43",
+          "accountName": "Cuenta A4 Jose 20261020150555042259",
+          "isActive": true,
+          "openingBalance": "0.00",
+          "totalIncome": "0.00",
+          "totalExpense": "0.00",
+          "profit": "0.00",
+          "closingBalance": "0.00",
+          "isInRed": false,
+          "currency": "MXN"
+        }
+      ]
+    }
+  }
+}

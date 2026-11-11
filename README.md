@@ -8,7 +8,9 @@ FinTrack-5 separa la API GraphQL, la lógica de negocio, el acceso a datos y la 
 
 ## Integrantes
 
-> **Dato pendiente:** el repositorio no contiene información verificable sobre los integrantes del equipo. No se inventaron nombres. Antes de la entrega, agregue aquí la lista real de integrantes proporcionada por el docente o el equipo.
+- David Morales
+- Edwuard Chay
+- Fabrizio Rodriguez
 
 ## Arquitectura
 
@@ -28,7 +30,9 @@ Python 3.11, FastAPI, Strawberry GraphQL, SQLAlchemy, PostgreSQL 16, Alembic, Py
 
     FinTrack-5/
     ├── alembic/               migraciones y configuración de Alembic
+    ├── dashboard/             frontend Vite + React + TypeScript (Unidad III)
     ├── database/              conexión a PostgreSQL
+    ├── docs/                  guías y documentación de la Unidad III
     ├── graphql_api/           esquema, resolvers y contexto (identidad por token)
     ├── models/                modelos SQLAlchemy
     ├── repositories/          acceso a datos
@@ -99,6 +103,14 @@ Todas las suites se ejecutan **solo** contra el entorno de pruebas aislado `fint
 Para preparar o limpiar los datos ficticios (mismas guardas; la limpieza simula primero y aplica solo con `--confirm`), la invocación sobre el overlay de pruebas es:
 
     docker compose -p fintrack5_test --env-file .env.test -f compose.yaml -f compose.test.yaml exec -T -e PYTHONPATH=/app api python /app/scripts/setup_pruebas.py
+
+El frontend tiene su propia validación, desde `dashboard/`:
+
+    cd dashboard
+    npm run lint
+    npm run typecheck
+    npm test
+    npm run build
 
 ## Actividad 7: balances por cuenta y balance general
 
@@ -188,19 +200,68 @@ Se conserva la ejecución histórica anterior a la prueba de `companyId` (15/15,
 
 > **Nota de sincronización:** el contenedor `fintrack5-test-api` ejecuta una copia del código creada al construir la imagen (no monta el árbol de trabajo). Si el código cambió después de esa construcción, reconstruya la imagen de pruebas o copie los archivos modificados antes de ejecutar la suite; de lo contrario se ejecutaría la versión anterior.
 
-### Evidencias y capturas pendientes
+### Evidencias y capturas
 
-La transcripción real de la suite está en `evidencias/actividad7/`. Las siguientes capturas son **manuales** y todavía **no existen**; deben tomarse en Visual Studio Code y guardarse en `evidencias/actividad7/capturas/`:
+La transcripción real de la suite está en `evidencias/actividad7/`. Las capturas
+manuales de la Actividad 7 ya están guardadas en `evidencias/actividad7/capturas/`:
 
-1. `evidencias/actividad7/capturas/01_implementacion_balances.png`: `services/balance_service.py`, líneas 55–111 (uso de `Decimal`, cuantización a dos decimales, saldo inicial, profit, saldo final e `isInRed`).
-2. `evidencias/actividad7/capturas/02_graphql_y_pruebas.png`: `graphql_api/schema.py`, líneas 237–298 (tipos `AccountBalance`/`GeneralBalance` con `companyId`), y `tests/test_balances.py` desde la línea 1370 (prueba B16 de `companyId`).
-3. `evidencias/actividad7/capturas/03_resultado_B01_B16.png`: `evidencias/actividad7/B01_B16.txt`, con las 16 líneas `ok`, `Ran 16 tests in 2.533s` y `OK` visibles.
+1. `01_implementacion_balances.png`
+2. `02_graphql_y_pruebas.png`
+3. `03_resultado_B01_B16.png` (y una variante `03.1_resultado_B01_B16.png`)
+
+No se modificó su contenido en la subetapa 3.7.
 
 ### Diferencias respecto al enunciado
 
 - **Motor de base de datos:** el enunciado menciona MySQL; el proyecto utiliza **PostgreSQL 16** y no se migró. Esta diferencia se documenta de forma transparente y requiere confirmación del docente.
 - **Campo adicional:** `AccountBalance.currency` no forma parte del contrato mínimo del enunciado; se conserva como campo extra (superconjunto) y no rompe las consultas solicitadas.
-- **Integrantes:** el README no puede completar los nombres porque no hay información verificable en el repositorio.
+
+## Dashboard financiero — Unidad III, Actividad 1
+
+El dashboard es el frontend del sistema: una pantalla que consume la API GraphQL
+para mostrar, en un periodo elegido, el saldo inicial, los ingresos, los egresos,
+la utilidad, el saldo final y el detalle por cuenta. El cliente no recalcula
+importes: los recibe calculados del backend.
+
+- **Stack:** Vite, React, TypeScript y Apollo Client 3.x.
+- **Autenticación:** mutación `login`; el JWT se conserva solo en memoria y se
+  envía como `Authorization: Bearer` en cada operación.
+- **Consulta:** `generalBalance(fromDate, toDate)`; la empresa se deriva del token
+  y no se envía como argumento.
+- **Periodo de demostración:** `2026-01-01` a `2026-01-31` (días completos UTC).
+  El valor por defecto es el mes UTC actual, que no tiene movimientos.
+- **Usuario de prueba:** `admin_a@test.local`. La contraseña se obtiene del
+  mecanismo local de pruebas (`scripts/setup_pruebas.py`) y no se documenta.
+- **Indicador global de riesgo:** el resumen muestra «Sin riesgo global» o
+  «Riesgo financiero global» a partir de `isInRed`, y el conteo exacto de
+  `accountsInRed` con singular o plural. El caso `isInRed = false` con
+  `accountsInRed > 0` se presenta como riesgo individual, sin contradecir el
+  estado global. No se recalcula el riesgo en el cliente.
+
+### Ejecución del dashboard
+
+    cd dashboard
+    npm install
+    npm run dev
+
+Abrir <http://localhost:5173>. Vite reenvía `/graphql` a la API temporal en
+`http://127.0.0.1:8001/graphql`; el procedimiento para habilitarla está en
+[`docs/acceso-temporal-api-pruebas.md`](docs/acceso-temporal-api-pruebas.md).
+
+### Validación del dashboard
+
+    cd dashboard
+    npm run lint
+    npm run typecheck
+    npm test
+    npm run build
+
+### Documentación y entregables de la Unidad III
+
+- [`dashboard/README.md`](dashboard/README.md): referencia técnica del frontend.
+- [`docs/unidad3_actividad1/guion_exposicion.md`](docs/unidad3_actividad1/guion_exposicion.md): guion de la demostración para los tres integrantes.
+- [`docs/unidad3_actividad1/boceto_dashboard.svg`](docs/unidad3_actividad1/boceto_dashboard.svg) y [`boceto_dashboard.png`](docs/unidad3_actividad1/boceto_dashboard.png): boceto editable y su exportación.
+- [`evidencias/unidad3_actividad1_dashboard/evidencias.md`](evidencias/unidad3_actividad1_dashboard/evidencias.md): capturas, resultados de validación, casos cubiertos por pruebas y limitaciones de los datos reales.
 
 ## Actividades
 
@@ -211,24 +272,33 @@ La transcripción real de la suite está en `evidencias/actividad7/`. Las siguie
 | 5 | Contrato GraphQL para configurar permisos (`permissionCatalog`, `previewRolePermissions`, `setRolePermissions`) | Suite 18/18; evidencias E01–E10 y cierre de publicación | [`evidencias/actividad5_configuracion_permisos/`](evidencias/actividad5_configuracion_permisos/), [`evidencias.md`](evidencias.md) |
 | 6 | Control de acceso según el rol: identidad desde JWT | Suite 20/20; evidencias E01–E10 | [`evidencias/actividad6_control_acceso/`](evidencias/actividad6_control_acceso/) |
 | 7 | Balances por cuenta y balance general (`accountBalance`, `generalBalance`) | Implementado; suite B01–B16 16/16 en el entorno Docker aislado | [`evidencias_actividad7.md`](evidencias_actividad7.md), [`B01_B16.txt`](evidencias/actividad7/B01_B16.txt) |
+| Unidad III – 1 | Dashboard financiero conectado a GraphQL (login, balance por periodo, indicadores, indicador global de riesgo, cuentas) | Implementado y validado: lint y typecheck sin errores, 134/134 pruebas, build correcto | [`evidencias/unidad3_actividad1_dashboard/`](evidencias/unidad3_actividad1_dashboard/) |
 
 Notas: las 30 operaciones protegidas de la Actividad 6 conservan la llamada a `exigir_permiso` sobre un catálogo global de roles y permisos, y `createCompany` y el primer `createCompanyAdmin` no están expuestos como operaciones GraphQL. Las evidencias E01–E10 de la Actividad 5 se capturaron con su contrato histórico (`actorCompanyUserId`); `operaciones.graphql` y `variables/` se actualizaron al contrato autenticado. El enunciado menciona MySQL, pero el proyecto conserva PostgreSQL 16.
 
 ## Evidencias
 
-Las evidencias están en [`evidencias/`](evidencias/): capturas del entorno de pruebas y de las validaciones de negocio en la raíz, y transcripciones por actividad en las subcarpetas de las Actividades 3 a 7. La Actividad 6 incluye E01–E10, `resumen_actividad6.json` y el registro de la validación final en [`validacion_final.txt`](evidencias/actividad6_control_acceso/validacion_final.txt); la Actividad 7 conserva la ejecución vigente de la suite en [`B01_B16.txt`](evidencias/actividad7/B01_B16.txt) y la ejecución histórica anterior a `companyId` en [`B01_B15.txt`](evidencias/actividad7/B01_B15.txt). Las tres capturas manuales de la Actividad 7 se guardarán en `evidencias/actividad7/capturas/` (todavía no existen).
+Las evidencias están en [`evidencias/`](evidencias/): capturas del entorno de pruebas y de las validaciones de negocio en la raíz, y transcripciones por actividad en las subcarpetas de las Actividades 3 a 7. La Actividad 6 incluye E01–E10, `resumen_actividad6.json` y el registro de la validación final en [`validacion_final.txt`](evidencias/actividad6_control_acceso/validacion_final.txt); la Actividad 7 conserva la ejecución vigente de la suite en [`B01_B16.txt`](evidencias/actividad7/B01_B16.txt) y la ejecución histórica anterior a `companyId` en [`B01_B15.txt`](evidencias/actividad7/B01_B15.txt). Las capturas manuales de la Actividad 7 están en [`evidencias/actividad7/capturas/`](evidencias/actividad7/capturas/).
+
+Las evidencias de la Unidad III, Actividad 1 (capturas reales, resultados de lint, typecheck, pruebas, build, JSON de GraphQL y estado de Git) están en [`evidencias/unidad3_actividad1_dashboard/evidencias.md`](evidencias/unidad3_actividad1_dashboard/evidencias.md).
 
 ## Estado del proyecto
 
-- **Implementado**: gestión de empresas, usuarios, membresías empresa-usuario, cuentas, conceptos y movimientos; autenticación JWT; autorización por roles con scope por empresa; contrato de configuración de permisos de la Actividad 5; control de acceso de la Actividad 6 (identidad desde token en las 30 operaciones protegidas); y balances de la Actividad 7 (`accountBalance` y `generalBalance`, con `GeneralBalance.companyId`).
-- **Verificado**: suite B01–B16 16/16 en `fintrack5_test` (2026-10-29), `Ran 16 tests in 2.533s`, `OK`, código de salida 0; esquema con `companyId: ID!` y `generalBalance` sin argumento `companyId`; base sin residuos y conteos previos conservados.
-- **Pruebas registradas**: Actividad 4 (34/34), Actividad 5 (18/18), Actividad 6 (20/20) y Actividad 7 (16/16), además de la matriz funcional y las suites de corrección de la Actividad 3.
-- **Pendiente manual**: integrantes del equipo y las tres capturas de la Actividad 7.
+- **Implementado**: gestión de empresas, usuarios, membresías empresa-usuario, cuentas, conceptos y movimientos; autenticación JWT; autorización por roles con scope por empresa; contrato de configuración de permisos de la Actividad 5; control de acceso de la Actividad 6 (identidad desde token en las 30 operaciones protegidas); balances de la Actividad 7 (`accountBalance` y `generalBalance`, con `GeneralBalance.companyId`); y dashboard financiero de la Unidad III (login, consulta por periodo, cinco indicadores, indicador global de riesgo, detalle por cuenta, estados, accesibilidad y responsive).
+- **Verificado**: suite B01–B16 16/16 en `fintrack5_test` (2026-10-29), `Ran 16 tests in 2.533s`, `OK`, código de salida 0; esquema con `companyId: ID!` y `generalBalance` sin argumento `companyId`; base sin residuos y conteos previos conservados. Dashboard: lint y typecheck sin errores, 14 archivos y 134 pruebas aprobadas, build de producción correcto (2026-11-10).
+- **Pruebas registradas**: Actividad 4 (34/34), Actividad 5 (18/18), Actividad 6 (20/20), Actividad 7 (16/16) y dashboard (134/134), además de la matriz funcional y las suites de corrección de la Actividad 3.
+- **Pendiente manual**: publicar (commit y push) la documentación y las evidencias de la subetapa 3.7, a la espera de autorización expresa.
 - **Deuda explícita**: la idempotencia de `setup_pruebas.py` con dry-run de `limpiar_pruebas.py` y la verificación de rollback por inyección de fallo no se dan por aprobadas; véase [`evidencias/actividad3/correcciones/03_pendientes_y_validaciones.txt`](evidencias/actividad3/correcciones/03_pendientes_y_validaciones.txt).
 
 ## Control de versiones
 
-La Actividad 7 se implementó sin crear commits, sin hacer push y sin modificar el historial. Las referencias locales de `main` y `origin/main` conservan el mismo commit registrado antes de esta actividad. Los cambios quedaron únicamente en el árbol de trabajo.
+`main` y `origin/main` apuntan al commit
+`a95226a7303113c1705c8e67b8c7bc9b19f83fbf` («chore(dashboard): remove obsolete
+placeholders»). Las subetapas 3.1 a 3.6 del dashboard están publicadas en ese
+historial. La documentación, el boceto, las evidencias y el ZIP de la subetapa 3.7
+se prepararon localmente y, al cierre de esta entrega, permanecen sin commit ni
+push a la espera de autorización expresa. El detalle verificable está en
+[`evidencias/unidad3_actividad1_dashboard/resultados/git_publicacion.txt`](evidencias/unidad3_actividad1_dashboard/resultados/git_publicacion.txt).
 
 ## Referencias
 

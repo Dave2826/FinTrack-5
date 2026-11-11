@@ -1,8 +1,14 @@
 # Documentación y evidencias del dashboard
 
 Este directorio reúne las evidencias de validación del panel financiero
-(subetapas 3.1 a 3.6). La descripción funcional, la arquitectura y los comandos
-de desarrollo están en [`../README.md`](../README.md).
+(subetapas 3.1 a 3.7). La descripción funcional, la arquitectura y los comandos
+de desarrollo están en [`../README.md`](../README.md). El resumen incluye el
+indicador global de riesgo (`isInRed` y `accountsInRed`) además de los cinco
+indicadores financieros.
+
+Las evidencias de la subetapa 3.7 (capturas reales, resultados de lint,
+typecheck, pruebas y build, JSON de GraphQL y estado de Git) están en
+[`../../evidencias/unidad3_actividad1_dashboard/evidencias.md`](../../evidencias/unidad3_actividad1_dashboard/evidencias.md).
 
 ## Qué guardar aquí
 

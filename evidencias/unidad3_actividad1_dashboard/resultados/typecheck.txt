@@ -1,0 +1,10 @@
+﻿# Comando: npm run typecheck
+# Directorio: dashboard/
+# Fecha de ejecución: 2026-11-11T00:46:27.970Z
+# Código de salida: 0
+
+
+> dashboard@0.0.0 typecheck
+> tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.node.json
+
+

@@ -2,14 +2,23 @@
 
 Frontend del panel financiero de FinTrack-5, construido con **Vite + React + TypeScript + Apollo Client 3.x**.
 
+## Equipo
+
+- David Morales
+- Edwuard Chay
+- Fabrizio Rodriguez
+
+La asignación de tiempos del guion es de exposición; no atribuye autoría individual del código.
+
 ## Estado actual
 
-Subetapas **3.1 a 3.6** completadas:
+Subetapas **3.1 a 3.7** completadas:
 
 - Login contra la mutación `login` del backend GraphQL.
 - Sesión JWT mantenida únicamente en memoria.
 - Consulta del balance general por rango de fechas.
 - Resumen de cinco indicadores calculados por el backend.
+- Indicador global de riesgo con `isInRed` y `accountsInRed`.
 - Tabla de cuentas con estado de actividad y riesgo.
 - Estados de carga inicial, actualización, error y vacío.
 - Reintento de errores recuperables y gestión de foco.
@@ -67,6 +76,19 @@ excluye el día siguiente a `toDate`.
 Los importes se muestran con `formatMxn`. El tono de la utilidad se deriva del
 signo recibido y el del saldo final de `isInRed`; no se hacen operaciones
 aritméticas en el cliente.
+
+Debajo de los cinco indicadores, `BalanceSummary` muestra el estado global de
+riesgo usando directamente `isInRed` y `accountsInRed`:
+
+- «Sin riesgo global» cuando `isInRed` es falso.
+- «Riesgo financiero global» cuando `isInRed` es verdadero.
+- «0 cuentas en números rojos», «1 cuenta en números rojos» o «N cuentas en
+  números rojos», según `accountsInRed`.
+
+El caso `isInRed = false` con `accountsInRed > 0` es válido y se presenta como
+riesgo individual: «Sin riesgo global» junto al conteo de cuentas en rojo. El
+bloque es una región con nombre accesible, encabezado propio y texto explícito;
+no depende solo del color y se apila en una columna por debajo de 480 px.
 
 ### Detalle de cuentas
 
@@ -174,7 +196,10 @@ npm run build
 
 La suite cubre autenticación, sesión, clasificación de errores, consulta del
 balance, validación de fechas, formato, tabla de cuentas, estados de la interfaz,
-accesibilidad y gestión de foco.
+indicador global de riesgo, accesibilidad, responsive y gestión de foco. Los
+escenarios del indicador global incluyen `false/0`, `true/1`, `true/>1`,
+`false/1`, singular/plural y la comprobación de que el estado no se comunica solo
+por color.
 
 ## Accesibilidad y responsive
 
@@ -191,4 +216,7 @@ accesibilidad y gestión de foco.
 ## Documentación relacionada
 
 - `../docs/acceso-temporal-api-pruebas.md`: proxy temporal hacia la API de pruebas.
+- `../docs/unidad3_actividad1/guion_exposicion.md`: guion de la demostración para los tres integrantes.
+- `../docs/unidad3_actividad1/boceto_dashboard.svg` y `boceto_dashboard.png`: boceto de la interfaz implementada.
+- `../evidencias/unidad3_actividad1_dashboard/evidencias.md`: capturas reales, resultados de validación y limitaciones.
 - `docs/README.md`: criterios para guardar evidencias y capturas.

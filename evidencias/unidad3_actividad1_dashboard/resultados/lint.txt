@@ -1,0 +1,10 @@
+﻿# Comando: npm run lint
+# Directorio: dashboard/
+# Fecha de ejecución: 2026-11-11T00:46:27.447Z
+# Código de salida: 0
+
+
+> dashboard@0.0.0 lint
+> oxlint
+
+
