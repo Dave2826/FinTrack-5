@@ -1,0 +1,65 @@
+# Publicación final y estado de Git — Unidad III, Actividad 1
+# Fecha de captura: 2026-11-11T23:59:30.959Z (UTC)
+# Rama actual: main
+# HEAD: f52266d8e1d42513c3f548e9c41a3026cc70cb55
+# origin/main: f52266d8e1d42513c3f548e9c41a3026cc70cb55
+# HEAD coincide con origin/main: sí (sin push)
+# Árbol de trabajo: 18 archivos rastreados modificados (incluye el ZIP de entrega)
+#                   y 10 archivos nuevos (incluye esta evidencia y SHA256SUMS.txt)
+# Staging: vacío en el momento de la captura
+# git diff --check: sin errores
+
+## Cierre de la Actividad 12
+
+### Rotación de credenciales
+- Entorno de desarrollo: rotación completada el 2026-11-11 mediante ALTER ROLE.
+  La credencial anterior (la que aparece en el historial de alembic.ini) ya no
+  autentica por SCRAM; la nueva funciona en PostgreSQL, FastAPI y Alembic.
+- Entorno de pruebas: rotación completada el 2026-11-11; la credencial anterior
+  ya no autentica y la nueva funciona en PostgreSQL, FastAPI y las suites.
+- No se recreó ningún volumen ni se ejecutó docker compose down.
+- Los valores de las credenciales no se registran en esta evidencia.
+
+### Restauración de la empresa #11
+- Se eliminaron únicamente los fixtures A4 de la última ejecución: cuentas 115
+  y 116 y movimiento 194, identificados por nombre, empresa, cuenta, monto,
+  tipo, descripción y fecha.
+- Empresa #11: 5 cuentas y 4 movimientos (baseline real documentado).
+- Base completa: 9 cuentas y 10 movimientos.
+- Sin cambios en usuarios, membresías, roles, permisos ni conceptos.
+- Alembic: 3b9f41c7d2ae (sin migraciones).
+
+### Empresa B01 (intacta)
+- 3 cuentas y 5 movimientos.
+- Balance 2026-10-26 a 2026-10-30: 1000.00 / 3500.00 / 2900.00 / 600.00 /
+  1600.00; accountsInRed = 1; isInRed = false.
+
+### Validaciones
+- Dashboard: npm run lint (código 0), npm run typecheck (código 0),
+  npm test (14 archivos, 140/140 pruebas), npm run build (correcto).
+- Backend: test_balances 16/16 OK; test_control_acceso_rol 20/20 OK;
+  test_configuracion_permisos 18/18 OK.
+- Balance de enero 2026: 5 cuentas, ingresos 1500.00, egresos 300.00,
+  cierre 1200.00.
+- No se volvió a ejecutar scripts/pruebas_actividad4.py tras la restauración.
+
+### Empaquetado
+- Evidencias incluidas: 121 (120 históricas + esta evidencia).
+- Entradas del ZIP: 286.
+- Tamaño del ZIP: 6589113 bytes.
+- SHA-256 del ZIP: registrado en SHA256SUMS.txt (fuera del ZIP).
+- El ZIP excluye .env, .env.test, .venv, node_modules, dist, coverage,
+  __pycache__, *.pyc, estructura_actividad5.sql, el propio ZIP y
+  SHA256SUMS.txt.
+
+### Commits locales previstos
+Los siguientes commits se crean localmente después de esta captura:
+1. chore(security): sanitize alembic config and harden ignore rules
+2. fix(dashboard): close session when token is rejected
+3. docs(actividad12): document B01 dataset and manual reconciliation
+4. test(evidence): refresh validation outputs and add B01 evidence
+5. chore(test-data): add selective restoration for A4 fixtures
+6. chore(release): update unit 3 submission package
+7. docs(evidence): record final publication state
+
+Sin push: la publicación en GitHub queda pendiente de autorización expresa.
