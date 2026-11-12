@@ -1,7 +1,8 @@
-﻿# Comando: npm test -- --reporter=verbose
+# Comando: npm test -- --reporter=verbose
 # Directorio: dashboard/
-# Fecha de ejecución: 2026-11-11T00:46:28.809Z
+# Fecha de ejecución: 2026-11-11T18:31:06.360Z
 # Código de salida: 0
+
 
 
 > dashboard@0.0.0 test
@@ -10,33 +11,10 @@
 
  RUN  v5.1.0 C:/Users/deey1/OneDrive - Instituto Tecnol├│gico de Software/Actividades/Fundamentos de Arqui/actividad5_david_morales/dashboard
 
- Ô£ô tests/tokenStore.test.ts > tokenStore > inicia sin token 4ms
- Ô£ô tests/tokenStore.test.ts > tokenStore > guarda y consulta el token en memoria 1ms
- Ô£ô tests/tokenStore.test.ts > tokenStore > limpia el token 1ms
- Ô£ô tests/tokenStore.test.ts > tokenStore > notifica a los suscriptores y permite desuscribirse 3ms
- Ô£ô tests/tokenStore.test.ts > tokenStore > no persiste el token en almacenamiento del navegador 9ms
- Ô£ô tests/tokenStore.test.ts > tokenStore > rechaza tokens vac├¡os 1ms
- Ô£ô tests/dateRange.test.ts > getCurrentUtcDate > devuelve el d├¡a UTC actual con mes y d├¡a de dos d├¡gitos 4ms
- Ô£ô tests/dateRange.test.ts > getCurrentUtcDate > no depende de la zona horaria local 1ms
- Ô£ô tests/dateRange.test.ts > getCurrentUtcDate > rechaza una fecha inv├ílida 1ms
- Ô£ô tests/dateRange.test.ts > getDefaultUtcMonthRange > usa el primer d├¡a del mes UTC como inicio y el d├¡a actual como fin 2ms
- Ô£ô tests/dateRange.test.ts > getDefaultUtcMonthRange > funciona el primer d├¡a del mes 1ms
- Ô£ô tests/dateRange.test.ts > getDefaultUtcMonthRange > cambia de mes correctamente 0ms
- Ô£ô tests/dateRange.test.ts > getDefaultUtcMonthRange > cambia de a├▒o correctamente 1ms
- Ô£ô tests/dateRange.test.ts > isValidIsoDate > acepta fechas calendario v├ílidas 1ms
- Ô£ô tests/dateRange.test.ts > isValidIsoDate > rechaza fechas imposibles 1ms
- Ô£ô tests/dateRange.test.ts > isValidIsoDate > rechaza formatos distintos a YYYY-MM-DD 1ms
- Ô£ô tests/dateRange.test.ts > compareIsoDates > compara fechas sin depender de la zona horaria 1ms
- Ô£ô tests/dateRange.test.ts > compareIsoDates > rechaza fechas inv├ílidas 0ms
- Ô£ô tests/dateRange.test.ts > validateDateRange > acepta un rango v├ílido 0ms
- Ô£ô tests/dateRange.test.ts > validateDateRange > acepta fechas iguales 0ms
- Ô£ô tests/dateRange.test.ts > validateDateRange > rechaza un rango invertido 0ms
- Ô£ô tests/dateRange.test.ts > validateDateRange > rechaza fechas ausentes 0ms
- Ô£ô tests/dateRange.test.ts > validateDateRange > rechaza fechas inv├ílidas 0ms
- Ô£ô tests/format.test.ts > formatMxn > formatea cero como $0.00 4ms
+ Ô£ô tests/format.test.ts > formatMxn > formatea cero como $0.00 5ms
  Ô£ô tests/format.test.ts > formatMxn > formatea importes positivos 1ms
- Ô£ô tests/format.test.ts > formatMxn > formatea importes negativos con el signo antes del s├¡mbolo 1ms
- Ô£ô tests/format.test.ts > formatMxn > agrupa miles 1ms
+ Ô£ô tests/format.test.ts > formatMxn > formatea importes negativos con el signo antes del s├¡mbolo 0ms
+ Ô£ô tests/format.test.ts > formatMxn > agrupa miles 0ms
  Ô£ô tests/format.test.ts > formatMxn > agrupa millones 0ms
  Ô£ô tests/format.test.ts > formatMxn > garantiza dos decimales 0ms
  Ô£ô tests/format.test.ts > formatMxn > normaliza el cero negativo 0ms
@@ -44,139 +22,200 @@
  Ô£ô tests/format.test.ts > formatMxn > rechaza caracteres inv├ílidos 1ms
  Ô£ô tests/format.test.ts > formatMxn > rechaza m├ís de dos decimales 1ms
  Ô£ô tests/format.test.ts > formatMxn > rechaza formatos malformados 1ms
- Ô£ô tests/jwt.test.ts > jwt > lee el payload y la expiraci├│n 3ms
- Ô£ô tests/jwt.test.ts > jwt > considera expirado un token vencido 1ms
- Ô£ô tests/jwt.test.ts > jwt > considera vigente un token futuro 0ms
- Ô£ô tests/jwt.test.ts > jwt > no falla con tokens malformados 0ms
+ Ô£ô tests/tokenStore.test.ts > tokenStore > inicia sin token 4ms
+ Ô£ô tests/tokenStore.test.ts > tokenStore > guarda y consulta el token en memoria 1ms
+ Ô£ô tests/tokenStore.test.ts > tokenStore > limpia el token 1ms
+ Ô£ô tests/tokenStore.test.ts > tokenStore > notifica a los suscriptores y permite desuscribirse 3ms
+ Ô£ô tests/tokenStore.test.ts > tokenStore > no persiste el token en almacenamiento del navegador 9ms
+ Ô£ô tests/tokenStore.test.ts > tokenStore > rechaza tokens vac├¡os 2ms
+ Ô£ô tests/dateRange.test.ts > getCurrentUtcDate > devuelve el d├¡a UTC actual con mes y d├¡a de dos d├¡gitos 4ms
+ Ô£ô tests/dateRange.test.ts > getCurrentUtcDate > no depende de la zona horaria local 1ms
+ Ô£ô tests/dateRange.test.ts > getCurrentUtcDate > rechaza una fecha inv├ílida 1ms
+ Ô£ô tests/dateRange.test.ts > getDefaultUtcMonthRange > usa el primer d├¡a del mes UTC como inicio y el d├¡a actual como fin 1ms
+ Ô£ô tests/dateRange.test.ts > getDefaultUtcMonthRange > funciona el primer d├¡a del mes 0ms
+ Ô£ô tests/dateRange.test.ts > getDefaultUtcMonthRange > cambia de mes correctamente 0ms
+ Ô£ô tests/dateRange.test.ts > getDefaultUtcMonthRange > cambia de a├▒o correctamente 0ms
+ Ô£ô tests/dateRange.test.ts > isValidIsoDate > acepta fechas calendario v├ílidas 1ms
+ Ô£ô tests/dateRange.test.ts > isValidIsoDate > rechaza fechas imposibles 1ms
+ Ô£ô tests/dateRange.test.ts > isValidIsoDate > rechaza formatos distintos a YYYY-MM-DD 1ms
+ Ô£ô tests/dateRange.test.ts > compareIsoDates > compara fechas sin depender de la zona horaria 0ms
+ Ô£ô tests/dateRange.test.ts > compareIsoDates > rechaza fechas inv├ílidas 0ms
+ Ô£ô tests/dateRange.test.ts > validateDateRange > acepta un rango v├ílido 0ms
+ Ô£ô tests/dateRange.test.ts > validateDateRange > acepta fechas iguales 0ms
+ Ô£ô tests/dateRange.test.ts > validateDateRange > rechaza un rango invertido 1ms
+ Ô£ô tests/dateRange.test.ts > validateDateRange > rechaza fechas ausentes 0ms
+ Ô£ô tests/dateRange.test.ts > validateDateRange > rechaza fechas inv├ílidas 0ms
  Ô£ô tests/authLink.test.ts > authLink > agrega la cabecera Bearer cuando existe token 5ms
  Ô£ô tests/authLink.test.ts > authLink > no agrega autorizaci├│n cuando no existe token 1ms
  Ô£ô tests/authLink.test.ts > authLink > lee el token en cada operaci├│n, no al construir el link 1ms
- Ô£ô tests/balanceErrors.test.ts > classifyGraphQLErrors > clasifica la ausencia de sesi├│n 3ms
+ Ô£ô tests/jwt.test.ts > jwt > lee el payload y la expiraci├│n 4ms
+ Ô£ô tests/jwt.test.ts > jwt > considera expirado un token vencido 1ms
+ Ô£ô tests/jwt.test.ts > jwt > considera vigente un token futuro 0ms
+ Ô£ô tests/jwt.test.ts > jwt > no falla con tokens malformados 1ms
+ Ô£ô tests/balanceErrors.test.ts > classifyGraphQLErrors > clasifica la ausencia de sesi├│n 4ms
  Ô£ô tests/balanceErrors.test.ts > classifyGraphQLErrors > clasifica un token inv├ílido o expirado 1ms
- Ô£ô tests/balanceErrors.test.ts > classifyGraphQLErrors > prioriza expirado sobre el c├│digo UNAUTHENTICATED 0ms
+ Ô£ô tests/balanceErrors.test.ts > classifyGraphQLErrors > prioriza expirado sobre el c├│digo UNAUTHENTICATED 1ms
  Ô£ô tests/balanceErrors.test.ts > classifyGraphQLErrors > clasifica la falta de permisos 1ms
- Ô£ô tests/balanceErrors.test.ts > classifyGraphQLErrors > clasifica los errores de fechas 1ms
+ Ô£ô tests/balanceErrors.test.ts > classifyGraphQLErrors > clasifica los errores de fechas 4ms
  Ô£ô tests/balanceErrors.test.ts > classifyGraphQLErrors > no clasifica un error GraphQL gen├®rico como autenticaci├│n 1ms
  Ô£ô tests/balanceErrors.test.ts > toBalanceError > clasifica un error de red 1ms
  Ô£ô tests/balanceErrors.test.ts > toBalanceError > clasifica errores GraphQL de autenticaci├│n y permisos 1ms
  Ô£ô tests/balanceErrors.test.ts > toBalanceError > conserva el detalle t├®cnico sin exponerlo en el mensaje p├║blico 1ms
- Ô£ô tests/balanceErrors.test.ts > toBalanceError > devuelve la misma instancia si ya es un BalanceError 1ms
+ Ô£ô tests/balanceErrors.test.ts > toBalanceError > devuelve la misma instancia si ya es un BalanceError 0ms
  Ô£ô tests/balanceErrors.test.ts > toBalanceError > clasifica un error desconocido como GraphQL general 0ms
-stderr | tests/dashboard.test.tsx > dashboard > renderiza el encabezado y las ├íreas reservadas tras iniciar sesi├│n
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+node.exe : stderr | tests/useGeneralBalance.test.tsx > useGeneralBalance > consulta el balance y expone los datos
+En línea: 1 Carácter: 1
++ & "C:\Program Files\nodejs/node.exe" "C:\Users\deey1\AppData\Roaming\ ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (stderr | tests/...xpone los datos:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
 
-stderr | tests/useGeneralBalance.test.tsx > useGeneralBalance > consulta el balance y expone los datos
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
+
+stderr | tests/dashboard.test.tsx > dashboard > renderiza el encabezado y las ├íreas reservadas tras iniciar sesi├│n
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
 stderr | tests/smoke.test.tsx > App > muestra la identidad de FinTrack-5 y el formulario de acceso
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
- Ô£ô tests/smoke.test.tsx > App > muestra la identidad de FinTrack-5 y el formulario de acceso 195ms
+ Ô£ô tests/smoke.test.tsx > App > muestra la identidad de FinTrack-5 y el formulario de acceso 225ms
 stderr | tests/session.test.tsx > protecci├│n de sesi├│n > muestra el login cuando no hay sesi├│n
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
+
+stderr | tests/session.test.tsx > protecci├│n de sesi├│n > cierra sesi├│n, elimina el token y vuelve al login
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
 stderr | tests/useGeneralBalance.test.tsx > useGeneralBalance > expone el estado de carga inicial
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
-stderr | tests/session.test.tsx > protecci├│n de sesi├│n > cierra sesi├│n, elimina el token y vuelve al login
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+stderr | tests/dashboardA11y.test.tsx > dashboard: accesibilidad y mensajes de estado > expone el filtro con nombre
+accesible y orden de tabulaci├│n l├│gico
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
-stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > consulta el periodo UTC predeterminado del mes actual
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
-
- Ô£ô tests/useGeneralBalance.test.tsx > useGeneralBalance > consulta el balance y expone los datos 107ms
- Ô£ô tests/useGeneralBalance.test.tsx > useGeneralBalance > env├¡a exclusivamente fromDate y toDate 78ms
- Ô£ô tests/accountsTable.test.tsx > AccountsTable > renderiza una cuenta con su nombre 160ms
- Ô£ô tests/accountsTable.test.tsx > AccountsTable > renderiza varias cuentas 13ms
- Ô£ô tests/accountsTable.test.tsx > AccountsTable > presenta los cinco importes de la cuenta 8ms
- Ô£ô tests/accountsTable.test.tsx > AccountsTable > formatea los importes en MXN con agrupaci├│n y dos decimales 6ms
- Ô£ô tests/accountsTable.test.tsx > AccountsTable > identifica una cuenta activa 6ms
- Ô£ô tests/accountsTable.test.tsx > AccountsTable > identifica una cuenta inactiva 5ms
- Ô£ô tests/accountsTable.test.tsx > AccountsTable > identifica una cuenta en riesgo 4ms
- Ô£ô tests/accountsTable.test.tsx > AccountsTable > representa una cuenta activa y en riesgo 4ms
- Ô£ô tests/accountsTable.test.tsx > AccountsTable > representa una cuenta inactiva sin riesgo 7ms
- Ô£ô tests/accountsTable.test.tsx > AccountsTable > muestra una cuenta sin movimientos con valores reales en cero 6ms
+ Ô£ô tests/useGeneralBalance.test.tsx > useGeneralBalance > consulta el balance y expone los datos 112ms
+ Ô£ô tests/useGeneralBalance.test.tsx > useGeneralBalance > env├¡a exclusivamente fromDate y toDate 77ms
+ Ô£ô tests/accountsTable.test.tsx > AccountsTable > renderiza una cuenta con su nombre 182ms
+ Ô£ô tests/accountsTable.test.tsx > AccountsTable > renderiza varias cuentas 17ms
+ Ô£ô tests/accountsTable.test.tsx > AccountsTable > presenta los cinco importes de la cuenta 12ms
+ Ô£ô tests/accountsTable.test.tsx > AccountsTable > formatea los importes en MXN con agrupaci├│n y dos decimales 10ms
+ Ô£ô tests/accountsTable.test.tsx > AccountsTable > identifica una cuenta activa 7ms
+ Ô£ô tests/accountsTable.test.tsx > AccountsTable > identifica una cuenta inactiva 6ms
+ Ô£ô tests/accountsTable.test.tsx > AccountsTable > identifica una cuenta en riesgo 7ms
+ Ô£ô tests/accountsTable.test.tsx > AccountsTable > representa una cuenta activa y en riesgo 6ms
+ Ô£ô tests/accountsTable.test.tsx > AccountsTable > representa una cuenta inactiva sin riesgo 8ms
+ Ô£ô tests/accountsTable.test.tsx > AccountsTable > muestra una cuenta sin movimientos con valores reales en cero 15ms
  Ô£ô tests/accountsTable.test.tsx > AccountsTable > muestra un estado vac├¡o informativo cuando no hay cuentas 2ms
-stderr | tests/dashboardA11y.test.tsx > dashboard: accesibilidad y mensajes de estado > expone el filtro con nombre accesible y orden de tabulaci├│n l├│gico
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+stderr | tests/login.test.tsx > login > inicia sesi├│n con credenciales v├ílidas y guarda el token en memoria
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
+
+stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > consulta el periodo UTC
+predeterminado del mes actual
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
+
+ Ô£ô tests/session.test.tsx > protecci├│n de sesi├│n > muestra el login cuando no hay sesi├│n 211ms
+stderr | tests/useGeneralBalance.test.tsx > useGeneralBalance > clasifica un error de red
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
 stderr | tests/accountsTable.test.tsx > AccountsTable > se integra con el dashboard junto al resumen y el filtro
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
-stderr | tests/useGeneralBalance.test.tsx > useGeneralBalance > clasifica un error de red
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+ Ô£ô tests/useGeneralBalance.test.tsx > useGeneralBalance > expone el estado de carga inicial 78ms
+stderr | tests/useGeneralBalance.test.tsx > useGeneralBalance > clasifica el error GraphQL "Usuario no autenticado"
+como unauthenticated
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
- Ô£ô tests/session.test.tsx > protecci├│n de sesi├│n > muestra el login cuando no hay sesi├│n 175ms
-stderr | tests/login.test.tsx > login > inicia sesi├│n con credenciales v├ílidas y guarda el token en memoria
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+ Ô£ô tests/accountsTable.test.tsx > AccountsTable > conserva todas las cuentas recibidas, incluidas las inactivas 33ms
+ Ô£ô tests/accountsTable.test.tsx > AccountsTable > presenta los importes recibidos sin recalcularlos 9ms
+stderr | tests/useGeneralBalance.test.tsx > useGeneralBalance > clasifica el error GraphQL "Token inv├ílido o
+expirado" como expired
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
- Ô£ô tests/useGeneralBalance.test.tsx > useGeneralBalance > expone el estado de carga inicial 79ms
- Ô£ô tests/accountsTable.test.tsx > AccountsTable > conserva todas las cuentas recibidas, incluidas las inactivas 35ms
- Ô£ô tests/accountsTable.test.tsx > AccountsTable > presenta los importes recibidos sin recalcularlos 6ms
-stderr | tests/useGeneralBalance.test.tsx > useGeneralBalance > clasifica el error GraphQL "Usuario no autenticado" como unauthenticated
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
-
-stderr | tests/useGeneralBalance.test.tsx > useGeneralBalance > clasifica el error GraphQL "Token inv├ílido o expirado" como expired
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
-
- Ô£ô tests/useGeneralBalance.test.tsx > useGeneralBalance > clasifica un error de red 79ms
- Ô£ô tests/useGeneralBalance.test.tsx > useGeneralBalance > clasifica el error GraphQL "Usuario no autenticado" como unauthenticated 79ms
-stderr | tests/useGeneralBalance.test.tsx > useGeneralBalance > clasifica el error GraphQL "El rol no tiene el permiso transactions.read" como forbidden
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+ Ô£ô tests/useGeneralBalance.test.tsx > useGeneralBalance > clasifica un error de red 78ms
+ Ô£ô tests/useGeneralBalance.test.tsx > useGeneralBalance > clasifica el error GraphQL "Usuario no autenticado" como unauthenticated 78ms
+stderr | tests/useGeneralBalance.test.tsx > useGeneralBalance > clasifica el error GraphQL "El rol no tiene el permiso
+transactions.read" como forbidden
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
  Ô£ô tests/useGeneralBalance.test.tsx > useGeneralBalance > clasifica el error GraphQL "Token inv├ílido o expirado" como expired 78ms
-stderr | tests/useGeneralBalance.test.tsx > useGeneralBalance > clasifica el error GraphQL "fromDate no puede ser posterior a toDate" como invalid-dates
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+stderr | tests/useGeneralBalance.test.tsx > useGeneralBalance > clasifica el error GraphQL "fromDate no puede ser
+posterior a toDate" como invalid-dates
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
 stderr | tests/useGeneralBalance.test.tsx > useGeneralBalance > no cierra la sesi├│n ante un error de permisos
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
- Ô£ô tests/useGeneralBalance.test.tsx > useGeneralBalance > clasifica el error GraphQL "El rol no tiene el permiso transactions.read" como forbidden 76ms
- Ô£ô tests/useGeneralBalance.test.tsx > useGeneralBalance > clasifica el error GraphQL "fromDate no puede ser posterior a toDate" como invalid-dates 80ms
-stderr | tests/useGeneralBalance.test.tsx > useGeneralBalance > permite refetch manual y actualiza los datos
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
-
-stderr | tests/dashboard.test.tsx > dashboard > renderiza el encabezado y las ├íreas reservadas tras iniciar sesi├│n
-No more mocked responses for the query: query GeneralBalance($fromDate: Date!, $toDate: Date!) {
-  generalBalance(fromDate: $fromDate, toDate: $toDate) {
-    companyId
-    fromDate
-    toDate
-    openingBalance
-    totalIncome
-    totalExpense
-    profit
-    closingBalance
-    accountsInRed
-    isInRed
-    currency
-    accounts {
-      accountId
-      accountName
-      isActive
-      openingBalance
-      totalIncome
-      totalExpense
-      profit
-      closingBalance
-      isInRed
-      currency
-    }
-  }
-}
-Expected variables: {"fromDate":"2026-11-01","toDate":"2026-11-11"}
-
-This typically indicates a configuration error in your mocks setup, usually due to a typo or mismatched variable.
-
- Ô£ô tests/useGeneralBalance.test.tsx > useGeneralBalance > no cierra la sesi├│n ante un error de permisos 62ms
- Ô£ô tests/useGeneralBalance.test.tsx > useGeneralBalance > omite la consulta sin sesi├│n autenticada 3ms
- Ô£ô tests/useGeneralBalance.test.tsx > useGeneralBalance > omite la consulta con un rango inv├ílido 1ms
- Ô£ô tests/useGeneralBalance.test.tsx > useGeneralBalance > omite la consulta cuando falta una fecha 1ms
-stderr | tests/useGeneralBalance.test.tsx > useGeneralBalance > vuelve a consultar cuando cambia el rango
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
-
-stderr | tests/dashboard.test.tsx > dashboard > renderiza el encabezado y las ├íreas reservadas tras iniciar sesi├│n
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A49%2C%22args%22%3A%5B%5D%7D
+ Ô£ô tests/useGeneralBalance.test.tsx > useGeneralBalance > clasifica el error GraphQL "El rol no tiene el permiso transactions.read" como forbidden 78ms
+ Ô£ô tests/useGeneralBalance.test.tsx > useGeneralBalance > clasifica el error GraphQL "fromDate no puede ser posterior a toDate" como invalid-dates 75ms
+stderr | tests/useGeneralBalance.test.tsx > useGeneralBalance > no cierra la sesi├│n ante un error de red
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
 stderr | tests/session.test.tsx > protecci├│n de sesi├│n > cierra sesi├│n, elimina el token y vuelve al login
 No more mocked responses for the query: query GeneralBalance($fromDate: Date!, $toDate: Date!) {
@@ -211,22 +250,93 @@ Expected variables: {"fromDate":"2026-11-01","toDate":"2026-11-11"}
 This typically indicates a configuration error in your mocks setup, usually due to a typo or mismatched variable.
 
 stderr | tests/session.test.tsx > protecci├│n de sesi├│n > cierra sesi├│n, elimina el token y vuelve al login
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A49%2C%22args%22%3A%5B%5D%7D
+An error occurred! For more details, see the full error text at
+https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A49%2C%22args%22%3A%5B%5D%7D
+
+ Ô£ô tests/useGeneralBalance.test.tsx > useGeneralBalance > no cierra la sesi├│n ante un error de permisos 80ms
+stderr | tests/useGeneralBalance.test.tsx > useGeneralBalance > no cierra la sesi├│n ante un rango inv├ílido
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
+
+stderr | tests/dashboard.test.tsx > dashboard > renderiza el encabezado y las ├íreas reservadas tras iniciar sesi├│n
+No more mocked responses for the query: query GeneralBalance($fromDate: Date!, $toDate: Date!) {
+  generalBalance(fromDate: $fromDate, toDate: $toDate) {
+    companyId
+    fromDate
+    toDate
+    openingBalance
+    totalIncome
+    totalExpense
+    profit
+    closingBalance
+    accountsInRed
+    isInRed
+    currency
+    accounts {
+      accountId
+      accountName
+      isActive
+      openingBalance
+      totalIncome
+      totalExpense
+      profit
+      closingBalance
+      isInRed
+      currency
+    }
+  }
+}
+Expected variables: {"fromDate":"2026-11-01","toDate":"2026-11-11"}
+
+This typically indicates a configuration error in your mocks setup, usually due to a typo or mismatched variable.
+
+stderr | tests/session.test.tsx > protecci├│n de sesi├│n > no persiste la sesi├│n: al recargar se vuelve al login
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
 stderr | tests/dashboard.test.tsx > dashboard > muestra la empresa obtenida del token de la sesi├│n
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
- Ô£ô tests/useGeneralBalance.test.tsx > useGeneralBalance > permite refetch manual y actualiza los datos 87ms
-stderr | tests/session.test.tsx > protecci├│n de sesi├│n > no persiste la sesi├│n: al recargar se vuelve al login
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+stderr | tests/dashboard.test.tsx > dashboard > muestra la empresa obtenida del token de la sesi├│n
+An error occurred! For more details, see the full error text at
+https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A49%2C%22args%22%3A%5B%5D%7D
 
- Ô£ô tests/dashboard.test.tsx > dashboard > renderiza el encabezado y las ├íreas reservadas tras iniciar sesi├│n 882ms
- Ô£ô tests/useGeneralBalance.test.tsx > useGeneralBalance > vuelve a consultar cuando cambia el rango 155ms
+stderr | tests/useGeneralBalance.test.tsx > useGeneralBalance > cierra la sesi├│n una sola vez ante "Token inv├ílido o
+expirado"
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
+
+ Ô£ô tests/useGeneralBalance.test.tsx > useGeneralBalance > no cierra la sesi├│n ante un error de red 78ms
+ Ô£ô tests/useGeneralBalance.test.tsx > useGeneralBalance > no cierra la sesi├│n ante un rango inv├ílido 76ms
+ Ô£ô tests/session.test.tsx > protecci├│n de sesi├│n > cierra sesi├│n, elimina el token y vuelve al login 698ms
+stderr | tests/useGeneralBalance.test.tsx > useGeneralBalance > cierra la sesi├│n una sola vez ante "Usuario no
+autenticado"
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
+
+ Ô£ô tests/dashboard.test.tsx > dashboard > renderiza el encabezado y las ├íreas reservadas tras iniciar sesi├│n 895ms
 stderr | tests/accountsTable.test.tsx > AccountsTable > no muestra cuentas ni importes ficticios durante la carga
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
-
-stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > muestra los cinco indicadores del balance
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
 stderr | tests/login.test.tsx > login > inicia sesi├│n con credenciales v├ílidas y guarda el token en memoria
 No more mocked responses for the query: query GeneralBalance($fromDate: Date!, $toDate: Date!) {
@@ -260,21 +370,60 @@ Expected variables: {"fromDate":"2026-11-01","toDate":"2026-11-11"}
 
 This typically indicates a configuration error in your mocks setup, usually due to a typo or mismatched variable.
 
- Ô£ô tests/session.test.tsx > protecci├│n de sesi├│n > cierra sesi├│n, elimina el token y vuelve al login 756ms
 stderr | tests/login.test.tsx > login > inicia sesi├│n con credenciales v├ílidas y guarda el token en memoria
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A49%2C%22args%22%3A%5B%5D%7D
+An error occurred! For more details, see the full error text at
+https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A49%2C%22args%22%3A%5B%5D%7D
 
- Ô£ô tests/accountsTable.test.tsx > AccountsTable > se integra con el dashboard junto al resumen y el filtro 721ms
 stderr | tests/login.test.tsx > login > muestra un error comprensible con credenciales incorrectas y conserva los datos
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
+ Ô£ô tests/useGeneralBalance.test.tsx > useGeneralBalance > cierra la sesi├│n una sola vez ante "Token inv├ílido o expirado" 85ms
+ Ô£ô tests/accountsTable.test.tsx > AccountsTable > se integra con el dashboard junto al resumen y el filtro 704ms
+stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > muestra los cinco
+indicadores del balance
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
+
+ Ô£ô tests/login.test.tsx > login > inicia sesi├│n con credenciales v├ílidas y guarda el token en memoria 819ms
+ Ô£ô tests/useGeneralBalance.test.tsx > useGeneralBalance > cierra la sesi├│n una sola vez ante "Usuario no autenticado" 88ms
  Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > consulta el periodo UTC predeterminado del mes actual 875ms
- Ô£ô tests/login.test.tsx > login > inicia sesi├│n con credenciales v├ílidas y guarda el token en memoria 816ms
-stderr | tests/dashboardA11y.test.tsx > dashboard: accesibilidad y mensajes de estado > no ofrece reintento cuando el backend rechaza el periodo
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+stderr | tests/useGeneralBalance.test.tsx > useGeneralBalance > permite refetch manual y actualiza los datos
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
- Ô£ô tests/dashboardA11y.test.tsx > dashboard: accesibilidad y mensajes de estado > expone el filtro con nombre accesible y orden de tabulaci├│n l├│gico 914ms
- Ô£ô tests/dashboardA11y.test.tsx > dashboard: accesibilidad y mensajes de estado > lleva el foco al campo inv├ílido y describe el error solo en ese campo 66ms
+stderr | tests/dashboardA11y.test.tsx > dashboard: accesibilidad y mensajes de estado > no ofrece reintento cuando el
+backend rechaza el periodo
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
+
+ Ô£ô tests/dashboardA11y.test.tsx > dashboard: accesibilidad y mensajes de estado > expone el filtro con nombre accesible y orden de tabulaci├│n l├│gico 997ms
+ Ô£ô tests/dashboardA11y.test.tsx > dashboard: accesibilidad y mensajes de estado > lleva el foco al campo inv├ílido y describe el error solo en ese campo 78ms
+stderr | tests/useGeneralBalance.test.tsx > useGeneralBalance > vuelve a consultar cuando cambia el rango
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
+
+ Ô£ô tests/useGeneralBalance.test.tsx > useGeneralBalance > descarta los datos previos y no repite el logout ante un token rechazado 107ms
+ Ô£ô tests/useGeneralBalance.test.tsx > useGeneralBalance > omite la consulta sin sesi├│n autenticada 2ms
+ Ô£ô tests/useGeneralBalance.test.tsx > useGeneralBalance > omite la consulta con un rango inv├ílido 2ms
+ Ô£ô tests/useGeneralBalance.test.tsx > useGeneralBalance > omite la consulta cuando falta una fecha 1ms
+ Ô£ô tests/useGeneralBalance.test.tsx > useGeneralBalance > permite refetch manual y actualiza los datos 89ms
+ Ô£ô tests/useGeneralBalance.test.tsx > useGeneralBalance > vuelve a consultar cuando cambia el rango 155ms
 stderr | tests/dashboard.test.tsx > dashboard > muestra la empresa obtenida del token de la sesi├│n
 No more mocked responses for the query: query GeneralBalance($fromDate: Date!, $toDate: Date!) {
   generalBalance(fromDate: $fromDate, toDate: $toDate) {
@@ -307,11 +456,16 @@ Expected variables: {"fromDate":"2026-11-01","toDate":"2026-11-11"}
 
 This typically indicates a configuration error in your mocks setup, usually due to a typo or mismatched variable.
 
-stderr | tests/dashboard.test.tsx > dashboard > cierra la sesi├│n con el mecanismo existente
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+stderr | tests/dashboard.test.tsx > dashboard > muestra la empresa obtenida del token de la sesi├│n
+An error occurred! For more details, see the full error text at
+https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A49%2C%22args%22%3A%5B%5D%7D
 
 stderr | tests/dashboard.test.tsx > dashboard > cierra la sesi├│n con el mecanismo existente
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A49%2C%22args%22%3A%5B%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
 stderr | tests/session.test.tsx > protecci├│n de sesi├│n > no persiste la sesi├│n: al recargar se vuelve al login
 No more mocked responses for the query: query GeneralBalance($fromDate: Date!, $toDate: Date!) {
@@ -346,29 +500,52 @@ Expected variables: {"fromDate":"2026-11-01","toDate":"2026-11-11"}
 This typically indicates a configuration error in your mocks setup, usually due to a typo or mismatched variable.
 
 stderr | tests/session.test.tsx > protecci├│n de sesi├│n > no persiste la sesi├│n: al recargar se vuelve al login
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A49%2C%22args%22%3A%5B%5D%7D
+An error occurred! For more details, see the full error text at
+https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A49%2C%22args%22%3A%5B%5D%7D
 
- Ô£ô tests/dashboard.test.tsx > dashboard > muestra la empresa obtenida del token de la sesi├│n 645ms
 stderr | tests/session.test.tsx > protecci├│n de sesi├│n > no persiste la sesi├│n: al recargar se vuelve al login
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
 stderr | tests/session.test.tsx > protecci├│n de sesi├│n > cierra la sesi├│n autom├íticamente cuando el JWT expira
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
-stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > presenta los importes en MXN con dos decimales
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
-
- Ô£ô tests/session.test.tsx > protecci├│n de sesi├│n > no persiste la sesi├│n: al recargar se vuelve al login 670ms
+ Ô£ô tests/dashboard.test.tsx > dashboard > muestra la empresa obtenida del token de la sesi├│n 629ms
+ Ô£ô tests/session.test.tsx > protecci├│n de sesi├│n > no persiste la sesi├│n: al recargar se vuelve al login 690ms
 stderr | tests/login.test.tsx > login > muestra un error de conexi├│n cuando no hay red
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
- Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > muestra los cinco indicadores del balance 648ms
-stderr | tests/dashboardA11y.test.tsx > dashboard: accesibilidad y mensajes de estado > permite reintentar una actualizaci├│n fallida y mueve el foco al t├¡tulo
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > presenta los importes en
+MXN con dos decimales
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
- Ô£ô tests/login.test.tsx > login > muestra un error comprensible con credenciales incorrectas y conserva los datos 699ms
- Ô£ô tests/accountsTable.test.tsx > AccountsTable > no muestra cuentas ni importes ficticios durante la carga 932ms
- Ô£ô tests/dashboardA11y.test.tsx > dashboard: accesibilidad y mensajes de estado > no ofrece reintento cuando el backend rechaza el periodo 673ms
+ Ô£ô tests/login.test.tsx > login > muestra un error comprensible con credenciales incorrectas y conserva los datos 715ms
+ Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > muestra los cinco indicadores del balance 692ms
+stderr | tests/dashboardA11y.test.tsx > dashboard: accesibilidad y mensajes de estado > permite reintentar una
+actualizaci├│n fallida y mueve el foco al t├¡tulo
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
+
+ Ô£ô tests/accountsTable.test.tsx > AccountsTable > no muestra cuentas ni importes ficticios durante la carga 1009ms
+ Ô£ô tests/dashboardA11y.test.tsx > dashboard: accesibilidad y mensajes de estado > no ofrece reintento cuando el backend rechaza el periodo 704ms
 stderr | tests/dashboard.test.tsx > dashboard > cierra la sesi├│n con el mecanismo existente
 No more mocked responses for the query: query GeneralBalance($fromDate: Date!, $toDate: Date!) {
   generalBalance(fromDate: $fromDate, toDate: $toDate) {
@@ -402,67 +579,95 @@ Expected variables: {"fromDate":"2026-11-01","toDate":"2026-11-11"}
 This typically indicates a configuration error in your mocks setup, usually due to a typo or mismatched variable.
 
 stderr | tests/dashboard.test.tsx > dashboard > cierra la sesi├│n con el mecanismo existente
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A49%2C%22args%22%3A%5B%5D%7D
+An error occurred! For more details, see the full error text at
+https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A49%2C%22args%22%3A%5B%5D%7D
+
+stderr | tests/session.test.tsx > protecci├│n de sesi├│n > cierra la sesi├│n autom├íticamente cuando el JWT expira
+No more mocked responses for the query: query GeneralBalance($fromDate: Date!, $toDate: Date!) {
+  generalBalance(fromDate: $fromDate, toDate: $toDate) {
+    companyId
+    fromDate
+    toDate
+    openingBalance
+    totalIncome
+    totalExpense
+    profit
+    closingBalance
+    accountsInRed
+    isInRed
+    currency
+    accounts {
+      accountId
+      accountName
+      isActive
+      openingBalance
+      totalIncome
+      totalExpense
+      profit
+      closingBalance
+      isInRed
+      currency
+    }
+  }
+}
+Expected variables: {"fromDate":"2026-11-01","toDate":"2026-11-11"}
+
+This typically indicates a configuration error in your mocks setup, usually due to a typo or mismatched variable.
+
+stderr | tests/session.test.tsx > protecci├│n de sesi├│n > cierra la sesi├│n autom├íticamente cuando el JWT expira
+An error occurred! For more details, see the full error text at
+https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A49%2C%22args%22%3A%5B%5D%7D
 
 stderr | tests/dashboard.test.tsx > dashboard > conserva el BrandPanel en la pantalla de login
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
 stderr | tests/dashboard.test.tsx > dashboard > mantiene el dashboard protegido sin sesi├│n
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
 stderr | tests/dashboard.test.tsx > dashboard > no muestra importes ni indicadores financieros ficticios
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
-stderr | tests/session.test.tsx > protecci├│n de sesi├│n > cierra la sesi├│n autom├íticamente cuando el JWT expira
-No more mocked responses for the query: query GeneralBalance($fromDate: Date!, $toDate: Date!) {
-  generalBalance(fromDate: $fromDate, toDate: $toDate) {
-    companyId
-    fromDate
-    toDate
-    openingBalance
-    totalIncome
-    totalExpense
-    profit
-    closingBalance
-    accountsInRed
-    isInRed
-    currency
-    accounts {
-      accountId
-      accountName
-      isActive
-      openingBalance
-      totalIncome
-      totalExpense
-      profit
-      closingBalance
-      isInRed
-      currency
-    }
-  }
-}
-Expected variables: {"fromDate":"2026-11-01","toDate":"2026-11-11"}
-
-This typically indicates a configuration error in your mocks setup, usually due to a typo or mismatched variable.
-
-stderr | tests/session.test.tsx > protecci├│n de sesi├│n > cierra la sesi├│n autom├íticamente cuando el JWT expira
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A49%2C%22args%22%3A%5B%5D%7D
-
- Ô£ô tests/dashboard.test.tsx > dashboard > cierra la sesi├│n con el mecanismo existente 702ms
- Ô£ô tests/dashboard.test.tsx > dashboard > conserva el BrandPanel en la pantalla de login 11ms
+ Ô£ô tests/dashboard.test.tsx > dashboard > cierra la sesi├│n con el mecanismo existente 700ms
+ Ô£ô tests/dashboard.test.tsx > dashboard > conserva el BrandPanel en la pantalla de login 13ms
  Ô£ô tests/dashboard.test.tsx > dashboard > mantiene el dashboard protegido sin sesi├│n 11ms
-stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > consulta de nuevo al cambiar la fecha inicial
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
-
- Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > presenta los importes en MXN con dos decimales 633ms
 stderr | tests/login.test.tsx > login > deshabilita el bot├│n y los campos mientras procesa la solicitud
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
- Ô£ô tests/login.test.tsx > login > muestra un error de conexi├│n cuando no hay red 670ms
-stderr | tests/dashboardA11y.test.tsx > dashboard: accesibilidad y mensajes de estado > informa que las cuentas no se pudieron cargar ante un error inicial
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > consulta de nuevo al
+cambiar la fecha inicial
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
- Ô£ô tests/dashboardA11y.test.tsx > dashboard: accesibilidad y mensajes de estado > permite reintentar una actualizaci├│n fallida y mueve el foco al t├¡tulo 769ms
+ Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > presenta los importes en MXN con dos decimales 646ms
+ Ô£ô tests/login.test.tsx > login > muestra un error de conexi├│n cuando no hay red 669ms
+stderr | tests/dashboardA11y.test.tsx > dashboard: accesibilidad y mensajes de estado > informa que las cuentas no se
+pudieron cargar ante un error inicial
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
+
+ Ô£ô tests/dashboardA11y.test.tsx > dashboard: accesibilidad y mensajes de estado > permite reintentar una actualizaci├│n fallida y mueve el foco al t├¡tulo 819ms
 stderr | tests/dashboard.test.tsx > dashboard > no muestra importes ni indicadores financieros ficticios
 No more mocked responses for the query: query GeneralBalance($fromDate: Date!, $toDate: Date!) {
   generalBalance(fromDate: $fromDate, toDate: $toDate) {
@@ -496,13 +701,19 @@ Expected variables: {"fromDate":"2026-11-01","toDate":"2026-11-11"}
 This typically indicates a configuration error in your mocks setup, usually due to a typo or mismatched variable.
 
 stderr | tests/dashboard.test.tsx > dashboard > no muestra importes ni indicadores financieros ficticios
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A49%2C%22args%22%3A%5B%5D%7D
+An error occurred! For more details, see the full error text at
+https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A49%2C%22args%22%3A%5B%5D%7D
 
- Ô£ô tests/dashboard.test.tsx > dashboard > no muestra importes ni indicadores financieros ficticios 586ms
-stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > consulta de nuevo al cambiar la fecha final
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+ Ô£ô tests/dashboard.test.tsx > dashboard > no muestra importes ni indicadores financieros ficticios 687ms
+ Ô£ô tests/session.test.tsx > protecci├│n de sesi├│n > cierra la sesi├│n autom├íticamente cuando el JWT expira 1335ms
+stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > consulta de nuevo al
+cambiar la fecha final
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
- Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > consulta de nuevo al cambiar la fecha inicial 745ms
 stderr | tests/login.test.tsx > login > deshabilita el bot├│n y los campos mientras procesa la solicitud
 No more mocked responses for the query: query GeneralBalance($fromDate: Date!, $toDate: Date!) {
   generalBalance(fromDate: $fromDate, toDate: $toDate) {
@@ -536,95 +747,182 @@ Expected variables: {"fromDate":"2026-11-01","toDate":"2026-11-11"}
 This typically indicates a configuration error in your mocks setup, usually due to a typo or mismatched variable.
 
 stderr | tests/login.test.tsx > login > valida los campos obligatorios antes de enviar
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
 stderr | tests/login.test.tsx > login > valida los campos obligatorios antes de enviar
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A49%2C%22args%22%3A%5B%5D%7D
+An error occurred! For more details, see the full error text at
+https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A49%2C%22args%22%3A%5B%5D%7D
 
-stderr | tests/dashboardA11y.test.tsx > dashboard: accesibilidad y mensajes de estado > marca el panel de cuentas como ocupado mientras carga
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
-
+ Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > consulta de nuevo al cambiar la fecha inicial 730ms
 stderr | tests/login.test.tsx > login > anuncia los errores de validaci├│n y enfoca el primer campo inv├ílido
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
- Ô£ô tests/login.test.tsx > login > deshabilita el bot├│n y los campos mientras procesa la solicitud 781ms
- Ô£ô tests/login.test.tsx > login > valida los campos obligatorios antes de enviar 65ms
+ Ô£ô tests/login.test.tsx > login > deshabilita el bot├│n y los campos mientras procesa la solicitud 796ms
+ Ô£ô tests/login.test.tsx > login > valida los campos obligatorios antes de enviar 47ms
 stderr | tests/login.test.tsx > login > enfoca el correo cuando el formato es inv├ílido
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
- Ô£ô tests/dashboardA11y.test.tsx > dashboard: accesibilidad y mensajes de estado > informa que las cuentas no se pudieron cargar ante un error inicial 651ms
- Ô£ô tests/login.test.tsx > login > anuncia los errores de validaci├│n y enfoca el primer campo inv├ílido 51ms
- Ô£ô tests/session.test.tsx > protecci├│n de sesi├│n > cierra la sesi├│n autom├íticamente cuando el JWT expira 1923ms
-stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > aplica un rango v├ílido completo
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+stderr | tests/dashboardA11y.test.tsx > dashboard: accesibilidad y mensajes de estado > marca el panel de cuentas como
+ocupado mientras carga
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
-stderr | tests/login.test.tsx > login > enfoca la contrase├▒a cuando est├í vac├¡a y el correo es v├ílido
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
-
- Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > consulta de nuevo al cambiar la fecha final 747ms
- Ô£ô tests/login.test.tsx > login > enfoca el correo cuando el formato es inv├ílido 556ms
+ Ô£ô tests/login.test.tsx > login > anuncia los errores de validaci├│n y enfoca el primer campo inv├ílido 73ms
+ Ô£ô tests/dashboardA11y.test.tsx > dashboard: accesibilidad y mensajes de estado > informa que las cuentas no se pudieron cargar ante un error inicial 661ms
 stderr | tests/session.test.tsx > protecci├│n de sesi├│n > limpia la cach├® de Apollo al cerrar sesi├│n
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22generalBalance%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22generalBalance%22%2C%22%7B%7D%22%5D%7D
 
- Ô£ô tests/dashboardA11y.test.tsx > dashboard: accesibilidad y mensajes de estado > marca el panel de cuentas como ocupado mientras carga 910ms
- Ô£ô tests/dashboardA11y.test.tsx > dashboard: accesibilidad y mensajes de estado > anuncia el estado vac├¡o de cuentas mediante role status 2ms
- Ô£ô tests/dashboardA11y.test.tsx > dashboard: accesibilidad y mensajes de estado > asocia encabezados y celdas de la tabla con roles expl├¡citos 26ms
- Ô£ô tests/dashboardA11y.test.tsx > dashboard: accesibilidad y mensajes de estado > expone el indicador global con nombre accesible y textos expl├¡citos 6ms
- Ô£ô tests/dashboardA11y.test.tsx > dashboard: accesibilidad y mensajes de estado > no depende solo del color para comunicar el estado global 4ms
+ Ô£ô tests/session.test.tsx > protecci├│n de sesi├│n > limpia la cach├® de Apollo al cerrar sesi├│n 734ms
+stderr | tests/login.test.tsx > login > enfoca la contrase├▒a cuando est├í vac├¡a y el correo es v├ílido
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
+
+stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > aplica un rango v├ílido
+completo
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
+
+ Ô£ô tests/login.test.tsx > login > enfoca el correo cuando el formato es inv├ílido 556ms
+ Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > consulta de nuevo al cambiar la fecha final 750ms
+ Ô£ô tests/login.test.tsx > login > enfoca la contrase├▒a cuando est├í vac├¡a y el correo es v├ílido 403ms
+ Ô£ô tests/dashboardA11y.test.tsx > dashboard: accesibilidad y mensajes de estado > marca el panel de cuentas como ocupado mientras carga 977ms
+ Ô£ô tests/dashboardA11y.test.tsx > dashboard: accesibilidad y mensajes de estado > anuncia el estado vac├¡o de cuentas mediante role status 3ms
+ Ô£ô tests/dashboardA11y.test.tsx > dashboard: accesibilidad y mensajes de estado > asocia encabezados y celdas de la tabla con roles expl├¡citos 35ms
+ Ô£ô tests/dashboardA11y.test.tsx > dashboard: accesibilidad y mensajes de estado > expone el indicador global con nombre accesible y textos expl├¡citos 5ms
+ Ô£ô tests/dashboardA11y.test.tsx > dashboard: accesibilidad y mensajes de estado > no depende solo del color para comunicar el estado global 5ms
  Ô£ô tests/dashboardA11y.test.tsx > dashboard: accesibilidad y mensajes de estado > adapta el indicador global a una columna en pantallas peque├▒as 1ms
- Ô£ô tests/session.test.tsx > protecci├│n de sesi├│n > limpia la cach├® de Apollo al cerrar sesi├│n 729ms
- Ô£ô tests/login.test.tsx > login > enfoca la contrase├▒a cuando est├í vac├¡a y el correo es v├ílido 387ms
-stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > permite seleccionar fechas iguales
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > permite seleccionar
+fechas iguales
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
- Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > aplica un rango v├ílido completo 713ms
-stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > rechaza un rango invertido con un mensaje claro
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+ Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > aplica un rango v├ílido completo 717ms
+stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > rechaza un rango
+invertido con un mensaje claro
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
- Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > permite seleccionar fechas iguales 684ms
-stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > no ejecuta la consulta con un rango inv├ílido
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+ Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > permite seleccionar fechas iguales 704ms
+stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > no ejecuta la consulta
+con un rango inv├ílido
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
- Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > rechaza un rango invertido con un mensaje claro 717ms
- Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > rechaza una fecha imposible sin aplicar el rango 64ms
-stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > muestra los valores reales en cero de una respuesta v├ílida
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+ Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > rechaza un rango invertido con un mensaje claro 757ms
+ Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > rechaza una fecha imposible sin aplicar el rango 68ms
+stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > muestra los valores
+reales en cero de una respuesta v├ílida
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
- Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > no ejecuta la consulta con un rango inv├ílido 697ms
-stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > muestra el estado de carga inicial sin importes ficticios
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+ Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > no ejecuta la consulta con un rango inv├ílido 714ms
+stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > muestra el estado de
+carga inicial sin importes ficticios
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
- Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > muestra los valores reales en cero de una respuesta v├ílida 685ms
-stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > identifica la actualizaci├│n y conserva el periodo de los datos previos
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+ Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > muestra los valores reales en cero de una respuesta v├ílida 668ms
+stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > identifica la
+actualizaci├│n y conserva el periodo de los datos previos
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
- Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > muestra el estado de carga inicial sin importes ficticios 977ms
-stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > clasifica un error de red y permite reintentar
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+ Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > muestra el estado de carga inicial sin importes ficticios 964ms
+stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > clasifica un error de
+red y permite reintentar
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
- Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > identifica la actualizaci├│n y conserva el periodo de los datos previos 915ms
-stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > muestra el error de permisos sin ofrecer reintento ni cerrar sesi├│n
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+ Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > identifica la actualizaci├│n y conserva el periodo de los datos previos 782ms
+stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > muestra el error de
+permisos sin ofrecer reintento ni cerrar sesi├│n
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
- Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > clasifica un error de red y permite reintentar 731ms
-stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > muestra el error de autenticaci├│n sin ofrecer reintento
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+ Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > clasifica un error de red y permite reintentar 686ms
+stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > cierra la sesi├│n y
+vuelve al login ante un token inv├ílido
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
- Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > muestra el error de permisos sin ofrecer reintento ni cerrar sesi├│n 662ms
-stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > no presenta informaci├│n financiera ficticia antes de recibir datos
-An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60addTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%60%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22%5D%7D
+ Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > muestra el error de permisos sin ofrecer reintento ni cerrar sesi├│n 691ms
+stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > no conserva los importes
+previos cuando el token se rechaza al actualizar
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
 
- Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > muestra el error de autenticaci├│n sin ofrecer reintento 662ms
- Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > no presenta informaci├│n financiera ficticia antes de recibir datos 976ms
+ Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > cierra la sesi├│n y vuelve al login ante un token inv├ílido 655ms
+stderr | tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > no presenta informaci├│n
+financiera ficticia antes de recibir datos
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.
+1%22%2C%22message%22%3A103%2C%22args%22%3A%5B%22MockedProvider%22%2C%22addTypename%22%2C%22Please%20remove%20the%20%60a
+ddTypename%60%20prop.%20For%20best%20results%2C%20ensure%20the%20provided%20%60mocks%60%20include%20a%20%60__typename%6
+0%20property%20on%20all%20mock%20objects%20to%20ensure%20the%20cache%20more%20closely%20behaves%20like%20production.%22
+%5D%7D
+
+ Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > no conserva los importes previos cuando el token se rechaza al actualizar 714ms
+ Ô£ô tests/dashboardBalance.test.tsx > dashboard: filtro de fechas y resumen financiero > no presenta informaci├│n financiera ficticia antes de recibir datos 950ms
  Ô£ô tests/dashboardBalance.test.tsx > dashboard: indicador global de riesgo > presenta sin riesgo global cuando isInRed es falso y no hay cuentas en rojo 5ms
- Ô£ô tests/dashboardBalance.test.tsx > dashboard: indicador global de riesgo > presenta riesgo global y una cuenta en rojo cuando isInRed es verdadero 3ms
+ Ô£ô tests/dashboardBalance.test.tsx > dashboard: indicador global de riesgo > presenta riesgo global y una cuenta en rojo cuando isInRed es verdadero 4ms
  Ô£ô tests/dashboardBalance.test.tsx > dashboard: indicador global de riesgo > usa el plural cuando hay m├ís de una cuenta en rojo 3ms
- Ô£ô tests/dashboardBalance.test.tsx > dashboard: indicador global de riesgo > no contradice el caso v├ílido sin riesgo global con una cuenta en rojo 3ms
+ Ô£ô tests/dashboardBalance.test.tsx > dashboard: indicador global de riesgo > no contradice el caso v├ílido sin riesgo global con una cuenta en rojo 4ms
  Ô£ô tests/dashboardBalance.test.tsx > dashboard: indicador global de riesgo > mantiene el singular y el plural diferenciados 5ms
 
  Test Files  14 passed (14)
-      Tests  134 passed (134)
-   Start at  18:46:29
-   Duration  20.18s (environment 56%, tests 23%, setup 12%, import 9%)
+      Tests  140 passed (140)
+   Start at  12:31:07
+   Duration  20.99s (environment 56%, tests 23%, setup 11%, import 9%, worker 1%)
 
 

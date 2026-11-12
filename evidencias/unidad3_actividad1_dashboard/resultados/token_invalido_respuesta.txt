@@ -1,0 +1,12 @@
+# Respuesta GraphQL real — token inválido
+
+- Operación: `generalBalance(fromDate: "2026-10-26", toDate: "2026-10-30")`
+- Endpoint: `POST /graphql` (proxy del frontend hacia la API de pruebas)
+- Escenario: sesión iniciada con `demo_b01@test.local`; el token en memoria se
+  sustituyó por una cadena dummy inválida y se solicitó de nuevo el balance.
+- El backend rechazó la petición. El cuerpo se transcribe tal cual, sin token,
+  sin cabeceras `Authorization` y sin credenciales.
+
+```json
+{"data":null,"errors":[{"message":"Token inv\u00e1lido o expirado","locations":[{"line":2,"column":3}],"path":["generalBalance"]}]}
+```

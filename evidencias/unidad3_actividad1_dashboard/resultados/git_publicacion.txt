@@ -1,20 +1,20 @@
-﻿# Publicación y estado de Git
-# Fecha de captura: 2026-11-11T00:47:26.615Z (UTC)
+# Publicación y estado de Git
+# Fecha de captura: 2026-11-11T18:34:06.320Z (UTC)
 # Rama actual: main
-# HEAD: a95226a7303113c1705c8e67b8c7bc9b19f83fbf
-# origin/main: a95226a7303113c1705c8e67b8c7bc9b19f83fbf
+# HEAD: f52266d8e1d42513c3f548e9c41a3026cc70cb55
+# origin/main: f52266d8e1d42513c3f548e9c41a3026cc70cb55
 # HEAD coincide con origin/main: sí
-# Árbol de trabajo: con cambios locales (ver sección)
-# git diff --check: sin errores de espacio; solo avisos de conversión LF/CRLF de Git
+# Árbol de trabajo: con cambios locales de la Actividad 12 (ver sección)
+# git diff --check: código 0 (solo avisos de conversión LF/CRLF)
 
 ## Últimos seis commits
 
+f52266d chore: add unit 3 team submission package
+403151d docs: complete unit 3 financial dashboard deliverables
+b62898c test(dashboard): cover global risk states and accessibility
+5531a00 feat(dashboard): add global financial risk indicator
 a95226a chore(dashboard): remove obsolete placeholders
 5066cd9 docs(dashboard): document financial dashboard
-d39ffd8 fix(auth): improve login validation accessibility
-0c78238 test(dashboard): cover financial dashboard and accessibility
-ebda092 feat(dashboard): build financial dashboard
-0ac4a28 feat(dashboard): integrate general balance query
 
 ## Estado del árbol de trabajo (git status --short --branch)
 
@@ -22,20 +22,44 @@ ebda092 feat(dashboard): build financial dashboard
  M README.md
  M dashboard/README.md
  M dashboard/docs/README.md
- M dashboard/src/features/dashboard/components/BalanceSummary.tsx
- M dashboard/src/features/dashboard/dashboard.css
- M dashboard/tests/dashboardA11y.test.tsx
+ M dashboard/src/features/dashboard/DashboardPage.tsx
+ M dashboard/src/hooks/useGeneralBalance.ts
  M dashboard/tests/dashboardBalance.test.tsx
-?? docs/unidad3_actividad1/
-?? evidencias/unidad3_actividad1_dashboard/
-?? unidad3_actividad1_equipo.zip
+ M dashboard/tests/useGeneralBalance.test.tsx
+ M docs/unidad3_actividad1/guion_exposicion.md
+ M evidencias/unidad3_actividad1_dashboard/evidencias.md
+ M evidencias/unidad3_actividad1_dashboard/resultados/build.txt
+ M evidencias/unidad3_actividad1_dashboard/resultados/git_publicacion.txt
+ M evidencias/unidad3_actividad1_dashboard/resultados/lint.txt
+ M evidencias/unidad3_actividad1_dashboard/resultados/test.txt
+ M evidencias/unidad3_actividad1_dashboard/resultados/typecheck.txt
+ M unidad3_actividad1_equipo.zip
+?? docs/unidad3_actividad1/calculo_manual.md
+?? evidencias/unidad3_actividad1_dashboard/capturas/10_token_invalido_1440x900.png
+?? evidencias/unidad3_actividad1_dashboard/capturas/11_dashboard_b01_1440x900.png
+?? evidencias/unidad3_actividad1_dashboard/capturas/12_detalle_cuentas_b01_1440x900.png
+?? evidencias/unidad3_actividad1_dashboard/resultados/general_balance_2026-10-26_2026-10-30.json
+?? evidencias/unidad3_actividad1_dashboard/resultados/token_invalido_respuesta.txt
+?? scripts/datos_demostracion_b01.py
+
+## git diff --check
+
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'dashboard/README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'dashboard/docs/README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'dashboard/src/features/dashboard/DashboardPage.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'dashboard/src/hooks/useGeneralBalance.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'dashboard/tests/dashboardBalance.test.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'dashboard/tests/useGeneralBalance.test.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/unidad3_actividad1/guion_exposicion.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'evidencias/unidad3_actividad1_dashboard/evidencias.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'evidencias/unidad3_actividad1_dashboard/resultados/build.txt', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'evidencias/unidad3_actividad1_dashboard/resultados/lint.txt', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'evidencias/unidad3_actividad1_dashboard/resultados/typecheck.txt', LF will be replaced by CRLF the next time Git touches it
 
 ## Interpretación
 
 - El historial publicado termina en el commit indicado arriba.
-- Las modificaciones y archivos nuevos de la subetapa 3.7 son locales: no se
-  crearon commits ni se hizo push.
-- La corrección del indicador global de riesgo se concentra en el componente
-  BalanceSummary, sus estilos y sus pruebas; no se tocó backend ni base de datos.
-- El ZIP de entrega aparece como archivo sin seguimiento en la raíz y se excluye
-  a sí mismo de su propio contenido.
+- Los cambios de la Actividad 12 (B01, token inválido, pruebas, capturas y documentación) son locales: no se crearon commits ni se hizo push.
+- No se modificó la empresa #11, sus usuarios, permisos ni movimientos.
+- El ZIP de entrega se regenera al final y se excluye a sí mismo de su propio contenido.

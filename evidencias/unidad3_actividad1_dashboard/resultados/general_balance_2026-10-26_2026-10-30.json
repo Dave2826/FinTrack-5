@@ -1,0 +1,53 @@
+﻿{
+    "generalBalance":  {
+                           "companyId":  "53",
+                           "fromDate":  "2026-10-26",
+                           "toDate":  "2026-10-30",
+                           "openingBalance":  "1000.00",
+                           "totalIncome":  "3500.00",
+                           "totalExpense":  "2900.00",
+                           "profit":  "600.00",
+                           "closingBalance":  "1600.00",
+                           "accountsInRed":  1,
+                           "isInRed":  false,
+                           "currency":  "MXN",
+                           "accounts":  [
+                                            {
+                                                "accountId":  "89",
+                                                "accountName":  "Banco B01",
+                                                "isActive":  true,
+                                                "openingBalance":  "1000.00",
+                                                "totalIncome":  "3000.00",
+                                                "totalExpense":  "2200.00",
+                                                "profit":  "800.00",
+                                                "closingBalance":  "1800.00",
+                                                "isInRed":  false,
+                                                "currency":  "MXN"
+                                            },
+                                            {
+                                                "accountId":  "90",
+                                                "accountName":  "Caja B01",
+                                                "isActive":  true,
+                                                "openingBalance":  "0.00",
+                                                "totalIncome":  "500.00",
+                                                "totalExpense":  "700.00",
+                                                "profit":  "-200.00",
+                                                "closingBalance":  "-200.00",
+                                                "isInRed":  true,
+                                                "currency":  "MXN"
+                                            },
+                                            {
+                                                "accountId":  "91",
+                                                "accountName":  "Ahorro B01",
+                                                "isActive":  true,
+                                                "openingBalance":  "0.00",
+                                                "totalIncome":  "0.00",
+                                                "totalExpense":  "0.00",
+                                                "profit":  "0.00",
+                                                "closingBalance":  "0.00",
+                                                "isInRed":  false,
+                                                "currency":  "MXN"
+                                            }
+                                        ]
+                       }
+}
