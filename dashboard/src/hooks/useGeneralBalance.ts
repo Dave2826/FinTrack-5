@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { GENERAL_BALANCE_QUERY } from '../api/operations/generalBalance'
 import { useAuth } from '../auth/useAuth'
 import { toBalanceError } from '../lib/balanceErrors'
@@ -44,7 +44,7 @@ export interface UseGeneralBalanceResult {
  * por otra vía.
  */
 export function useGeneralBalance(range: DateRange): UseGeneralBalanceResult {
-  const { status } = useAuth()
+  const { status, logout } = useAuth()
   const { fromDate, toDate } = range
 
   const validation = useMemo(
@@ -83,11 +83,41 @@ export function useGeneralBalance(range: DateRange): UseGeneralBalanceResult {
     await refetch()
   }, [enabled, refetch])
 
+  const balanceError = useMemo(
+    () => (error ? toBalanceError(error) : null),
+    [error],
+  )
+
+  // Un rechazo de autenticación invalida la sesión completa, no solo la
+  // consulta. Se cierra sesión una sola vez para evitar ciclos de logout.
+  const sessionInvalid =
+    balanceError?.kind === 'expired' ||
+    balanceError?.kind === 'unauthenticated'
+  const logoutRequested = useRef(false)
+
+  useEffect(() => {
+    // El guard se reinicia solo al terminar la sesión autenticada, no
+    // cuando el error desaparece de forma transitoria durante un refetch.
+    if (status !== 'authenticated') {
+      logoutRequested.current = false
+      return
+    }
+
+    if (!sessionInvalid || logoutRequested.current) {
+      return
+    }
+
+    logoutRequested.current = true
+    void logout('expired')
+  }, [sessionInvalid, status, logout])
+
   return {
-    balance: data?.generalBalance ?? null,
+    // Nunca se conservan importes de una sesión rechazada, ni siquiera
+    // durante el render previo a que `logout` cambie el estado global.
+    balance: sessionInvalid ? null : (data?.generalBalance ?? null),
     loading,
     isRefetching: loading && data !== undefined,
-    error: error ? toBalanceError(error) : null,
+    error: balanceError,
     refetch: refetchBalance,
     isRangeValid: validation.ok,
     rangeError: validation.ok ? null : validation,

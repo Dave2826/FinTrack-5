@@ -34,9 +34,13 @@ export function DashboardPage() {
     refetch,
   } = useGeneralBalance(range)
 
+  const isSessionError =
+    error?.kind === 'expired' || error?.kind === 'unauthenticated'
   const showInitialLoading = loading && balance === null
-  const showBlockingError = error !== null && balance === null
-  const showUpdateError = error !== null && balance !== null
+  const showBlockingError =
+    !isSessionError && error !== null && balance === null
+  const showUpdateError =
+    !isSessionError && error !== null && balance !== null
   const summaryTitleRef = useRef<HTMLHeadingElement>(null)
 
   async function runRefetch(moveFocus: boolean) {
@@ -111,6 +115,12 @@ export function DashboardPage() {
             {showInitialLoading ? (
               <p className="dashboard-status" role="status">
                 Cargando balance…
+              </p>
+            ) : null}
+
+            {isSessionError ? (
+              <p className="dashboard-status" role="status">
+                Cerrando sesión…
               </p>
             ) : null}
 
@@ -201,6 +211,8 @@ export function DashboardPage() {
 
             {balance ? (
               <AccountsTable accounts={balance.accounts} />
+            ) : isSessionError ? (
+              <p className="dashboard-empty">Cerrando sesión…</p>
             ) : error ? (
               <p className="dashboard-empty">
                 No se pudieron cargar las cuentas.

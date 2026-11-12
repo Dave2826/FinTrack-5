@@ -158,6 +158,31 @@ function createClient(
   return new ApolloClient({ link, cache: new InMemoryCache() })
 }
 
+/** Devuelve las respuestas en orden y repite la última si se agota. */
+function createSequenceClient(
+  responses: readonly FetchResult[],
+): ApolloClient<NormalizedCacheObject> {
+  let index = 0
+
+  const link = new ApolloLink(() => {
+    const response = responses[Math.min(index, responses.length - 1)]
+    index += 1
+
+    return new Observable<FetchResult>((observer) => {
+      const timer = setTimeout(() => {
+        observer.next(response)
+        observer.complete()
+      }, 0)
+
+      return () => {
+        clearTimeout(timer)
+      }
+    })
+  })
+
+  return new ApolloClient({ link, cache: new InMemoryCache() })
+}
+
 describe('useGeneralBalance', () => {
   it('consulta el balance y expone los datos', async () => {
     const { result } = renderHook(
@@ -289,6 +314,119 @@ describe('useGeneralBalance', () => {
     })
 
     expect(logout).not.toHaveBeenCalled()
+  })
+
+  it('no cierra la sesión ante un error de red', async () => {
+    const logout = vi.fn(async () => undefined)
+    const mock: MockedResponse = {
+      request: {
+        query: GENERAL_BALANCE_QUERY,
+        variables: { fromDate: FROM, toDate: TO },
+      },
+      error: new Error('offline'),
+    }
+
+    const { result } = renderHook(
+      () => useGeneralBalance({ fromDate: FROM, toDate: TO }),
+      { wrapper: mockedWrapper('authenticated', [mock], logout) },
+    )
+
+    await waitFor(() => {
+      expect(result.current.error?.kind).toBe('network')
+    })
+
+    expect(logout).not.toHaveBeenCalled()
+  })
+
+  it('no cierra la sesión ante un rango inválido', async () => {
+    const logout = vi.fn(async () => undefined)
+
+    const { result } = renderHook(
+      () => useGeneralBalance({ fromDate: FROM, toDate: TO }),
+      {
+        wrapper: mockedWrapper(
+          'authenticated',
+          [
+            graphQLErrorMock(
+              FROM,
+              TO,
+              'fromDate no puede ser posterior a toDate',
+            ),
+          ],
+          logout,
+        ),
+      },
+    )
+
+    await waitFor(() => {
+      expect(result.current.error?.kind).toBe('invalid-dates')
+    })
+
+    expect(logout).not.toHaveBeenCalled()
+  })
+
+  it.each([
+    'Token inválido o expirado',
+    'Usuario no autenticado',
+  ])('cierra la sesión una sola vez ante "%s"', async (message) => {
+    const logout = vi.fn(async () => undefined)
+
+    const { result } = renderHook(
+      () => useGeneralBalance({ fromDate: FROM, toDate: TO }),
+      {
+        wrapper: mockedWrapper(
+          'authenticated',
+          [graphQLErrorMock(FROM, TO, message)],
+          logout,
+        ),
+      },
+    )
+
+    await waitFor(() => {
+      expect(result.current.error?.kind).toMatch(/expired|unauthenticated/)
+    })
+
+    await waitFor(() => {
+      expect(logout).toHaveBeenCalledTimes(1)
+    })
+
+    expect(logout).toHaveBeenCalledWith('expired')
+    expect(result.current.balance).toBeNull()
+  })
+
+  it('descarta los datos previos y no repite el logout ante un token rechazado', async () => {
+    const logout = vi.fn(async () => undefined)
+    const client = createSequenceClient([
+      { data: { generalBalance: BALANCE } },
+      { errors: [new GraphQLError('Token inválido o expirado')] },
+    ])
+
+    const { result } = renderHook(
+      () => useGeneralBalance({ fromDate: FROM, toDate: TO }),
+      { wrapper: clientWrapper(client, 'authenticated', logout) },
+    )
+
+    await waitFor(() => {
+      expect(result.current.balance).toEqual(BALANCE)
+    })
+
+    await act(async () => {
+      await result.current.refetch().catch(() => undefined)
+    })
+
+    await waitFor(() => {
+      expect(result.current.error?.kind).toBe('expired')
+    })
+
+    expect(result.current.balance).toBeNull()
+    expect(logout).toHaveBeenCalledTimes(1)
+    expect(logout).toHaveBeenCalledWith('expired')
+
+    await act(async () => {
+      await result.current.refetch().catch(() => undefined)
+    })
+
+    expect(logout).toHaveBeenCalledTimes(1)
   })
 
   it('omite la consulta sin sesión autenticada', () => {

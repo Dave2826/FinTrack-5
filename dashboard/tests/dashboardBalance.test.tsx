@@ -10,6 +10,7 @@ import userEvent from '@testing-library/user-event'
 import { GraphQLError } from 'graphql'
 import { describe, expect, it, vi } from 'vitest'
 import { GENERAL_BALANCE_QUERY } from '../src/api/operations/generalBalance'
+import { tokenStore } from '../src/auth/tokenStore'
 import { BalanceSummary } from '../src/features/dashboard/components/BalanceSummary'
 import { DateRangeFilter } from '../src/features/dashboard/components/DateRangeFilter'
 import { getDefaultUtcMonthRange } from '../src/lib/dateRange'
@@ -451,7 +452,7 @@ describe('dashboard: filtro de fechas y resumen financiero', () => {
     ).not.toBeInTheDocument()
   })
 
-  it('muestra el error de autenticación sin ofrecer reintento', async () => {
+  it('cierra la sesión y vuelve al login ante un token inválido', async () => {
     const user = userEvent.setup()
     const range = getDefaultUtcMonthRange()
 
@@ -463,16 +464,42 @@ describe('dashboard: filtro de fechas y resumen financiero', () => {
     await signIn(user)
 
     expect(
-      await screen.findByText(
-        'Tu sesión expiró o el token no es válido. Inicia sesión de nuevo.',
-      ),
+      await screen.findByRole('heading', { name: 'Inicia sesión' }),
     ).toBeInTheDocument()
+    expect(screen.getByRole('alert')).toHaveTextContent(/sesión expiró/i)
+    expect(tokenStore.get()).toBeNull()
     expect(
-      screen.queryByRole('button', { name: 'Reintentar' }),
+      screen.queryByRole('heading', { name: 'Dashboard financiero' }),
     ).not.toBeInTheDocument()
+    expect(screen.queryByText('Saldo inicial')).not.toBeInTheDocument()
+    expect(screen.queryByText('Detalle de cuentas')).not.toBeInTheDocument()
     expect(
-      screen.getByRole('button', { name: 'Cerrar sesión' }),
+      screen.queryByRole('button', { name: 'Cerrar sesión' }),
+    ).not.toBeInTheDocument()
+  })
+
+  it('no conserva los importes previos cuando el token se rechaza al actualizar', async () => {
+    const user = userEvent.setup()
+    const range = getDefaultUtcMonthRange()
+
+    renderApp([
+      ...loginOnly(),
+      balanceMock(range, makeBalance(range)),
+      graphQLErrorMock(range, 'Token inválido o expirado'),
+    ])
+
+    await signIn(user)
+    await screen.findByText('$1,531.00')
+
+    await user.click(screen.getByRole('button', { name: 'Actualizar' }))
+
+    expect(
+      await screen.findByRole('heading', { name: 'Inicia sesión' }),
     ).toBeInTheDocument()
+    expect(screen.getByRole('alert')).toHaveTextContent(/sesión expiró/i)
+    expect(screen.queryByText('$1,531.00')).not.toBeInTheDocument()
+    expect(screen.queryByText('Saldo inicial')).not.toBeInTheDocument()
+    expect(tokenStore.get()).toBeNull()
   })
 
   it('no presenta información financiera ficticia antes de recibir datos', async () => {
