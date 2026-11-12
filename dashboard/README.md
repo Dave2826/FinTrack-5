@@ -47,6 +47,38 @@ sustituye la autorización de GraphQL.
 
 Al recargar la página la sesión termina porque el token no se persiste.
 
+### Token rechazado por el backend
+
+Si `generalBalance` responde con un error de autenticación (`expired` o
+`unauthenticated`), `useGeneralBalance` ejecuta `logout('expired')` una sola vez.
+El logout limpia `tokenStore`, vacía la caché de Apollo, cambia el estado a
+anónimo y `RequireAuth` vuelve a mostrar el login con el aviso «Tu sesión expiró
+por seguridad». El hook devuelve `balance: null`, de modo que no se conservan ni
+se renderizan indicadores o cuentas de la sesión anterior.
+
+Los errores `forbidden`, de red, GraphQL ajenos a autenticación y de fechas no
+cierran la sesión. El guard se reinicia solo al terminar la sesión autenticada,
+no durante un refetch, para evitar ciclos de logout.
+
+#### Mecanismo de desarrollo para la evidencia
+
+En el servidor de desarrollo de Vite se puede sustituir el token **solo en
+memoria** desde la consola del navegador, sin tocar `localStorage`, cookies ni
+archivos:
+
+```js
+const { tokenStore } = await import('/src/auth/tokenStore.ts')
+tokenStore.set('token-invalido-demo-b01')
+```
+
+Después se pulsa «Actualizar» para que la siguiente petición use ese valor. El
+backend rechaza la cadena y se observa el regreso al login. Este mecanismo no
+existe en el build de producción y no se usa para guardar tokens reales. La
+evidencia está en
+[`../evidencias/unidad3_actividad1_dashboard/capturas/10_token_invalido_1440x900.png`](../evidencias/unidad3_actividad1_dashboard/capturas/10_token_invalido_1440x900.png)
+y
+[`../evidencias/unidad3_actividad1_dashboard/resultados/token_invalido_respuesta.txt`](../evidencias/unidad3_actividad1_dashboard/resultados/token_invalido_respuesta.txt).
+
 ### Consulta de balance general
 
 - `src/api/operations/generalBalance.ts`: documento GraphQL `generalBalance`.
@@ -196,10 +228,31 @@ npm run build
 
 La suite cubre autenticación, sesión, clasificación de errores, consulta del
 balance, validación de fechas, formato, tabla de cuentas, estados de la interfaz,
-indicador global de riesgo, accesibilidad, responsive y gestión de foco. Los
-escenarios del indicador global incluyen `false/0`, `true/1`, `true/>1`,
-`false/1`, singular/plural y la comprobación de que el estado no se comunica solo
-por color.
+indicador global de riesgo, accesibilidad, responsive y gestión de foco. Incluye
+el cierre de sesión ante token inválido o expirado, la ejecución única del
+logout, el descarte de importes previos y la conservación de la sesión ante
+`forbidden`, red y fechas inválidas. Los escenarios del indicador global incluyen
+`false/0`, `true/1`, `true/>1`, `false/1`, singular/plural y la comprobación de
+que el estado no se comunica solo por color.
+
+## Demostración B01
+
+- **Periodo:** `2026-10-26` a `2026-10-30` (días completos UTC).
+- **Usuario:** `demo_b01@test.local`, empresa `FinTrack-5 Demo B01`
+  (`companyId = 53`).
+- **Datos:** conjunto B01 aislado, creado con
+  `../scripts/datos_demostracion_b01.py` sin modificar la empresa #11.
+- **Resultado real:** saldo inicial `1000.00`, ingresos `3500.00`, egresos
+  `2900.00`, utilidad `600.00`, saldo final `1600.00`, una cuenta en rojo
+  (`Caja B01`, `-200.00`) y `isInRed = false`.
+- **Conciliación:** `../docs/unidad3_actividad1/calculo_manual.md`.
+- **Capturas:** `../evidencias/unidad3_actividad1_dashboard/capturas/11_dashboard_b01_1440x900.png`
+  y `12_detalle_cuentas_b01_1440x900.png`.
+- **Token inválido:** `../evidencias/unidad3_actividad1_dashboard/capturas/10_token_invalido_1440x900.png`
+  y `../evidencias/unidad3_actividad1_dashboard/resultados/token_invalido_respuesta.txt`.
+
+Las capturas 01–09 y el JSON de enero de 2026 se conservan como evidencia
+histórica de la empresa #11; no son el periodo principal de esta entrega.
 
 ## Accesibilidad y responsive
 
@@ -217,6 +270,7 @@ por color.
 
 - `../docs/acceso-temporal-api-pruebas.md`: proxy temporal hacia la API de pruebas.
 - `../docs/unidad3_actividad1/guion_exposicion.md`: guion de la demostración para los tres integrantes.
+- `../docs/unidad3_actividad1/calculo_manual.md`: referencia, respuesta real y conciliación del periodo B01.
 - `../docs/unidad3_actividad1/boceto_dashboard.svg` y `boceto_dashboard.png`: boceto de la interfaz implementada.
 - `../evidencias/unidad3_actividad1_dashboard/evidencias.md`: capturas reales, resultados de validación y limitaciones.
 - `docs/README.md`: criterios para guardar evidencias y capturas.

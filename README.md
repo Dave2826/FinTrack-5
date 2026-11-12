@@ -228,15 +228,49 @@ importes: los recibe calculados del backend.
   envía como `Authorization: Bearer` en cada operación.
 - **Consulta:** `generalBalance(fromDate, toDate)`; la empresa se deriva del token
   y no se envía como argumento.
-- **Periodo de demostración:** `2026-01-01` a `2026-01-31` (días completos UTC).
-  El valor por defecto es el mes UTC actual, que no tiene movimientos.
-- **Usuario de prueba:** `admin_a@test.local`. La contraseña se obtiene del
+- **Periodo de demostración:** `2026-10-26` a `2026-10-30` (días completos UTC).
+  El valor por defecto es el mes UTC actual.
+- **Usuario de demostración:** `demo_b01@test.local`, de la empresa aislada
+  `FinTrack-5 Demo B01` (`companyId = 53`). La contraseña se obtiene del
   mecanismo local de pruebas (`scripts/setup_pruebas.py`) y no se documenta.
+- **Datos de demostración:** conjunto B01 aislado creado con
+  [`scripts/datos_demostracion_b01.py`](scripts/datos_demostracion_b01.py), sin
+  modificar la empresa #11 ni usuarios existentes. La conciliación está en
+  [`docs/unidad3_actividad1/calculo_manual.md`](docs/unidad3_actividad1/calculo_manual.md).
 - **Indicador global de riesgo:** el resumen muestra «Sin riesgo global» o
   «Riesgo financiero global» a partir de `isInRed`, y el conteo exacto de
   `accountsInRed` con singular o plural. El caso `isInRed = false` con
   `accountsInRed > 0` se presenta como riesgo individual, sin contradecir el
   estado global. No se recalcula el riesgo en el cliente.
+- **Token inválido o expirado:** si `generalBalance` rechaza la autenticación, el
+  hook ejecuta `logout('expired')` una sola vez, limpia el token y la caché de
+  Apollo, vuelve al login y descarta los importes anteriores. Los errores
+  `forbidden`, de red, GraphQL ajenos a autenticación y de fechas no cierran la
+  sesión. La evidencia real está en
+  [`capturas/10_token_invalido_1440x900.png`](evidencias/unidad3_actividad1_dashboard/capturas/10_token_invalido_1440x900.png)
+  y [`resultados/token_invalido_respuesta.txt`](evidencias/unidad3_actividad1_dashboard/resultados/token_invalido_respuesta.txt).
+
+### Resultado real del periodo B01
+
+Consulta real con `demo_b01@test.local` (empresa #53), verificada contra el
+backend y conciliada manualmente:
+
+| Indicador | Valor real |
+|---|---:|
+| Saldo inicial | 1000.00 |
+| Ingresos | 3500.00 |
+| Egresos | 2900.00 |
+| Utilidad | 600.00 |
+| Saldo final | 1600.00 |
+| Cuentas en rojo | 1 (Caja: -200.00) |
+| Riesgo global | false |
+
+Respuesta íntegra:
+[`resultados/general_balance_2026-10-26_2026-10-30.json`](evidencias/unidad3_actividad1_dashboard/resultados/general_balance_2026-10-26_2026-10-30.json).
+Capturas del periodo:
+[`11_dashboard_b01_1440x900.png`](evidencias/unidad3_actividad1_dashboard/capturas/11_dashboard_b01_1440x900.png)
+y
+[`12_detalle_cuentas_b01_1440x900.png`](evidencias/unidad3_actividad1_dashboard/capturas/12_detalle_cuentas_b01_1440x900.png).
 
 ### Ejecución del dashboard
 
@@ -260,6 +294,7 @@ Abrir <http://localhost:5173>. Vite reenvía `/graphql` a la API temporal en
 
 - [`dashboard/README.md`](dashboard/README.md): referencia técnica del frontend.
 - [`docs/unidad3_actividad1/guion_exposicion.md`](docs/unidad3_actividad1/guion_exposicion.md): guion de la demostración para los tres integrantes.
+- [`docs/unidad3_actividad1/calculo_manual.md`](docs/unidad3_actividad1/calculo_manual.md): referencia del profesor, respuesta real y conciliación manual del periodo B01.
 - [`docs/unidad3_actividad1/boceto_dashboard.svg`](docs/unidad3_actividad1/boceto_dashboard.svg) y [`boceto_dashboard.png`](docs/unidad3_actividad1/boceto_dashboard.png): boceto editable y su exportación.
 - [`evidencias/unidad3_actividad1_dashboard/evidencias.md`](evidencias/unidad3_actividad1_dashboard/evidencias.md): capturas, resultados de validación, casos cubiertos por pruebas y limitaciones de los datos reales.
 
@@ -272,7 +307,7 @@ Abrir <http://localhost:5173>. Vite reenvía `/graphql` a la API temporal en
 | 5 | Contrato GraphQL para configurar permisos (`permissionCatalog`, `previewRolePermissions`, `setRolePermissions`) | Suite 18/18; evidencias E01–E10 y cierre de publicación | [`evidencias/actividad5_configuracion_permisos/`](evidencias/actividad5_configuracion_permisos/), [`evidencias.md`](evidencias.md) |
 | 6 | Control de acceso según el rol: identidad desde JWT | Suite 20/20; evidencias E01–E10 | [`evidencias/actividad6_control_acceso/`](evidencias/actividad6_control_acceso/) |
 | 7 | Balances por cuenta y balance general (`accountBalance`, `generalBalance`) | Implementado; suite B01–B16 16/16 en el entorno Docker aislado | [`evidencias_actividad7.md`](evidencias_actividad7.md), [`B01_B16.txt`](evidencias/actividad7/B01_B16.txt) |
-| Unidad III – 1 | Dashboard financiero conectado a GraphQL (login, balance por periodo, indicadores, indicador global de riesgo, cuentas) | Implementado y validado: lint y typecheck sin errores, 134/134 pruebas, build correcto | [`evidencias/unidad3_actividad1_dashboard/`](evidencias/unidad3_actividad1_dashboard/) |
+| Unidad III – 1 | Dashboard financiero conectado a GraphQL (login, balance por periodo, indicadores, indicador global de riesgo, cuentas) | Implementado y validado: lint y typecheck sin errores, 140/140 pruebas, build correcto; conjunto B01 real y flujo de token inválido | [`evidencias/unidad3_actividad1_dashboard/`](evidencias/unidad3_actividad1_dashboard/) |
 
 Notas: las 30 operaciones protegidas de la Actividad 6 conservan la llamada a `exigir_permiso` sobre un catálogo global de roles y permisos, y `createCompany` y el primer `createCompanyAdmin` no están expuestos como operaciones GraphQL. Las evidencias E01–E10 de la Actividad 5 se capturaron con su contrato histórico (`actorCompanyUserId`); `operaciones.graphql` y `variables/` se actualizaron al contrato autenticado. El enunciado menciona MySQL, pero el proyecto conserva PostgreSQL 16.
 
@@ -285,20 +320,22 @@ Las evidencias de la Unidad III, Actividad 1 (capturas reales, resultados de lin
 ## Estado del proyecto
 
 - **Implementado**: gestión de empresas, usuarios, membresías empresa-usuario, cuentas, conceptos y movimientos; autenticación JWT; autorización por roles con scope por empresa; contrato de configuración de permisos de la Actividad 5; control de acceso de la Actividad 6 (identidad desde token en las 30 operaciones protegidas); balances de la Actividad 7 (`accountBalance` y `generalBalance`, con `GeneralBalance.companyId`); y dashboard financiero de la Unidad III (login, consulta por periodo, cinco indicadores, indicador global de riesgo, detalle por cuenta, estados, accesibilidad y responsive).
-- **Verificado**: suite B01–B16 16/16 en `fintrack5_test` (2026-10-29), `Ran 16 tests in 2.533s`, `OK`, código de salida 0; esquema con `companyId: ID!` y `generalBalance` sin argumento `companyId`; base sin residuos y conteos previos conservados. Dashboard: lint y typecheck sin errores, 14 archivos y 134 pruebas aprobadas, build de producción correcto (2026-11-10).
-- **Pruebas registradas**: Actividad 4 (34/34), Actividad 5 (18/18), Actividad 6 (20/20), Actividad 7 (16/16) y dashboard (134/134), además de la matriz funcional y las suites de corrección de la Actividad 3.
-- **Pendiente manual**: publicar (commit y push) la documentación y las evidencias de la subetapa 3.7, a la espera de autorización expresa.
+- **Verificado**: suite B01–B16 16/16 en `fintrack5_test` (2026-11-11), `Ran 16 tests in 2.544s`, `OK`, código de salida 0; esquema con `companyId: ID!` y `generalBalance` sin argumento `companyId`; base sin residuos y conteos previos conservados. Dashboard: lint y typecheck sin errores, 14 archivos y 140 pruebas aprobadas, build de producción correcto (2026-11-11). Consulta real B01 conciliada: 1000/3500/2900/600/1600, una cuenta en rojo y `isInRed = false`.
+- **Pruebas registradas**: Actividad 4 (34/34), Actividad 5 (18/18), Actividad 6 (20/20), Actividad 7 (16/16) y dashboard (140/140), además de la matriz funcional y las suites de corrección de la Actividad 3.
+- **Pendiente manual**: publicar (`git push`) los commits locales de la Actividad 12, a la espera de autorización expresa. El árbol de trabajo queda limpio tras los commits.
 - **Deuda explícita**: la idempotencia de `setup_pruebas.py` con dry-run de `limpiar_pruebas.py` y la verificación de rollback por inyección de fallo no se dan por aprobadas; véase [`evidencias/actividad3/correcciones/03_pendientes_y_validaciones.txt`](evidencias/actividad3/correcciones/03_pendientes_y_validaciones.txt).
 
 ## Control de versiones
 
-`main` y `origin/main` apuntan al commit
-`a95226a7303113c1705c8e67b8c7bc9b19f83fbf` («chore(dashboard): remove obsolete
-placeholders»). Las subetapas 3.1 a 3.6 del dashboard están publicadas en ese
-historial. La documentación, el boceto, las evidencias y el ZIP de la subetapa 3.7
-se prepararon localmente y, al cierre de esta entrega, permanecen sin commit ni
-push a la espera de autorización expresa. El detalle verificable está en
-[`evidencias/unidad3_actividad1_dashboard/resultados/git_publicacion.txt`](evidencias/unidad3_actividad1_dashboard/resultados/git_publicacion.txt).
+`main` y `origin/main` apuntaban al commit
+`f52266d` («chore: add unit 3 team submission package») antes del cierre de la
+Actividad 12. Las subetapas 3.1 a 3.7 del dashboard están publicadas en ese
+historial. Los cambios de la Actividad 12 (conjunto B01, corrección del token
+inválido, pruebas, capturas, documentación y paquete de entrega) quedaron
+preparados en commits locales sobre `main`; el push a GitHub permanece pendiente
+de autorización expresa. El detalle verificable está en
+[`evidencias/unidad3_actividad1_dashboard/resultados/git_publicacion_final.txt`](evidencias/unidad3_actividad1_dashboard/resultados/git_publicacion_final.txt)
+y el SHA-256 del ZIP en [`SHA256SUMS.txt`](SHA256SUMS.txt).
 
 ## Referencias
 

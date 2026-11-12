@@ -10,6 +10,14 @@ Las evidencias de la subetapa 3.7 (capturas reales, resultados de lint,
 typecheck, pruebas y build, JSON de GraphQL y estado de Git) están en
 [`../../evidencias/unidad3_actividad1_dashboard/evidencias.md`](../../evidencias/unidad3_actividad1_dashboard/evidencias.md).
 
+La Actividad 12 añade el periodo principal B01 (`2026-10-26` a `2026-10-30`),
+la conciliación manual en
+[`../../docs/unidad3_actividad1/calculo_manual.md`](../../docs/unidad3_actividad1/calculo_manual.md)
+y la evidencia real de token inválido en
+[`../../evidencias/unidad3_actividad1_dashboard/capturas/10_token_invalido_1440x900.png`](../../evidencias/unidad3_actividad1_dashboard/capturas/10_token_invalido_1440x900.png).
+Las capturas 01–09 y el JSON de enero de 2026 se conservan como evidencia
+histórica de la empresa #11.
+
 ## Qué guardar aquí
 
 - Capturas de la interfaz en las resoluciones de revisión:

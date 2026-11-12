@@ -15,24 +15,24 @@
 |---|---|
 | Backend de pruebas | `http://127.0.0.1:8001/graphql` responde. Procedimiento: [`../acceso-temporal-api-pruebas.md`](../acceso-temporal-api-pruebas.md). |
 | Frontend | `cd dashboard && npm run dev`; abrir `http://localhost:5173`. |
-| Usuario | `admin_a@test.local` (Admin Pruebas Alpha, empresa #11). |
+| Usuario | `demo_b01@test.local` (Administrador Demo B01, empresa `FinTrack-5 Demo B01`, #53). |
 | Contraseña | Se obtiene del mecanismo local de pruebas (`scripts/setup_pruebas.py`, constante `CONTRASENA_PRUEBAS`). **No se escribe, dicta ni muestra en pantalla.** |
-| Periodo | `2026-01-01` a `2026-01-31`. El valor por defecto es el mes UTC actual y muestra importes en cero; hay que cambiarlo. |
-| Respaldo | `evidencias/unidad3_actividad1_dashboard/capturas/` y `evidencias/unidad3_actividad1_dashboard/resultados/general_balance_enero_2026.json`. |
+| Periodo | `2026-10-26` a `2026-10-30`. El valor por defecto es el mes UTC actual; hay que cambiarlo. |
+| Respaldo | `evidencias/unidad3_actividad1_dashboard/capturas/` (10, 11 y 12) y `evidencias/unidad3_actividad1_dashboard/resultados/general_balance_2026-10-26_2026-10-30.json`. |
 | Pestañas | Una con el dashboard y otra con este guion; no abrir DevTools con el token visible. |
 
-**Valores reales esperados para enero de 2026** (verificados contra la API de pruebas):
+**Valores reales esperados para el periodo B01** (verificados contra la API de pruebas):
 
 | Indicador | Valor |
 |---|---:|
-| Saldo inicial | `$0.00` |
-| Ingresos | `$1,500.00` |
-| Egresos | `$300.00` |
-| Utilidad | `$1,200.00` |
-| Saldo final | `$1,200.00` |
-| Cuentas | 5 |
-| Cuentas en rojo | 0 |
-| Indicador global | «Sin riesgo global» · «0 cuentas en números rojos» |
+| Saldo inicial | `$1,000.00` |
+| Ingresos | `$3,500.00` |
+| Egresos | `$2,900.00` |
+| Utilidad | `$600.00` |
+| Saldo final | `$1,600.00` |
+| Cuentas | 3 |
+| Cuentas en rojo | 1 (`Caja B01`, `-$200.00`) |
+| Indicador global | «Sin riesgo global» · «1 cuenta en números rojos» |
 
 ---
 
@@ -81,25 +81,25 @@
 
 **Qué decir:**
 
-> «Inicio sesión con el usuario de prueba `admin_a@test.local`. La contraseña proviene del entorno local de pruebas y no se comparte. Al entrar, el encabezado muestra la empresa y la vigencia de la sesión.»
+> «Inicio sesión con el usuario de demostración `demo_b01@test.local`. La contraseña proviene del entorno local de pruebas y no se comparte. Al entrar, el encabezado muestra la empresa y la vigencia de la sesión.»
 
 **Qué ejecutar:** escribir el correo, la contraseña (sin mostrarla) y pulsar «Entrar».
 
-**Resultado esperado:** encabezado «AUTENTICACIÓN CORRECTA», «Admin Pruebas Alpha», «Empresa #11» y «Sesión válida hasta …». El dashboard carga el mes UTC actual.
+**Resultado esperado:** encabezado «AUTENTICACIÓN CORRECTA», «Administrador Demo B01», «Empresa #53» y «Sesión válida hasta …». El dashboard carga el mes UTC actual.
 
 ### 3:40–5:00 · Consulta `generalBalance` y filtro de fechas
 
 **Qué decir:**
 
-> «El dashboard consulta `generalBalance(fromDate, toDate)`. La empresa no se envía: se deriva del token. Las fechas se interpretan como días completos UTC. El periodo por defecto es el mes actual, que no tiene movimientos; para la demostración uso enero de 2026.»
+> «El dashboard consulta `generalBalance(fromDate, toDate)`. La empresa no se envía: se deriva del token. Las fechas se interpretan como días completos UTC. Para la demostración uso el periodo B01, del 26 al 30 de octubre de 2026.»
 
 **Qué ejecutar:**
 
-1. En «Fecha inicial» escribir `01/01/2026`.
-2. En «Fecha final» escribir `31/01/2026`.
+1. En «Fecha inicial» escribir `26/10/2026`.
+2. En «Fecha final» escribir `30/10/2026`.
 3. Pulsar «Consultar».
 
-**Resultado esperado:** «Periodo consultado: 2026-01-01 a 2026-01-31 (UTC)» y los indicadores `$0.00`, `$1,500.00`, `$300.00`, `$1,200.00`, `$1,200.00`.
+**Resultado esperado:** «Periodo consultado: 2026-10-26 a 2026-10-30 (UTC)» y los indicadores `$1,000.00`, `$3,500.00`, `$2,900.00`, `$600.00`, `$1,600.00`.
 
 **Qué mostrar:** `dashboard/src/api/operations/generalBalance.ts` y `dashboard/src/hooks/useGeneralBalance.ts` si preguntan por la consulta.
 
@@ -107,23 +107,25 @@
 
 **Qué decir:**
 
-> «Los cinco indicadores los calcula el backend: saldo inicial, ingresos, egresos, utilidad y saldo final. El frontend no suma ni resta; solo aplica formato MXN. El tono de la utilidad depende del signo y el del saldo final depende de `isInRed`. Debajo de las cinco tarjetas, el indicador global usa directamente `isInRed` y `accountsInRed`: si `isInRed` es falso muestra “Sin riesgo global” y, si es verdadero, “Riesgo financiero global”. Siempre muestra el conteo exacto, por ejemplo “0 cuentas en números rojos” o “1 cuenta en números rojos”. El caso `isInRed = false` con `accountsInRed > 0` es válido: se presenta como riesgo individual, sin contradecir el estado global. El cliente no recalcula ninguno de los dos campos.»
+> «Los cinco indicadores los calcula el backend: saldo inicial, ingresos, egresos, utilidad y saldo final. El frontend no suma ni resta; solo aplica formato MXN. El tono de la utilidad depende del signo y el del saldo final depende de `isInRed`. Debajo de las cinco tarjetas, el indicador global usa directamente `isInRed` y `accountsInRed`: si `isInRed` es falso muestra “Sin riesgo global” y, si es verdadero, “Riesgo financiero global”. Siempre muestra el conteo exacto. En este caso hay una cuenta individual en rojo, Caja, con -200.00, pero el consolidado es positivo: por eso `isInRed = false` y `accountsInRed = 1`. El cliente no recalcula ninguno de los dos campos.»
 
-**Qué mostrar:** las cinco tarjetas del resumen, el bloque global «Sin riesgo global · 0 cuentas en números rojos» y la insignia «Sin riesgo» de cada fila. Si se pregunta por el escenario de riesgo, mostrar la captura 09 y aclarar que es una simulación de prueba, no un dato real.
+**Qué mostrar:** las cinco tarjetas del resumen, el bloque global «Sin riesgo global · 1 cuenta en números rojos», la insignia «En riesgo» de Caja y la captura `11_dashboard_b01_1440x900.png`. La captura 09 se conserva como simulación histórica y ya no es necesaria para explicar el riesgo real.
 
 ### 5:45–6:30 · Manejo de errores reales
 
 **Qué decir:**
 
-> «La validación de fechas ocurre antes de llamar al backend. Si la fecha inicial es posterior a la final, el formulario muestra un error, marca ambos campos y mueve el foco al primero. También manejamos credenciales incorrectas con un mensaje claro del servidor.»
+> «La validación de fechas ocurre antes de llamar al backend. Si la fecha inicial es posterior a la final, el formulario muestra un error, marca ambos campos y mueve el foco al primero. También manejamos credenciales incorrectas con un mensaje claro del servidor. Y si el backend rechaza el token, la sesión completa se cierra: no se conservan los importes anteriores.»
 
 **Qué ejecutar:**
 
 1. Cambiar la fecha inicial a `10/02/2026` y la final a `01/02/2026`; pulsar «Consultar».
 2. Mostrar el mensaje «La fecha inicial no puede ser posterior a la fecha final.» y el foco en «Fecha inicial».
-3. Cerrar sesión, escribir una contraseña incorrecta y pulsar «Entrar».
+3. Restaurar el periodo B01.
+4. Con la sesión iniciada, sustituir solo en memoria el token por una cadena dummy mediante el mecanismo documentado en `dashboard/README.md` (`tokenStore.set('token-invalido-demo-b01')` desde la consola de Vite) y pulsar «Actualizar».
+5. Mostrar el regreso al login y el aviso «Tu sesión expiró por seguridad. Vuelve a iniciar sesión.».
 
-**Resultado esperado:** alerta de rango invertido con `role="alert"`; alerta de login «El correo o la contraseña no son correctos. Verifica tus datos e inténtalo de nuevo.» con la contraseña enmascarada.
+**Resultado esperado:** alerta de rango invertido con `role="alert"`; el backend rechaza el token con «Token inválido o expirado»; el frontend limpia la sesión, vuelve al login y no muestra `BalanceSummary` ni `AccountsTable`. La evidencia es `10_token_invalido_1440x900.png` y `resultados/token_invalido_respuesta.txt`; no se usó un mock ni una contraseña incorrecta.
 
 **Transición:** «Fabrizio revisa el detalle por cuenta y el resto de la interfaz.»
 
@@ -135,11 +137,11 @@
 
 **Qué decir:**
 
-> «El detalle muestra las cinco cuentas de la empresa. Por cada una: nombre, estado de actividad, estado de riesgo y los cinco importes. La información viene tal cual del backend; no se recalculan saldos. Las cuentas sin movimientos aparecen en cero, no se ocultan.»
+> «El detalle muestra las tres cuentas de la empresa: Banco, Caja y Ahorro. Por cada una: nombre, estado de actividad, estado de riesgo y los cinco importes. La información viene tal cual del backend; no se recalculan saldos. Las cuentas sin movimientos aparecen en cero, no se ocultan.»
 
-**Qué ejecutar:** iniciar sesión de nuevo, aplicar enero de 2026 y desplazarse a «Detalle de cuentas».
+**Qué ejecutar:** iniciar sesión de nuevo, aplicar el periodo `2026-10-26` a `2026-10-30` y desplazarse a «Detalle de cuentas».
 
-**Resultado esperado:** «Cuenta Alpha Pruebas» con `$1,500.00` de ingresos, `$300.00` de egresos y `$1,200.00` de saldo final; cuatro cuentas en cero; todas «Activa» y «Sin riesgo».
+**Resultado esperado:** «Banco B01» con `$3,000.00` de ingresos, `$2,200.00` de egresos y `$1,800.00` de saldo final; «Caja B01» con `$500.00`, `$700.00` y `-$200.00`, marcada «En riesgo»; «Ahorro B01» en cero y «Sin riesgo». Evidencia: `12_detalle_cuentas_b01_1440x900.png`.
 
 ### 7:30–8:15 · Estados, accesibilidad y responsive
 
@@ -157,11 +159,11 @@
 
 **Qué decir:**
 
-> «La calidad se valida con cuatro comandos: `npm run lint`, `npm run typecheck`, `npm test` y `npm run build`. La suite cubre autenticación, sesión, errores, consulta del balance, fechas, formato, tabla, estados, indicador global de riesgo, accesibilidad, responsive y foco. Son 14 archivos y 134 pruebas aprobadas. Los resultados están guardados en `evidencias/unidad3_actividad1_dashboard/resultados/`.»
+> «La calidad se valida con cuatro comandos: `npm run lint`, `npm run typecheck`, `npm test` y `npm run build`. La suite cubre autenticación, sesión, errores, consulta del balance, fechas, formato, tabla, estados, indicador global de riesgo, accesibilidad, responsive, foco y cierre de sesión ante token inválido. Son 14 archivos y 140 pruebas aprobadas. Los resultados están guardados en `evidencias/unidad3_actividad1_dashboard/resultados/`.»
 
 **Qué mostrar:** `resultados/test.txt`, `resultados/lint.txt`, `resultados/typecheck.txt` y `resultados/build.txt`.
 
-**Resultado esperado:** lint sin errores, typecheck sin errores, 134/134 pruebas aprobadas y build de producción correcto. Los conteos exactos se leen del archivo, no se improvisan.
+**Resultado esperado:** lint sin errores, typecheck sin errores, 140/140 pruebas aprobadas y build de producción correcto. Los conteos exactos se leen del archivo, no se improvisan.
 
 ### 9:00–9:30 · Cierre
 
@@ -169,7 +171,7 @@
 
 > «El dashboard queda integrado con el backend real: autenticación JWT en memoria, consulta de balance por periodo, cinco indicadores, indicador global de riesgo con `isInRed` y `accountsInRed`, detalle por cuenta, estados de interfaz, accesibilidad y diseño responsive. La documentación, las capturas, el JSON real y este guion están en el ZIP de entrega. ¿Preguntas?»
 
-**Qué mostrar:** el dashboard con enero de 2026 y el `README.md` con los enlaces a evidencias.
+**Qué mostrar:** el dashboard con el periodo B01 y el `README.md` con los enlaces a evidencias.
 
 ---
 
@@ -180,9 +182,10 @@
 | La API en `8001` no responde | No reiniciar contenedores. Seguir `docs/acceso-temporal-api-pruebas.md`. Si no se recupera, usar las capturas. | «La API de pruebas no está disponible en este momento; muestro las evidencias tomadas contra la API real.» |
 | Vite no arranca | Usar las capturas de `capturas/`. | «El frontend no está disponible; estas son las capturas reales de la misma versión.» |
 | El login falla por credenciales | Verificar el mecanismo local de pruebas; no dictar la contraseña. | «Uso el usuario de prueba documentado; la contraseña no se comparte.» |
-| El periodo no muestra movimientos | Confirmar que se aplicó `2026-01-01` a `2026-01-31`. | «El periodo por defecto es el mes actual; lo cambio a enero de 2026.» |
+| El periodo no muestra movimientos | Confirmar que se aplicó `2026-10-26` a `2026-10-30`. | «El periodo por defecto es el mes actual; lo cambio al periodo B01.» |
 | Una consulta tarda | Esperar el estado «Actualizando balance». | «La interfaz conserva los datos anteriores mientras actualiza.» |
-| Se pregunta por el escenario de riesgo | Mostrar `09_simulacion_riesgo_1440x900.png`. | «Esta captura es una simulación de prueba con datos mock; el entorno real solo tiene `isInRed = false` y `accountsInRed = 0`.» |
+| Se pregunta por el escenario de riesgo | Mostrar `11_dashboard_b01_1440x900.png` o `12_detalle_cuentas_b01_1440x900.png`. | «El caso B01 es real: Caja cierra en -200.00 y el consolidado en 1,600.00; por eso hay una cuenta en rojo y el riesgo global es falso.» |
+| Se pregunta por la captura 09 | Aclarar que es una simulación histórica. | «La captura 09 se conserva como simulación de prueba; el riesgo real de esta entrega está en B01 y en las pruebas automatizadas.» |
 
 **Regla del plan B:** las capturas y el JSON se presentan como **evidencias ya tomadas**, nunca como una demostración en vivo. No se inventan valores ni se modifican datos para forzar un resultado. La única captura simulada es la 09 y está etiquetada como tal en la imagen y en `evidencias.md`.
 
@@ -194,11 +197,12 @@
 |---|---|
 | ¿Dónde se guarda el token? | Solo en memoria (`tokenStore`); se pierde al recargar. |
 | ¿El frontend valida permisos? | No como autoridad. GraphQL exige el permiso en cada operación. |
-| ¿Por qué enero de 2026? | Es el periodo con movimientos reales en la base de pruebas. |
-| ¿Hay cuentas en rojo? | No en los datos reales (`accountsInRed = 0`). El caso está cubierto por pruebas automatizadas. |
+| ¿Por qué el periodo B01? | Es el periodo solicitado y el conjunto aislado reproduce exactamente los valores de referencia. |
+| ¿Hay cuentas en rojo? | Sí: Caja B01 cierra en -200.00. El consolidado es 1,600.00, así que `accountsInRed = 1` e `isInRed = false`. |
 | ¿Cómo se calcula el riesgo global? | No se calcula en el cliente: se muestran directamente `isInRed` y `accountsInRed` que devuelve `generalBalance`. |
-| ¿Qué pasa si `isInRed = false` y `accountsInRed > 0`? | Es un caso válido. Se muestra «Sin riesgo global» y el conteo exacto de cuentas individuales en rojo, con una nota que explica la diferencia. |
-| ¿La captura de riesgo es un dato real? | No. La captura 09 es una simulación de prueba con respuesta mock interceptada y lleva un aviso visible; los datos reales solo tienen `isInRed = false` y `accountsInRed = 0`. |
+| ¿Qué pasa si `isInRed = false` y `accountsInRed > 0`? | Es el caso B01. Se muestra «Sin riesgo global» y el conteo exacto de cuentas individuales en rojo, con una nota que explica la diferencia. |
+| ¿La captura de riesgo es un dato real? | La 11 y la 12 sí: son el periodo B01 real. La 09 se conserva como simulación histórica y está etiquetada como tal. |
+| ¿Qué pasa si el token es inválido? | El backend responde «Token inválido o expirado»; el hook cierra la sesión una sola vez, limpia token y caché, vuelve al login y no conserva importes. Evidencia: captura 10. |
 | ¿El cliente suma los importes? | No. Los cinco valores y los saldos llegan calculados del backend. |
 | ¿Qué pasa si la fecha inicial es mayor? | Validación local, mensaje accesible y foco en el campo. |
 | ¿Funciona en móvil? | Sí; tabla en tarjetas por debajo de 900 px y encabezado apilado a 480 px. |
