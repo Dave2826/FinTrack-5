@@ -1,0 +1,157 @@
+# Operaciones GraphQL de la Unidad III, Actividad 13 (Actividad #13).
+# Parte 1: createTransaction idempotente. Parte 2: dashboard administrativo.
+# Encabezado en todas, salvo login:  Authorization: Bearer <token>
+# Variables de ejemplo en variables_actividad13/.
+
+mutation IniciarSesion($input: LoginInput!) {
+  login(input: $input) {
+    token
+    user {
+      id
+      name
+      email
+    }
+  }
+}
+
+# Sesion: empresa, rol y permisos efectivos. El dashboard decide con
+# `permissions` que botones de alta dibuja.
+query Sesion {
+  me {
+    companyUserId
+    isAdmin
+    permissions
+    company {
+      id
+      name
+    }
+    user {
+      name
+      email
+    }
+    role {
+      code
+      name
+    }
+  }
+}
+
+# ---------------------------------------------------------------- Parte 1
+# Enviar DOS veces con la misma idempotencyKey: ambas respuestas traen el
+# mismo id. Cambiar solo la llave crea otro movimiento aunque el monto sea
+# igual. La misma llave con otro monto responde "La llave de idempotencia
+# ya se uso con otros datos".
+mutation MovimientoIdempotente($input: CreateTransactionInput!) {
+  createTransaction(input: $input) {
+    id
+    accountId
+    conceptId
+    transactionType
+    amount
+    capturedAt
+  }
+}
+
+# ---------------------------------------------------------------- Parte 2
+# De donde sale cada tabla del dashboard administrativo.
+query Administracion($companyId: Int!, $accountId: Int!) {
+  companyUsers(companyId: $companyId, activeOnly: false) {
+    id
+    isAdmin
+    isActive
+    user {
+      name
+      email
+    }
+    role {
+      code
+      name
+    }
+  }
+  accounts(companyId: $companyId, activeOnly: false) {
+    id
+    name
+    accountType
+    bankName
+    cardLastDigits
+    isActive
+  }
+  concepts(companyId: $companyId, activeOnly: false) {
+    id
+    name
+    conceptType
+    isActive
+  }
+  accountConcepts(accountId: $accountId) {
+    id
+    isActive
+    concept {
+      id
+      name
+      conceptType
+    }
+  }
+}
+
+# Alta de persona: nombre, correo y contrasena. La respuesta no devuelve la
+# contrasena; la membresia nace sin rol (la matriz de roles es la Act. 14).
+mutation NuevoUsuario($input: CreateCompanyUserInput!) {
+  createCompanyUser(input: $input) {
+    id
+    isAdmin
+    isActive
+    user {
+      id
+      name
+      email
+    }
+    role {
+      code
+    }
+  }
+}
+
+# Baja logica: la fila queda con isActive = false.
+mutation DesactivarUsuario($companyUserId: Int!) {
+  deactivateCompanyUser(companyUserId: $companyUserId) {
+    id
+    isActive
+  }
+}
+
+mutation NuevaCuenta($input: CreateAccountInput!) {
+  createAccount(input: $input) {
+    id
+    name
+    accountType
+    isActive
+  }
+}
+
+mutation NuevoConcepto($input: CreateConceptInput!) {
+  createConcept(input: $input) {
+    id
+    name
+    conceptType
+    isActive
+  }
+}
+
+# Asignar dos veces la misma pareja responde
+# "El concepto ya esta asignado a esta cuenta".
+mutation AsignarConcepto($input: AssignConceptToAccountInput!) {
+  assignConceptToAccount(input: $input) {
+    id
+    accountId
+    conceptId
+    isActive
+  }
+}
+
+# Quitar desactiva la relacion; el concepto sigue en el catalogo.
+mutation QuitarConcepto($accountId: Int!, $conceptId: Int!) {
+  removeConceptFromAccount(accountId: $accountId, conceptId: $conceptId) {
+    id
+    isActive
+  }
+}

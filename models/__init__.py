@@ -9,6 +9,7 @@ from models.role import Role
 from models.permission import Permission
 from models.role_permission import RolePermission
 from models.company_user_role import CompanyUserRole
+from models.idempotency_key import IdempotencyKey
 
 
 __all__ = [
@@ -26,4 +27,5 @@ __all__ = [
     "Permission",
     "RolePermission",
     "CompanyUserRole",
+    "IdempotencyKey",
 ]

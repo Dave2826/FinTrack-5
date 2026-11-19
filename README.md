@@ -39,7 +39,7 @@ Python 3.11, FastAPI, Strawberry GraphQL, SQLAlchemy, PostgreSQL 16, Alembic, Py
     ├── security/              JWT y hash de contraseñas
     ├── services/              lógica de negocio y autorización
     ├── scripts/               setup, limpieza y reproductores de evidencias
-    ├── tests/                 suites de las Actividades 5, 6 y 7
+    ├── tests/                 suites de las Actividades 5, 6, 7 y 13
     ├── variables/             variables de las operaciones de la Actividad 5
     ├── variables_actividad6/  variables de la Actividad 6
     ├── variables_actividad7/  variables de los balances de la Actividad 7
@@ -77,7 +77,7 @@ Desde Windows CMD, copia las plantillas y sustituye los marcadores `CAMBIAR-*` p
     docker compose exec api alembic upgrade head
     docker compose exec api alembic current
 
-La revisión actual es `3b9f41c7d2ae (head)`.
+La revisión actual es `4d2a7c9e1b30 (head)` (tabla `idempotency_keys`, Unidad III · Actividad 13).
 
 ## Autenticación y seguridad
 
@@ -94,7 +94,7 @@ La revisión actual es `3b9f41c7d2ae (head)`.
 
 ## Pruebas
 
-Todas las suites se ejecutan **solo** contra el entorno de pruebas aislado `fintrack5_test` (guardas `DB_NAME=fintrack5_test`, `DB_HOST=postgres` y revisión de Alembic `3b9f41c7d2ae`). Nunca contra la base de desarrollo `actividad5`.
+Todas las suites se ejecutan **solo** contra el entorno de pruebas aislado `fintrack5_test` (guardas `DB_NAME=fintrack5_test`, `DB_HOST=postgres` y revisión de Alembic `4d2a7c9e1b30`). Nunca contra la base de desarrollo `actividad5`.
 
     docker exec -e PYTHONPATH=/app fintrack5-test-api python -m unittest tests.test_control_acceso_rol -v       # Actividad 6: 20/20 OK
     docker exec -e PYTHONPATH=/app fintrack5-test-api python -m unittest tests.test_configuracion_permisos -v   # Actividad 5: 18/18 OK
@@ -103,6 +103,9 @@ Todas las suites se ejecutan **solo** contra el entorno de pruebas aislado `fint
 Para preparar o limpiar los datos ficticios (mismas guardas; la limpieza simula primero y aplica solo con `--confirm`), la invocación sobre el overlay de pruebas es:
 
     docker compose -p fintrack5_test --env-file .env.test -f compose.yaml -f compose.test.yaml exec -T -e PYTHONPATH=/app api python /app/scripts/setup_pruebas.py
+
+    docker exec -e PYTHONPATH=/app fintrack5-test-api python -m unittest tests.test_actividad13 -v              # Unidad III, Act. 13: 14/14 OK
+    docker exec -e PYTHONPATH=/app fintrack5-test-api python -m unittest tests.test_bootstrap_fintrack_demo -v  # Bootstrap FinTrack Demo: 4/4 OK
 
 El frontend tiene su propia validación, desde `dashboard/`:
 
@@ -192,7 +195,7 @@ La suite `tests/test_balances.py` contiene los casos B01–B16. Se ejecuta solo 
 
     docker exec -e PYTHONPATH=/app fintrack5-test-api python -m unittest tests.test_balances -v
 
-Los datos de referencia se crean en empresas propias de la suite y se eliminan al finalizar. Antes de ejecutar, las guardas comprueban `DB_NAME=fintrack5_test`, `DB_HOST=postgres`, `current_database()`, la revisión de Alembic `3b9f41c7d2ae` y la disponibilidad de la API de pruebas; si algo no coincide, la suite aborta. No se deben ejecutar `setup_pruebas.py`, `limpiar_pruebas.py` ni `docker compose down -v` para preparar la ejecución: la suite no los necesita y podrían afectar datos ajenos.
+Los datos de referencia se crean en empresas propias de la suite y se eliminan al finalizar. Antes de ejecutar, las guardas comprueban `DB_NAME=fintrack5_test`, `DB_HOST=postgres`, `current_database()`, la revisión de Alembic `4d2a7c9e1b30` y la disponibilidad de la API de pruebas; si algo no coincide, la suite aborta. No se deben ejecutar `setup_pruebas.py`, `limpiar_pruebas.py` ni `docker compose down -v` para preparar la ejecución: la suite no los necesita y podrían afectar datos ajenos.
 
 Resultado real de la ejecución vigente (2026-10-29): **16/16 casos aprobados**, `Ran 16 tests in 2.533s`, `OK`, código de salida **0**. La salida completa está en [`evidencias/actividad7/B01_B16.txt`](evidencias/actividad7/B01_B16.txt).
 
@@ -289,6 +292,17 @@ Abrir <http://localhost:5173>. Vite reenvía `/graphql` a la API temporal en
     npm run typecheck
     npm test
     npm run build
+
+## Dashboard administrativo — Unidad III, Actividad 2 (Actividad #13)
+
+Es la misma aplicación de la actividad 1, con el mismo login y el mismo API. Un menú separa el **Dashboard financiero** del **Dashboard administrativo**, que tiene tres secciones: **Usuarios** (membresías, rol en solo lectura, alta y baja lógica), **Cuentas** (lista, filtros y alta) y **Conceptos** (catálogo, alta y conceptos permitidos por cuenta). Cada botón de alta aparece solo si el rol de la sesión tiene el permiso de escritura correspondiente.
+
+- **Parte 1, idempotencia:** `createTransaction` acepta `idempotencyKey`. La llave se guarda en `idempotency_keys` (índice único empresa + operación + llave, con el hash del cuerpo) en el mismo `COMMIT` que el movimiento. Si se repite la misma llave, la respuesta es el mismo movimiento; si llega con otros datos, se rechaza.
+- **Cómo se entra y rol usado:** login → menú *Dashboard administrativo*. Escritura probada con `ADMINISTRADOR` (`david.morales@tecdesoftware.edu.mx`) y lectura con `CONSULTA` (`luis.chay@tecdesoftware.edu.mx`).
+- **Cuatro cuentas de FinTrack Demo:** `scripts/bootstrap_fintrack_demo.py` (plan de solo lectura por defecto, `--aplicar` en una sola transacción, `--verificar`).
+- **Importante:** después de actualizar el código hay que reconstruir la imagen de la API (`docker compose up -d --build`) y aplicar la migración (`alembic upgrade head`).
+
+Guía completa (puesta en marcha, bootstrap, comprobación y capturas): [`docs/unidad3_actividad13/README.md`](docs/unidad3_actividad13/README.md). Operaciones GraphQL: `operaciones_actividad13.graphql` y `variables_actividad13/`.
 
 ### Documentación y entregables de la Unidad III
 

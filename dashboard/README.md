@@ -146,6 +146,30 @@ pequeñas. Si no hay cuentas, se muestra un mensaje de estado vacío.
 - **Vacío:** mensaje cuando todavía no hay balance o cuentas que mostrar.
 - **Foco:** al reintentar, el foco se mueve al título del resumen para no perderlo.
 
+## Dashboard administrativo (Unidad III, Actividad 13)
+
+Después del login, un menú lateral separa el **Dashboard financiero** (esta
+vista, sin cambios) del **Dashboard administrativo**:
+
+- **Usuarios** (`#/admin/usuarios`): `companyUsers`. Muestra nombre, correo,
+  rol (solo lectura), administrador y estado; conteos de activos,
+  administrador principal e inactivos; búsqueda; alta con nombre, correo y
+  contraseña (`createCompanyUser`), y baja lógica (`deactivateCompanyUser`).
+- **Cuentas** (`#/admin/cuentas`): `accounts`. Tipo con etiqueta en español,
+  referencia enmascarada, filtros por tipo y solo activas; alta con
+  `createAccount`.
+- **Conceptos** (`#/admin/conceptos`): catálogo `concepts` con filtros
+  Ingreso/Egreso; alta con `createConcept`; panel de la cuenta elegida con
+  `accountConcepts`, `assignConceptToAccount` y `removeConceptFromAccount`.
+
+Los botones de alta, Desactivar, Asignar y Quitar se dibujan solo si `me.permissions`
+incluye el permiso de escritura (`company.users.write`, `accounts.write`,
+`concepts.write`). Después de cada mutación la tabla se vuelve a consultar, y
+los errores del API (correo duplicado, segundo administrador, concepto ya
+asignado) se muestran en pantalla. Si el API rechaza la sesión se vuelve al
+login. Código en `src/app/` (menú y rutas), `src/session/` (`me`) y
+`src/features/admin/`. Guía de la actividad: `../docs/unidad3_actividad13/README.md`.
+
 ## Requisitos
 
 - Node.js 22.12 o superior (probado con Node 24). El rango declarado en

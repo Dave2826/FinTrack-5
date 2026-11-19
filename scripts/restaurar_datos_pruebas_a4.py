@@ -30,7 +30,7 @@ from database.connection import SessionLocal
 
 DB_ESPERADA = "fintrack5_test"
 HOST_ESPERADO = "postgres"
-ALEMBIC_ESPERADO = "3b9f41c7d2ae"
+ALEMBIC_ESPERADO = "4d2a7c9e1b30"
 EMPRESA_ALPHA = 11
 EMPRESA_B01 = 53
 IDS_BASELINE = (34, 39, 40, 42, 43)
