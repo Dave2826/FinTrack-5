@@ -2,7 +2,7 @@ import { AuthProvider } from './auth/AuthContext'
 import { RequireAuth } from './auth/RequireAuth'
 import { useAuth } from './auth/useAuth'
 import { BrandPanel } from './components/BrandPanel'
-import { DashboardPage } from './features/dashboard/DashboardPage'
+import { AppShell } from './app/AppShell'
 
 function AppContent() {
   const { status } = useAuth()
@@ -17,7 +17,7 @@ function AppContent() {
       {isAuthenticated ? null : <BrandPanel />}
       <main className={isAuthenticated ? 'dashboard-shell' : 'content-panel'}>
         <RequireAuth>
-          <DashboardPage />
+          <AppShell />
         </RequireAuth>
       </main>
     </div>

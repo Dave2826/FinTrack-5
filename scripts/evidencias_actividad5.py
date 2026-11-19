@@ -36,7 +36,7 @@ DIR_VARIABLES = "/app/variables"
 
 DB_ESPERADA = "fintrack5_test"
 HOST_ESPERADO = "postgres"
-ALEMBIC_ESPERADO = "3b9f41c7d2ae"
+ALEMBIC_ESPERADO = "4d2a7c9e1b30"
 
 MATRIZ_OFICIAL = {
     "ADMINISTRADOR": {

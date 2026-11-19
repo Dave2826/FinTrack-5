@@ -1,8 +1,12 @@
+from email_validator import EmailNotValidError, validate_email
+from sqlalchemy import func
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from models.company_user import CompanyUser
 from models.company_user_role import CompanyUserRole
 from models.role import Role
+from models.user import User
 from repositories.company_repository import get_company
 from repositories.company_user_repository import (
     create_company_user,
@@ -18,7 +22,13 @@ from repositories.company_user_role_repository import (
 )
 from repositories.role_repository import get_role, get_role_by_code
 from repositories.user_repository import get_user
+from security.password import hash_password
 from services.authorization_service import exigir_permiso
+
+
+LONGITUD_MINIMA_CONTRASENA = 8
+LONGITUD_MAXIMA_CONTRASENA = 128
+LONGITUD_MAXIMA_NOMBRE = 150
 
 
 def create_company_user_service(
@@ -363,5 +373,165 @@ def create_company_admin_service(
     )
 
     create_company_user_role(db, relation)
+
+    return company_user
+
+
+def _normalizar_nombre(name: str | None) -> str:
+    nombre = (name or "").strip()
+
+    if not nombre:
+        raise ValueError("El nombre es obligatorio")
+
+    if len(nombre) > LONGITUD_MAXIMA_NOMBRE:
+        raise ValueError("El nombre excede la longitud permitida")
+
+    return nombre
+
+
+def _normalizar_correo(email: str | None) -> str:
+    correo = (email or "").strip()
+
+    if not correo:
+        raise ValueError("El correo es obligatorio")
+
+    # Los datos de demostración y de pruebas del equipo usan dominios
+    # internos (.local); email-validator los trata como reservados, así que
+    # se valida la sintaxis con un dominio público equivalente.
+    local, separador, dominio = correo.rpartition("@")
+
+    if not separador or not local or not dominio:
+        raise ValueError("El correo no es válido")
+
+    dominio_validable = (
+        dominio[: -len(".local")] + ".example.com"
+        if dominio.lower().endswith(".local")
+        else dominio
+    )
+
+    try:
+        validate_email(
+            f"{local}@{dominio_validable}",
+            check_deliverability=False,
+        )
+    except EmailNotValidError:
+        raise ValueError("El correo no es válido")
+
+    return correo.lower()
+
+
+def _validar_contrasena(password: str | None) -> str:
+    if password is None or password == "":
+        raise ValueError("La contraseña es obligatoria")
+
+    if len(password) < LONGITUD_MINIMA_CONTRASENA:
+        raise ValueError(
+            "La contraseña debe tener al menos "
+            f"{LONGITUD_MINIMA_CONTRASENA} caracteres"
+        )
+
+    if len(password) > LONGITUD_MAXIMA_CONTRASENA:
+        raise ValueError("La contraseña excede la longitud permitida")
+
+    return password
+
+
+def create_company_user_with_credentials_service(
+    db: Session,
+    actor_company_user_id: int,
+    company_id: int,
+    name: str | None,
+    email: str | None,
+    password: str | None,
+    is_admin: bool = False,
+) -> CompanyUser:
+    """Alta de una persona nueva en la empresa (Actividad 13).
+
+    Crea el usuario (con la contraseña cifrada) y su membresía en una sola
+    transacción. La contraseña nunca se devuelve. La membresía nace sin rol:
+    la asignación de roles es la Actividad 14.
+    """
+
+    exigir_permiso(
+        db,
+        actor_company_user_id,
+        "company.users.write",
+        company_id=company_id,
+    )
+
+    company = get_company(db, company_id)
+
+    if company is None:
+        raise ValueError("La empresa no existe")
+
+    if not company.is_active:
+        raise ValueError("La empresa no está activa")
+
+    nombre = _normalizar_nombre(name)
+    correo = _normalizar_correo(email)
+    contrasena = _validar_contrasena(password)
+
+    existente = (
+        db.query(User)
+        .filter(func.lower(User.email) == correo)
+        .first()
+    )
+
+    if existente is not None:
+        raise ValueError("Ya existe un usuario con ese correo")
+
+    admin_role = None
+
+    if is_admin:
+        if get_active_company_admin(db, company_id) is not None:
+            raise ValueError(
+                "La empresa ya tiene un administrador principal"
+            )
+
+        admin_role = get_role_by_code(db, "ADMINISTRADOR")
+
+        if admin_role is None or not admin_role.is_active:
+            raise ValueError(
+                "El rol ADMINISTRADOR no existe o no está activo"
+            )
+
+    try:
+        user = User(
+            name=nombre,
+            email=correo,
+            password_hash=hash_password(contrasena),
+            email_verified=False,
+            is_active=True,
+        )
+        db.add(user)
+        db.flush()
+
+        company_user = CompanyUser(
+            company_id=company_id,
+            user_id=user.id,
+            is_admin=is_admin,
+            is_active=True,
+        )
+        db.add(company_user)
+        db.flush()
+
+        if admin_role is not None:
+            db.add(
+                CompanyUserRole(
+                    company_user_id=company_user.id,
+                    role_id=admin_role.id,
+                    is_active=True,
+                )
+            )
+
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise ValueError("Ya existe un usuario con ese correo")
+    except Exception:
+        db.rollback()
+        raise
+
+    db.refresh(company_user)
 
     return company_user

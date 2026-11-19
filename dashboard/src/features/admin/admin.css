@@ -1,0 +1,504 @@
+/*
+ * Shell de la aplicación (menú) y pantallas del dashboard administrativo.
+ * Reutiliza los tokens de `tokens.css` y las clases del dashboard
+ * financiero (`dashboard-panel`, `accounts-table`, `field`, `button`).
+ */
+
+/* Layout con menú lateral ------------------------------------------------ */
+
+.app-layout {
+  display: grid;
+  grid-template-columns: 15rem minmax(0, 1fr);
+  flex: 1;
+  min-height: 0;
+}
+
+.app-layout__content {
+  min-width: 0;
+}
+
+.app-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-5) var(--space-3);
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+}
+
+.app-nav__group {
+  margin: var(--space-5) var(--space-3) var(--space-2);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.app-nav__group--active {
+  color: var(--color-brand-strong);
+}
+
+.app-nav__list {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.app-nav__link {
+  display: grid;
+  gap: 0.1rem;
+  padding: 0.65rem var(--space-3);
+  font-weight: 600;
+  color: var(--color-ink-soft);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.app-nav__link:hover {
+  background: var(--color-surface-muted);
+  color: var(--color-ink);
+}
+
+.app-nav__link:focus-visible {
+  outline: 3px solid rgba(15, 118, 110, 0.28);
+  outline-offset: 1px;
+}
+
+.app-nav__link[aria-current="page"] {
+  color: var(--color-brand-strong);
+  background: var(--color-brand-soft);
+}
+
+.app-nav__link--child {
+  padding-left: var(--space-4);
+}
+
+.app-nav__hint {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-muted);
+}
+
+.dashboard-header__company-name {
+  margin: var(--space-1) 0 0;
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.dashboard-header__company-name + .dashboard-header__company {
+  margin-top: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+.dashboard-header__role {
+  margin: var(--space-1) 0 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-brand-strong);
+}
+
+/* Barra de herramientas -------------------------------------------------- */
+
+.admin-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-4);
+}
+
+.admin-toolbar__search {
+  flex: 1 1 18rem;
+}
+
+.admin-toolbar__filter {
+  flex: 0 1 14rem;
+}
+
+.admin-toolbar .field__input {
+  padding: 0.65rem 0.9rem;
+}
+
+.admin-toolbar > .button--primary {
+  margin-left: auto;
+}
+
+.admin-button {
+  width: auto;
+  padding: 0.7rem 1.15rem;
+  white-space: nowrap;
+}
+
+.admin-button--small {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+}
+
+.admin-check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.65rem 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-ink-soft);
+  cursor: pointer;
+}
+
+.admin-check input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--color-brand);
+}
+
+.admin-segmented {
+  display: inline-flex;
+  padding: 0.2rem;
+  background: var(--color-surface-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+}
+
+.admin-segmented__option {
+  padding: 0.45rem 0.95rem;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-ink-soft);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+}
+
+.admin-segmented__option--active {
+  color: #f0fdfa;
+  background: var(--color-brand);
+}
+
+.admin-segmented__option:focus-visible {
+  outline: 3px solid rgba(15, 118, 110, 0.28);
+  outline-offset: 1px;
+}
+
+/* Conteos ---------------------------------------------------------------- */
+
+.admin-counters {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin: 0;
+}
+
+.admin-counter {
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.admin-counter dt {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.admin-counter dd {
+  margin: var(--space-2) 0 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--color-ink);
+}
+
+.admin-counter--danger {
+  background: #fef3f2;
+  border-color: #fecdca;
+}
+
+.admin-counter--danger dd {
+  color: #b42318;
+}
+
+/* Formularios ------------------------------------------------------------ */
+
+.admin-form {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: 0 20px 44px -42px rgba(15, 35, 31, 0.6);
+}
+
+.admin-form h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.admin-form__hint {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--color-muted);
+}
+
+.admin-form__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: var(--space-4);
+}
+
+.admin-form__wide {
+  grid-column: 1 / -1;
+}
+
+.admin-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.admin-fieldset {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.admin-fieldset legend {
+  width: 100%;
+  margin-bottom: var(--space-1);
+}
+
+.admin-alert p {
+  margin: 0;
+}
+
+.admin-alert .admin-button {
+  margin-top: var(--space-3);
+}
+
+.admin-notice {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  font-size: 0.9rem;
+  color: #0b5f58;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: var(--radius-sm);
+}
+
+/* Tablas ----------------------------------------------------------------- */
+
+.admin-table {
+  min-width: 44rem;
+}
+
+.admin-table--compact {
+  min-width: 26rem;
+}
+
+.admin-row--inactive th,
+.admin-row--inactive td {
+  color: var(--color-muted);
+}
+
+.admin-subtext {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-muted);
+}
+
+.admin-muted {
+  color: var(--color-muted);
+}
+
+.admin-badge,
+.admin-type {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+}
+
+.admin-badge--active {
+  color: #0b5f58;
+  background: var(--color-brand-soft);
+}
+
+.admin-badge--inactive {
+  color: #5b6470;
+  background: #eef1f4;
+  border: 1px dashed #b8c0ca;
+}
+
+.admin-type--income {
+  color: #05603a;
+  background: #d1fadf;
+}
+
+.admin-type--expense {
+  color: #93370d;
+  background: #fef0c7;
+}
+
+.admin-confirm {
+  display: grid;
+  gap: var(--space-2);
+  max-width: 22rem;
+  padding: var(--space-3);
+  font-size: 0.85rem;
+  background: #fffaeb;
+  border: 1px solid #fedf89;
+  border-radius: var(--radius-sm);
+}
+
+.admin-confirm p {
+  margin: 0;
+  line-height: 1.4;
+}
+
+.admin-confirm__actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+/* Conceptos: catálogo + panel de la cuenta ------------------------------- */
+
+.admin-split {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(18rem, 2fr);
+  align-items: start;
+  gap: var(--space-5);
+}
+
+.admin-split__main {
+  display: grid;
+  gap: var(--space-5);
+  min-width: 0;
+}
+
+.admin-side-panel {
+  position: sticky;
+  top: var(--space-4);
+}
+
+.admin-relations {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.admin-relation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  background: var(--color-surface-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.admin-assign {
+  display: grid;
+  gap: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border);
+}
+
+.admin-assign .admin-button {
+  justify-self: start;
+}
+
+/* Responsivo ------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  /* En tarjetas (reglas de dashboard.css) las tablas no fijan ancho. */
+  .accounts-table.admin-table {
+    min-width: 0;
+  }
+
+  .admin-table .admin-confirm {
+    max-width: none;
+    text-align: left;
+  }
+}
+
+@media (max-width: 960px) {
+  .admin-split {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-side-panel {
+    position: static;
+  }
+}
+
+@media (max-width: 760px) {
+  .app-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .app-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: var(--space-3);
+    border-right: 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .app-nav__group {
+    display: none;
+  }
+
+  .app-nav__list {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .app-nav__hint {
+    display: none;
+  }
+
+  .app-nav__link--child {
+    padding-left: var(--space-3);
+  }
+
+  .admin-counters {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-toolbar > .button--primary {
+    margin-left: 0;
+  }
+
+  .admin-toolbar__filter,
+  .admin-toolbar__search {
+    flex: 1 1 100%;
+  }
+
+  .admin-relation {
+    flex-wrap: wrap;
+  }
+}

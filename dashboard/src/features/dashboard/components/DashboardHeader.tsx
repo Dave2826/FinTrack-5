@@ -3,6 +3,7 @@ import { decodeJwtPayload } from '../../../auth/jwt'
 import { tokenStore } from '../../../auth/tokenStore'
 import { useAuth } from '../../../auth/useAuth'
 import { BrandMark } from '../../../components/BrandMark'
+import { useSessionInfo } from '../../../session/useSessionInfo'
 
 const timeFormatter = new Intl.DateTimeFormat('es-MX', {
   hour: '2-digit',
@@ -32,8 +33,15 @@ function getCompanyLabel(): string {
   return `Empresa #${companyId}`
 }
 
-export function DashboardHeader() {
+interface DashboardHeaderProps {
+  /** Sección activa del menú; cambia el título, no la sesión. */
+  section?: 'financiero' | 'administrativo'
+}
+
+export function DashboardHeader({ section = 'financiero' }: DashboardHeaderProps) {
   const { user, expiresAt, logout } = useAuth()
+  const { info } = useSessionInfo()
+  const isAdminSection = section === 'administrativo'
   const [isSigningOut, setIsSigningOut] = useState(false)
 
   async function handleLogout() {
@@ -57,8 +65,15 @@ export function DashboardHeader() {
       </div>
 
       <div className="dashboard-header__identity">
-        <p className="eyebrow">Panel financiero</p>
-        <h1 className="dashboard-header__title">Dashboard financiero</h1>
+        <p className="eyebrow">
+          {isAdminSection ? 'Panel de administración' : 'Panel financiero'}
+        </p>
+        <h1 className="dashboard-header__title">
+          {isAdminSection ? 'Dashboard administrativo' : 'Dashboard financiero'}
+        </h1>
+        {info ? (
+          <p className="dashboard-header__company-name">{info.company.name}</p>
+        ) : null}
         <p className="dashboard-header__company">{getCompanyLabel()}</p>
       </div>
 
@@ -70,6 +85,11 @@ export function DashboardHeader() {
               <p className="dashboard-header__name">{user.name}</p>
               <p className="dashboard-header__email">{user.email}</p>
             </>
+          ) : null}
+          {info ? (
+            <p className="dashboard-header__role">
+              {info.role ? `Rol: ${info.role.name}` : 'Sin rol asignado'}
+            </p>
           ) : null}
           {expiresAt !== null ? (
             <p className="dashboard-header__expiry">

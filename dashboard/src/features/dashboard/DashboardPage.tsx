@@ -5,7 +5,6 @@ import { getDefaultUtcMonthRange } from '../../lib/dateRange'
 import type { DateRange } from '../../lib/dateRange'
 import { AccountsTable } from './components/AccountsTable'
 import { BalanceSummary } from './components/BalanceSummary'
-import { DashboardHeader } from './components/DashboardHeader'
 import { DateRangeFilter } from './components/DateRangeFilter'
 import './dashboard.css'
 
@@ -58,9 +57,7 @@ export function DashboardPage() {
   }
 
   return (
-    <div className="dashboard-page">
-      <DashboardHeader />
-
+    <div className="dashboard-financial">
       <div className="dashboard-main">
         <section
           className="dashboard-content"

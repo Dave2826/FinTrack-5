@@ -59,9 +59,15 @@ from services.role_permission_service import (
 
 from services.company_user_service import (
     create_company_user_service,
+    create_company_user_with_credentials_service,
     deactivate_company_user_service,
     assign_role_service,
     list_company_users_service,
+)
+
+from services.session_service import (
+    active_role_for,
+    session_snapshot_service,
 )
 
 from models.account import Account as AccountModel
@@ -189,6 +195,7 @@ class AccountConcept:
     account_id: int
     concept_id: int
     is_active: bool
+    concept: Concept | None = None
 
     @staticmethod
     def from_model(relation: AccountConceptModel):
@@ -197,6 +204,11 @@ class AccountConcept:
             account_id=relation.account_id,
             concept_id=relation.concept_id,
             is_active=relation.is_active,
+            concept=(
+                Concept.from_model(relation.concept)
+                if relation.concept is not None
+                else None
+            ),
         )
 
 
@@ -391,6 +403,21 @@ class CompanyUserRole:
 
 
 @strawberry.type
+class User:
+    id: int
+    name: str
+    email: str
+
+    @staticmethod
+    def from_model(user: UserModel):
+        return User(
+            id=user.id,
+            name=user.name,
+            email=user.email,
+        )
+
+
+@strawberry.type
 class CompanyUser:
     id: int
     company_id: int
@@ -398,9 +425,23 @@ class CompanyUser:
     is_admin: bool
     is_active: bool
     joined_at: datetime
+    # Actividad 13: datos visibles de la persona y rol activo de la
+    # membresia (solo lectura). Nunca se expone la contrasena ni su hash.
+    user: User | None = None
+    role: Role | None = None
 
     @staticmethod
-    def from_model(company_user: CompanyUserModel):
+    def from_model(company_user: CompanyUserModel, db=None):
+        role = None
+
+        if db is not None:
+            role_model = active_role_for(db, company_user.id)
+            role = (
+                Role.from_model(role_model)
+                if role_model is not None
+                else None
+            )
+
         return CompanyUser(
             id=company_user.id,
             company_id=company_user.company_id,
@@ -408,7 +449,29 @@ class CompanyUser:
             is_admin=company_user.is_admin,
             is_active=company_user.is_active,
             joined_at=company_user.joined_at,
+            user=(
+                User.from_model(company_user.user)
+                if company_user.user is not None
+                else None
+            ),
+            role=role,
         )
+
+
+@strawberry.type
+class SessionCompany:
+    id: int
+    name: str
+
+
+@strawberry.type
+class SessionInfo:
+    company_user_id: int
+    company: SessionCompany
+    user: User
+    is_admin: bool
+    role: Role | None
+    permissions: list[str]
 
 
 @strawberry.input
@@ -448,27 +511,15 @@ class CreateTransactionInput:
     transaction_date: datetime | None = None
     short_description: str | None = None
     long_description: str | None = None
+    # Actividad 13: llave generada por el cliente una vez por accion.
+    # El mismo valor en un reintento devuelve el mismo movimiento.
+    idempotency_key: str | None = None
 
 
 @strawberry.input
 class LoginInput:
     email: str
     password: str
-
-
-@strawberry.type
-class User:
-    id: int
-    name: str
-    email: str
-
-    @staticmethod
-    def from_model(user: UserModel):
-        return User(
-            id=user.id,
-            name=user.name,
-            email=user.email,
-        )
 
 
 @strawberry.type
@@ -500,8 +551,19 @@ class AssignPermissionToRoleInput:
 
 @strawberry.input
 class CreateCompanyUserInput:
+    """Alta de membresia.
+
+    - Con `userId`: vincula a un usuario existente (Parcial I).
+    - Sin `userId`: crea la persona con `name`, `email` y `password`
+      (Actividad 13). La contrasena viaja solo en la mutacion; ninguna
+      respuesta la devuelve.
+    """
+
     company_id: int
-    user_id: int
+    user_id: int | None = None
+    name: str | None = None
+    email: str | None = None
+    password: str | None = None
     is_admin: bool = False
 
 
@@ -598,6 +660,35 @@ def _resolver_list_role_permissions(
 class Query:
 
     @strawberry.field
+    def me(
+        self,
+        info: Info,
+    ) -> SessionInfo:
+        """Sesion autenticada: empresa, persona, rol y permisos efectivos."""
+
+        identidad = _identidad(info)
+
+        db = info.context["db"]
+
+        snapshot = session_snapshot_service(db, identidad)
+
+        return SessionInfo(
+            company_user_id=identidad.id,
+            company=SessionCompany(
+                id=snapshot.company.id,
+                name=snapshot.company.name,
+            ),
+            user=User.from_model(snapshot.user),
+            is_admin=identidad.is_admin,
+            role=(
+                Role.from_model(snapshot.role)
+                if snapshot.role is not None
+                else None
+            ),
+            permissions=snapshot.permissions,
+        )
+
+    @strawberry.field
     def accounts(
         self,
         info: Info,
@@ -647,7 +738,7 @@ class Query:
         )
 
         return [
-            CompanyUser.from_model(membership)
+            CompanyUser.from_model(membership, db)
             for membership in memberships
         ]
 
@@ -1094,6 +1185,7 @@ class Mutation:
             transaction_date=input.transaction_date,
             short_description=input.short_description,
             long_description=input.long_description,
+            idempotency_key=input.idempotency_key,
         )
 
         return Transaction.from_model(transaction)
@@ -1272,15 +1364,36 @@ class Mutation:
 
         db = info.context["db"]
 
-        company_user = create_company_user_service(
-            db,
-            identidad.id,
-            company_id=input.company_id,
-            user_id=input.user_id,
-            is_admin=input.is_admin,
-        )
+        if input.user_id is not None:
+            if (
+                input.name is not None
+                or input.email is not None
+                or input.password is not None
+            ):
+                raise ValueError(
+                    "Envía userId o los datos de la persona "
+                    "(name, email, password), no ambos"
+                )
 
-        return CompanyUser.from_model(company_user)
+            company_user = create_company_user_service(
+                db,
+                identidad.id,
+                company_id=input.company_id,
+                user_id=input.user_id,
+                is_admin=input.is_admin,
+            )
+        else:
+            company_user = create_company_user_with_credentials_service(
+                db,
+                identidad.id,
+                company_id=input.company_id,
+                name=input.name,
+                email=input.email,
+                password=input.password,
+                is_admin=input.is_admin,
+            )
+
+        return CompanyUser.from_model(company_user, db)
 
     @strawberry.mutation
     def deactivate_company_user(
@@ -1299,7 +1412,7 @@ class Mutation:
             company_user_id,
         )
 
-        return CompanyUser.from_model(company_user)
+        return CompanyUser.from_model(company_user, db)
 
     @strawberry.mutation
     def assign_role(

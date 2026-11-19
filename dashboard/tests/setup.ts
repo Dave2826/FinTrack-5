@@ -8,6 +8,9 @@ beforeEach(() => {
   tokenStore.clear()
   localStorage.clear()
   sessionStorage.clear()
+  // La navegación vive en el hash; cada prueba empieza en el dashboard
+  // financiero.
+  window.history.replaceState(null, '', '/')
 })
 
 afterEach(() => {

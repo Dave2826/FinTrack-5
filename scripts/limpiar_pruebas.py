@@ -23,13 +23,14 @@ from models.concept import Concept
 from models.permission import Permission
 from models.role import Role
 from models.role_permission import RolePermission
+from models.idempotency_key import IdempotencyKey
 from models.transaction import Transaction
 from models.user import User
 from services.seed_service import MATRIZ_OFICIAL
 
 DB_ESPERADA = "fintrack5_test"
 HOST_ESPERADO = "postgres"
-ALEMBIC_ESPERADO = "3b9f41c7d2ae"
+ALEMBIC_ESPERADO = "4d2a7c9e1b30"
 
 MARCADORES_EMPRESA = ("Pruebas Alpha SA", "Pruebas Beta SA")
 
@@ -330,6 +331,14 @@ def _eliminar(db: Session, datos: dict) -> None:
 
     borrados = {}
     try:
+        # Las llaves de idempotencia (Actividad 13) apuntan a movimientos;
+        # se eliminan antes que los movimientos ficticios que referencian.
+        if ids_mov:
+            borrados["idempotency_keys"] = (
+                db.query(IdempotencyKey)
+                .filter(IdempotencyKey.transaction_id.in_(ids_mov))
+                .delete(synchronize_session=False)
+            )
         for nombre, modelo, ids in orden:
             if not ids:
                 borrados[nombre] = 0

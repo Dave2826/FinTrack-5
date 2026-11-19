@@ -27,7 +27,7 @@ from scripts.setup_pruebas import CONTRASENA_PRUEBAS
 
 DB_ESPERADA = "fintrack5_test"
 HOST_ESPERADO = "postgres"
-ALEMBIC_ESPERADO = "3b9f41c7d2ae"
+ALEMBIC_ESPERADO = "4d2a7c9e1b30"
 URL = "http://127.0.0.1:8000/graphql"
 
 ARCHIVO_OPERACIONES = "/app/operaciones_actividad6.graphql"
