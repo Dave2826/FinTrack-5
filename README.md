@@ -304,6 +304,29 @@ Es la misma aplicación de la actividad 1, con el mismo login y el mismo API. Un
 
 Guía completa (puesta en marcha, bootstrap, comprobación y capturas): [`docs/unidad3_actividad13/README.md`](docs/unidad3_actividad13/README.md). Operaciones GraphQL: `operaciones_actividad13.graphql` y `variables_actividad13/`.
 
+## Matriz de roles y permisos — Unidad III, Actividad 3 (Actividad #14)
+
+La matriz de roles y permisos se agrega al mismo dashboard:
+
+- **Roles y permisos** responde «¿qué puede hacer cada puesto?» con una
+  cuadrícula de 4 roles por 10 permisos. Al guardar una columna se llama
+  `setRolePermissions`.
+- La columna **Rol** de Usuarios responde «¿qué puesto tiene esta persona?».
+  Al guardar se llama `assignRole`.
+- **Cómo se abre:** login → *Dashboard administrativo → Roles y permisos*,
+  o directo con `#/admin/roles`.
+- **Quién edita la matriz:** `ADMINISTRADOR` (`david.morales@tecdesoftware.edu.mx`).
+- **Quién comprueba el efecto:** `CAPTURISTA`
+  (`alexander.rodriguez@tecdesoftware.edu.mx`) y un segundo capturista. En
+  Cuentas aparece Nueva cuenta.
+- **Backend:** solo se agregaron `activeOnly` en `roles` y `permissions`, el
+  `permission` anidado en `rolePermissions` y el `role` en la respuesta de
+  `assignRole`. Hay que reconstruir la imagen (`docker compose up -d --build`).
+
+Guía completa: [`docs/unidad3_actividad14/README.md`](docs/unidad3_actividad14/README.md).
+Evidencias: [`evidencias/unidad3_actividad14/evidencias.md`](evidencias/unidad3_actividad14/evidencias.md).
+Operaciones GraphQL: `operaciones_actividad14.graphql` y `variables_actividad14/`.
+
 ### Documentación y entregables de la Unidad III
 
 - [`dashboard/README.md`](dashboard/README.md): referencia técnica del frontend.
