@@ -8,6 +8,7 @@ export type AppRoute =
   | 'admin/usuarios'
   | 'admin/cuentas'
   | 'admin/conceptos'
+  | 'admin/roles'
 
 export const DEFAULT_ROUTE: AppRoute = 'financiero'
 
@@ -16,6 +17,7 @@ const ROUTES: readonly AppRoute[] = [
   'admin/usuarios',
   'admin/cuentas',
   'admin/conceptos',
+  'admin/roles',
 ]
 
 export function parseRoute(hash: string): AppRoute {

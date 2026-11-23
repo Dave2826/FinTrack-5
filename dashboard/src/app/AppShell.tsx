@@ -2,6 +2,7 @@ import { DashboardHeader } from '../features/dashboard/components/DashboardHeade
 import { DashboardPage } from '../features/dashboard/DashboardPage'
 import { AccountsAdminPage } from '../features/admin/AccountsAdminPage'
 import { ConceptsAdminPage } from '../features/admin/ConceptsAdminPage'
+import { RolesPermissionsPage } from '../features/admin/RolesPermissionsPage'
 import { UsersAdminPage } from '../features/admin/UsersAdminPage'
 import '../features/admin/admin.css'
 import { SessionInfoProvider } from '../session/SessionInfoProvider'
@@ -18,6 +19,8 @@ function Section({ route }: { route: AppRoute }) {
       return <AccountsAdminPage />
     case 'admin/conceptos':
       return <ConceptsAdminPage />
+    case 'admin/roles':
+      return <RolesPermissionsPage />
     case 'financiero':
     default:
       return <DashboardPage />
@@ -26,7 +29,8 @@ function Section({ route }: { route: AppRoute }) {
 
 /**
  * Aplicación autenticada: mismo login, mismo encabezado y un menú que lleva
- * al dashboard financiero (actividad 1) o al administrativo (actividad 13).
+ * al dashboard financiero (actividad 1) o al administrativo (actividades 13
+ * y 14: Usuarios, Cuentas, Conceptos y Roles y permisos).
  */
 export function AppShell() {
   const [route, navigate] = useHashRoute()
