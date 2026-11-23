@@ -354,6 +354,8 @@ class RolePermission:
     role_id: int
     permission_id: int
     is_active: bool
+    # Actividad 14: la matriz lee el código del permiso de cada celda.
+    permission: Permission | None = None
 
     @staticmethod
     def from_model(relation: RolePermissionModel):
@@ -362,6 +364,11 @@ class RolePermission:
             role_id=relation.role_id,
             permission_id=relation.permission_id,
             is_active=relation.is_active,
+            permission=(
+                Permission.from_model(relation.permission)
+                if relation.permission is not None
+                else None
+            ),
         )
 
 
@@ -391,6 +398,9 @@ class CompanyUserRole:
     company_user_id: int
     role_id: int
     is_active: bool
+    # Actividad 14: la columna Rol de Usuarios muestra lo que devolvió
+    # assignRole.
+    role: Role | None = None
 
     @staticmethod
     def from_model(relation: CompanyUserRoleModel):
@@ -399,6 +409,11 @@ class CompanyUserRole:
             company_user_id=relation.company_user_id,
             role_id=relation.role_id,
             is_active=relation.is_active,
+            role=(
+                Role.from_model(relation.role)
+                if relation.role is not None
+                else None
+            ),
         )
 
 
@@ -601,7 +616,10 @@ def _identidad(info: Info) -> CompanyUserModel:
     return company_user
 
 
-def _resolver_list_roles(info: Info) -> list[Role]:
+def _resolver_list_roles(
+    info: Info,
+    active_only: bool = True,
+) -> list[Role]:
 
     identidad = _identidad(info)
 
@@ -610,6 +628,7 @@ def _resolver_list_roles(info: Info) -> list[Role]:
     roles = list_roles_service(
         db,
         identidad.id,
+        active_only=active_only,
     )
 
     return [
@@ -618,7 +637,10 @@ def _resolver_list_roles(info: Info) -> list[Role]:
     ]
 
 
-def _resolver_list_permissions(info: Info) -> list[Permission]:
+def _resolver_list_permissions(
+    info: Info,
+    active_only: bool = True,
+) -> list[Permission]:
 
     identidad = _identidad(info)
 
@@ -627,6 +649,7 @@ def _resolver_list_permissions(info: Info) -> list[Permission]:
     permissions = list_permissions_service(
         db,
         identidad.id,
+        active_only=active_only,
     )
 
     return [
@@ -921,10 +944,12 @@ class Query:
     def roles(
         self,
         info: Info,
+        active_only: bool = True,
     ) -> list[Role]:
-        """Alias (Actividad 4) de listRoles; delega en la misma logica."""
+        """Alias (Actividad 4) de listRoles; delega en la misma logica.
+        Actividad 14: acepta activeOnly (por defecto true, como antes)."""
 
-        return _resolver_list_roles(info)
+        return _resolver_list_roles(info, active_only)
 
     @strawberry.field
     def list_permissions(
@@ -938,10 +963,12 @@ class Query:
     def permissions(
         self,
         info: Info,
+        active_only: bool = True,
     ) -> list[Permission]:
-        """Alias (Actividad 4) de listPermissions; delega en la misma logica."""
+        """Alias (Actividad 4) de listPermissions; delega en la misma logica.
+        Actividad 14: acepta activeOnly (por defecto true, como antes)."""
 
-        return _resolver_list_permissions(info)
+        return _resolver_list_permissions(info, active_only)
 
     @strawberry.field
     def list_role_permissions(
