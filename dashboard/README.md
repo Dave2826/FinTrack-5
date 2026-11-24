@@ -170,6 +170,25 @@ asignado) se muestran en pantalla. Si el API rechaza la sesión se vuelve al
 login. Código en `src/app/` (menú y rutas), `src/session/` (`me`) y
 `src/features/admin/`. Guía de la actividad: `../docs/unidad3_actividad13/README.md`.
 
+### Roles y permisos (Unidad III, Actividad 14)
+
+- **Roles y permisos** (`#/admin/roles`, solo con `roles.read`) muestra la
+  matriz de cuatro roles por diez permisos. Se arma con `roles`,
+  `permissions` y una consulta `rolePermissions` por columna.
+- Con `roles.write`, las celdas de Contador, Capturista y Consulta se pueden
+  editar. **Revisar y guardar** muestra `previewRolePermissions`. Guardar
+  manda la lista completa a `setRolePermissions` y vuelve a leer la columna.
+  Si la respuesta trae `changed: false`, la pantalla lo avisa.
+- La columna Administrador es de solo lectura y nunca se envía.
+- En **Usuarios**, con `roles.write`, la columna Rol tiene un selector que
+  llama a `assignRole`. No aparece para el administrador principal.
+- Cada ítem del menú administrativo aparece solo si el rol tiene el permiso
+  de lectura de esa pantalla.
+- Código: `src/features/admin/RolesPermissionsPage.tsx`,
+  `src/features/admin/components/RoleAssignControl.tsx`,
+  `src/lib/roleMatrix.ts` y `src/api/operations/roles.ts`.
+- Guía: `../docs/unidad3_actividad14/README.md`.
+
 ## Requisitos
 
 - Node.js 22.12 o superior (probado con Node 24). El rango declarado en

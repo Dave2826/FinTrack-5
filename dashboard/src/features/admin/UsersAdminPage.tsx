@@ -6,8 +6,10 @@ import {
   CREATE_COMPANY_USER_MUTATION,
   DEACTIVATE_COMPANY_USER_MUTATION,
 } from '../../api/operations/admin'
+import { ACTIVE_ROLES_QUERY } from '../../api/operations/roles'
 import { useSessionErrorGuard } from '../../hooks/useSessionErrorGuard'
 import { normalizeSearch } from '../../lib/adminLabels'
+import { roleLabel, sortRoles } from '../../lib/roleMatrix'
 import { readApiError } from '../../lib/apiErrors'
 import type { ApiErrorInfo } from '../../lib/apiErrors'
 import { useSessionInfo } from '../../session/useSessionInfo'
@@ -16,8 +18,10 @@ import type {
   CompanyUsersResult,
   CreateCompanyUserInput,
 } from '../../types/admin'
+import type { ActiveRolesResult } from '../../types/roles'
 import { AdminSection } from './components/AdminSection'
 import { QueryFeedback } from './components/QueryFeedback'
+import { RoleAssignControl } from './components/RoleAssignControl'
 import { StatusBadge } from './components/StatusBadge'
 
 const EMPTY_FORM = { name: '', email: '', password: '' }
@@ -106,8 +110,8 @@ function NewUserForm({
     >
       <h3 id="new-user-title">Nuevo usuario</h3>
       <p className="admin-form__hint">
-        La persona se agrega a la empresa de tu sesión sin rol; el rol se
-        asigna en la matriz de roles (Actividad 14). No se puede crear un
+        La persona se agrega a la empresa de tu sesión sin rol; el puesto se
+        asigna después en la columna Rol de esta tabla. No se puede crear un
         segundo administrador principal.
       </p>
 
@@ -288,6 +292,8 @@ export function UsersAdminPage() {
   const { companyId, can, info, loading: sessionLoading } = useSessionInfo()
   const canRead = can('company.users.read')
   const canWrite = can('company.users.write')
+  // Actividad 14: con roles.write la columna Rol llama a assignRole.
+  const canAssign = can('roles.write')
 
   const [search, setSearch] = useState('')
   const [activeOnly, setActiveOnly] = useState(false)
@@ -303,6 +309,15 @@ export function UsersAdminPage() {
     fetchPolicy: 'network-only',
     notifyOnNetworkStatusChange: true,
   })
+
+  const { data: rolesData } = useQuery<ActiveRolesResult>(ACTIVE_ROLES_QUERY, {
+    skip: sessionLoading || !canRead || !canAssign,
+    fetchPolicy: 'network-only',
+  })
+  const roleOptions = useMemo(
+    () => sortRoles(rolesData?.roles ?? []),
+    [rolesData],
+  )
 
   const apiError: ApiErrorInfo | null = error ? readApiError(error) : null
   useSessionErrorGuard(apiError)
@@ -498,8 +513,17 @@ export function UsersAdminPage() {
                         </th>
                         <td data-label="Correo">{row.user?.email ?? '—'}</td>
                         <td data-label="Rol">
-                          {row.role ? (
-                            row.role.name
+                          {canAssign &&
+                          row.isActive &&
+                          !row.isAdmin &&
+                          roleOptions.length > 0 ? (
+                            <RoleAssignControl
+                              row={row}
+                              roles={roleOptions}
+                              onAssigned={(message) => reload(message)}
+                            />
+                          ) : row.role ? (
+                            roleLabel(row.role)
                           ) : (
                             <span className="admin-muted">Sin rol</span>
                           )}

@@ -1,0 +1,104 @@
+# Operaciones GraphQL de la Unidad III, Actividad 3 (Actividad #14):
+# matriz de roles y permisos.
+# Encabezado en todas, salvo login:  Authorization: Bearer <token>
+# Ninguna recibe actorCompanyUserId: la membresia sale del token.
+# Variables de ejemplo en variables_actividad14/. Los id salen de la base
+# del equipo: confirmarlos primero con la query Matriz.
+
+mutation IniciarSesion($input: LoginInput!) {
+  login(input: $input) {
+    token
+    user {
+      id
+      name
+      email
+    }
+  }
+}
+
+# Columnas y filas de la matriz (solo activos). Exige roles.read.
+query Matriz {
+  roles(activeOnly: true) {
+    id
+    code
+    name
+  }
+  permissions(activeOnly: true) {
+    id
+    code
+    name
+  }
+}
+
+# Una columna. Captura de GraphiQL: la columna de Capturista
+# (variables_actividad14/columna_capturista.json).
+query ListaDelRol($roleId: Int!) {
+  rolePermissions(roleId: $roleId) {
+    id
+    isActive
+    permissionId
+    permission {
+      id
+      code
+    }
+  }
+}
+
+# Vista previa: no escribe. Se manda la lista COMPLETA que debe quedar activa.
+query VistaPrevia($input: SetRolePermissionsInput!) {
+  previewRolePermissions(input: $input) {
+    toActivate {
+      code
+    }
+    toDeactivate {
+      code
+    }
+    unchanged {
+      code
+    }
+    finalCount
+  }
+}
+
+# Guardar la columna. Exige roles.write; la columna ADMINISTRADOR se rechaza.
+# Repetir con la misma lista devuelve changed: false.
+mutation GuardarColumna($input: SetRolePermissionsInput!) {
+  setRolePermissions(input: $input) {
+    activated {
+      code
+    }
+    deactivated {
+      code
+    }
+    finalCount
+    changed
+  }
+}
+
+# Cambiar el puesto de una membresia. Deja un solo rol activo y no toca isAdmin.
+mutation AsignarPuesto($input: AssignRoleInput!) {
+  assignRole(input: $input) {
+    isActive
+    role {
+      code
+      name
+    }
+  }
+}
+
+# Comprobacion: el puesto y el isAdmin de cada persona.
+query Membresias($companyId: Int!) {
+  companyUsers(companyId: $companyId, activeOnly: false) {
+    id
+    isAdmin
+    isActive
+    user {
+      name
+      email
+    }
+    role {
+      code
+      name
+    }
+  }
+}
